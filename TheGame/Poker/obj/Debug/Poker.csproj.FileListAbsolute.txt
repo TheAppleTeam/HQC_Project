@@ -1,0 +1,9 @@
+C:\Users\veronica\Desktop\HQC_TeamWork\trunk\TheGame\Poker\bin\Debug\Poker.exe.config
+C:\Users\veronica\Desktop\HQC_TeamWork\trunk\TheGame\Poker\obj\Debug\Poker.AddChips.resources
+C:\Users\veronica\Desktop\HQC_TeamWork\trunk\TheGame\Poker\obj\Debug\Poker.Form1.resources
+C:\Users\veronica\Desktop\HQC_TeamWork\trunk\TheGame\Poker\obj\Debug\Poker.Properties.Resources.resources
+C:\Users\veronica\Desktop\HQC_TeamWork\trunk\TheGame\Poker\obj\Debug\Poker.csproj.GenerateResource.Cache
+C:\Users\veronica\Desktop\HQC_TeamWork\trunk\TheGame\Poker\bin\Debug\Poker.exe
+C:\Users\veronica\Desktop\HQC_TeamWork\trunk\TheGame\Poker\bin\Debug\Poker.pdb
+C:\Users\veronica\Desktop\HQC_TeamWork\trunk\TheGame\Poker\obj\Debug\Poker.exe
+C:\Users\veronica\Desktop\HQC_TeamWork\trunk\TheGame\Poker\obj\Debug\Poker.pdb
