@@ -14,7 +14,7 @@ using System.Runtime.InteropServices;
 namespace Poker
 {
 
-    public partial class Form1 : Form
+    public partial class GameForm : Form
     {
         #region Variables
         ProgressBar asd = new ProgressBar();
@@ -59,7 +59,7 @@ namespace Poker
         Timer Updates = new Timer();
         int t = 60, i, bb = 500, sb = 250, up = 10000000, turnCount = 0;
         #endregion
-        public Form1()
+        public GameForm()
         {
             //bools.Add(PFturn); bools.Add(B1Fturn); bools.Add(B2Fturn); bools.Add(B3Fturn); bools.Add(B4Fturn); bools.Add(B5Fturn);
             call = bb;
