@@ -2820,11 +2820,11 @@ namespace Poker
                 buttonRaise.Enabled = false;
             }
         }
-        private async void bFold_Click(object sender, EventArgs e)
+        private async void ButtonFold_Click(object sender, EventArgs e)
         {
 
         }
-        private async void bCheck_Click(object sender, EventArgs e)
+        private async void ButtonCheck_Click(object sender, EventArgs e)
         {
             if (call <= 0)
             {
@@ -2839,7 +2839,7 @@ namespace Poker
             }
             await Turns();
         }
-        private async void bCall_Click(object sender, EventArgs e)
+        private async void ButtonCall_Click(object sender, EventArgs e)
         {
             Rules(0, 1, "Player", ref pType, ref pPower, PFturn);
             if (Chips >= call)
@@ -2870,7 +2870,7 @@ namespace Poker
             }
             await Turns();
         }
-        private async void bRaise_Click(object sender, EventArgs e)
+        private async void ButtonRaise_Click(object sender, EventArgs e)
         {
             Rules(0, 1, "Player", ref pType, ref pPower, PFturn);
             int parsedValue;
@@ -2920,7 +2920,7 @@ namespace Poker
             Pturn = false;
             await Turns();
         }
-        private void bAdd_Click(object sender, EventArgs e)
+        private void ButtonAddChips_Click(object sender, EventArgs e)
         {
             if (textBoxAddChips.Text == "") { }
             else
@@ -2934,7 +2934,7 @@ namespace Poker
             }
             textBoxPlayerChips.Text = "Chips : " + Chips.ToString();
         }
-        private void bOptions_Click(object sender, EventArgs e)
+        private void ButtonChooseBlind_Click(object sender, EventArgs e)
         {
             textBoxBigBlind.Text = bb.ToString();
             textBoxSmallBlind.Text = sb.ToString();
@@ -2953,7 +2953,7 @@ namespace Poker
                 buttonSmallBlind.Visible = false;
             }
         }
-        private void bSB_Click(object sender, EventArgs e)
+        private void ButtonSmallBlind_Click(object sender, EventArgs e)
         {
             int parsedValue;
             if (textBoxSmallBlind.Text.Contains(",") || textBoxSmallBlind.Text.Contains("."))
@@ -2983,7 +2983,7 @@ namespace Poker
                 MessageBox.Show("The changes have been saved ! They will become available the next hand you play. ");
             }
         }
-        private void bBB_Click(object sender, EventArgs e)
+        private void ButtonBigBlind_Click(object sender, EventArgs e)
         {
             int parsedValue;
             if (textBoxBigBlind.Text.Contains(",") || textBoxBigBlind.Text.Contains("."))
