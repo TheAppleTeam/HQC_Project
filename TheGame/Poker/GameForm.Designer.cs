@@ -61,7 +61,7 @@
             // 
             this.buttonFold.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.buttonFold.Font = new System.Drawing.Font("Microsoft Sans Serif", 17F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.buttonFold.Location = new System.Drawing.Point(335, 660);
+            this.buttonFold.Location = new System.Drawing.Point(302, 660);
             this.buttonFold.Name = "buttonFold";
             this.buttonFold.Size = new System.Drawing.Size(130, 62);
             this.buttonFold.TabIndex = 0;
@@ -72,7 +72,7 @@
             // 
             this.buttonCheck.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.buttonCheck.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.buttonCheck.Location = new System.Drawing.Point(494, 660);
+            this.buttonCheck.Location = new System.Drawing.Point(461, 660);
             this.buttonCheck.Name = "buttonCheck";
             this.buttonCheck.Size = new System.Drawing.Size(134, 62);
             this.buttonCheck.TabIndex = 2;
@@ -84,7 +84,7 @@
             // 
             this.buttonCall.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.buttonCall.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.buttonCall.Location = new System.Drawing.Point(667, 661);
+            this.buttonCall.Location = new System.Drawing.Point(634, 661);
             this.buttonCall.Name = "buttonCall";
             this.buttonCall.Size = new System.Drawing.Size(126, 62);
             this.buttonCall.TabIndex = 3;
@@ -96,7 +96,7 @@
             // 
             this.buttonRaise.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.buttonRaise.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.buttonRaise.Location = new System.Drawing.Point(835, 661);
+            this.buttonRaise.Location = new System.Drawing.Point(802, 661);
             this.buttonRaise.Name = "buttonRaise";
             this.buttonRaise.Size = new System.Drawing.Size(124, 62);
             this.buttonRaise.TabIndex = 4;
@@ -108,7 +108,7 @@
             // 
             this.progressBarTimer.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.progressBarTimer.BackColor = System.Drawing.SystemColors.Control;
-            this.progressBarTimer.Location = new System.Drawing.Point(335, 631);
+            this.progressBarTimer.Location = new System.Drawing.Point(302, 631);
             this.progressBarTimer.Maximum = 1000;
             this.progressBarTimer.Name = "progressBarTimer";
             this.progressBarTimer.Size = new System.Drawing.Size(667, 23);
@@ -119,7 +119,7 @@
             // 
             this.textBoxPlayerChips.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.textBoxPlayerChips.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBoxPlayerChips.Location = new System.Drawing.Point(755, 553);
+            this.textBoxPlayerChips.Location = new System.Drawing.Point(722, 553);
             this.textBoxPlayerChips.Name = "textBoxPlayerChips";
             this.textBoxPlayerChips.Size = new System.Drawing.Size(163, 23);
             this.textBoxPlayerChips.TabIndex = 6;
@@ -148,7 +148,7 @@
             // 
             this.textBoxBot5Chips.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxBot5Chips.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBoxBot5Chips.Location = new System.Drawing.Point(1012, 553);
+            this.textBoxBot5Chips.Location = new System.Drawing.Point(946, 553);
             this.textBoxBot5Chips.Name = "textBoxBot5Chips";
             this.textBoxBot5Chips.Size = new System.Drawing.Size(152, 23);
             this.textBoxBot5Chips.TabIndex = 9;
@@ -158,7 +158,7 @@
             // 
             this.textBoxBot4Chips.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxBot4Chips.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBoxBot4Chips.Location = new System.Drawing.Point(970, 81);
+            this.textBoxBot4Chips.Location = new System.Drawing.Point(904, 81);
             this.textBoxBot4Chips.Name = "textBoxBot4Chips";
             this.textBoxBot4Chips.Size = new System.Drawing.Size(123, 23);
             this.textBoxBot4Chips.TabIndex = 10;
@@ -168,7 +168,7 @@
             // 
             this.textBoxBot3Chips.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxBot3Chips.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBoxBot3Chips.Location = new System.Drawing.Point(755, 81);
+            this.textBoxBot3Chips.Location = new System.Drawing.Point(689, 81);
             this.textBoxBot3Chips.Name = "textBoxBot3Chips";
             this.textBoxBot3Chips.Size = new System.Drawing.Size(125, 23);
             this.textBoxBot3Chips.TabIndex = 11;
@@ -197,7 +197,7 @@
             // 
             this.textBoxPot.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.textBoxPot.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBoxPot.Location = new System.Drawing.Point(606, 212);
+            this.textBoxPot.Location = new System.Drawing.Point(573, 212);
             this.textBoxPot.Name = "textBoxPot";
             this.textBoxPot.Size = new System.Drawing.Size(125, 23);
             this.textBoxPot.TabIndex = 14;
@@ -253,7 +253,7 @@
             // labelBot5Status
             // 
             this.labelBot5Status.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.labelBot5Status.Location = new System.Drawing.Point(1012, 579);
+            this.labelBot5Status.Location = new System.Drawing.Point(946, 579);
             this.labelBot5Status.Name = "labelBot5Status";
             this.labelBot5Status.Size = new System.Drawing.Size(152, 32);
             this.labelBot5Status.TabIndex = 26;
@@ -261,7 +261,7 @@
             // labelBot4Status
             // 
             this.labelBot4Status.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labelBot4Status.Location = new System.Drawing.Point(970, 107);
+            this.labelBot4Status.Location = new System.Drawing.Point(904, 107);
             this.labelBot4Status.Name = "labelBot4Status";
             this.labelBot4Status.Size = new System.Drawing.Size(123, 32);
             this.labelBot4Status.TabIndex = 27;
@@ -269,7 +269,7 @@
             // labelBot3Status
             // 
             this.labelBot3Status.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labelBot3Status.Location = new System.Drawing.Point(755, 107);
+            this.labelBot3Status.Location = new System.Drawing.Point(689, 107);
             this.labelBot3Status.Name = "labelBot3Status";
             this.labelBot3Status.Size = new System.Drawing.Size(125, 32);
             this.labelBot3Status.TabIndex = 28;
@@ -285,7 +285,7 @@
             // labelPlayerStatus
             // 
             this.labelPlayerStatus.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.labelPlayerStatus.Location = new System.Drawing.Point(755, 579);
+            this.labelPlayerStatus.Location = new System.Drawing.Point(722, 579);
             this.labelPlayerStatus.Name = "labelPlayerStatus";
             this.labelPlayerStatus.Size = new System.Drawing.Size(163, 32);
             this.labelPlayerStatus.TabIndex = 30;
@@ -301,7 +301,7 @@
             // 
             this.labelPot.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.labelPot.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.labelPot.Location = new System.Drawing.Point(654, 188);
+            this.labelPot.Location = new System.Drawing.Point(621, 188);
             this.labelPot.Name = "labelPot";
             this.labelPot.Size = new System.Drawing.Size(31, 21);
             this.labelPot.TabIndex = 0;
@@ -310,18 +310,18 @@
             // textBoxRaise
             // 
             this.textBoxRaise.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.textBoxRaise.Location = new System.Drawing.Point(973, 700);
+            this.textBoxRaise.Location = new System.Drawing.Point(940, 700);
             this.textBoxRaise.Name = "textBoxRaise";
             this.textBoxRaise.Size = new System.Drawing.Size(108, 20);
             this.textBoxRaise.TabIndex = 0;
             // 
-            // Form1
+            // GameForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = global::Poker.Properties.Resources.poker_table___Copy;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(1350, 729);
+            this.ClientSize = new System.Drawing.Size(1284, 729);
             this.Controls.Add(this.textBoxRaise);
             this.Controls.Add(this.labelPot);
             this.Controls.Add(this.labelBot2Status);
@@ -350,7 +350,7 @@
             this.Controls.Add(this.buttonCheck);
             this.Controls.Add(this.buttonFold);
             this.DoubleBuffered = true;
-            this.Name = "Form1";
+            this.Name = "GameForm";
             this.Text = "GLS Texas Poker";
             this.Layout += new System.Windows.Forms.LayoutEventHandler(this.Layout_Change);
             this.ResumeLayout(false);
