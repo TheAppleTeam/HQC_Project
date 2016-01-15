@@ -762,7 +762,7 @@
                     {
                         //Pair from Hand current = 1
 
-                        rPairFromHand(ref current, ref Power);
+                        rPairFromHand(ref current, ref Power, i);
 
                         #region Pair or Two Pair from Table current = 2 || 0
                         rPairTwoPair(ref current, ref Power);
@@ -1642,73 +1642,70 @@
                 }
             }
         }
-        private void rPairFromHand(ref double current, ref double Power)
+        private void rPairFromHand(ref double current, ref double Power, int index)
         {
             if (current >= -1)
             {
                 bool msgbox = false;
-                if (this.dealtCards[i] / 4 == this.dealtCards[i + 1] / 4)
+                if (this.dealtCards[index] / 4 == this.dealtCards[index + 1] / 4)
                 {
                     if (!msgbox)
                     {
-                        if (this.dealtCards[i] / 4 == 0)
+                        current = 1;
+                        if (this.dealtCards[index] / 4 == 0)
                         {
-                            current = 1;
                             Power = 13 * 4 + current * 100;
-                            Win.Add(new Type() { Power = Power, Current = 1 });
-                            sorted = Win.OrderByDescending(op => op.Current).ThenByDescending(op => op.Power).First();
                         }
                         else
                         {
-                            current = 1;
-                            Power = (this.dealtCards[i + 1] / 4) * 4 + current * 100;
-                            Win.Add(new Type() { Power = Power, Current = 1 });
-                            sorted = Win.OrderByDescending(op => op.Current).ThenByDescending(op => op.Power).First();
+                            Power = (this.dealtCards[index + 1] / 4) * 4 + current * 100;
                         }
+
+                        Win.Add(new Type() { Power = Power, Current = 1 });
+                        sorted = Win.OrderByDescending(op => op.Current).ThenByDescending(op => op.Power).First();
                     }
                     msgbox = true;
                 }
                 for (int tc = 16; tc >= 12; tc--)
                 {
-                    if (this.dealtCards[i + 1] / 4 == this.dealtCards[tc] / 4)
+                    if (this.dealtCards[index + 1] / 4 == this.dealtCards[tc] / 4)
                     {
                         if (!msgbox)
                         {
-                            if (this.dealtCards[i + 1] / 4 == 0)
+                            current = 1;
+
+                            if (this.dealtCards[index + 1] / 4 == 0)
                             {
-                                current = 1;
-                                Power = 13 * 4 + this.dealtCards[i] / 4 + current * 100;
-                                Win.Add(new Type() { Power = Power, Current = 1 });
-                                sorted = Win.OrderByDescending(op => op.Current).ThenByDescending(op => op.Power).First();
+                                Power = 13 * 4 + this.dealtCards[index] / 4 + current * 100;
                             }
                             else
                             {
-                                current = 1;
-                                Power = (this.dealtCards[i + 1] / 4) * 4 + this.dealtCards[i] / 4 + current * 100;
-                                Win.Add(new Type() { Power = Power, Current = 1 });
-                                sorted = Win.OrderByDescending(op => op.Current).ThenByDescending(op => op.Power).First();
+                                Power = (this.dealtCards[index + 1] / 4) * 4 + this.dealtCards[index] / 4 + current * 100;
                             }
+
+                            Win.Add(new Type() { Power = Power, Current = 1 });
+                            sorted = Win.OrderByDescending(op => op.Current).ThenByDescending(op => op.Power).First();
+
                         }
                         msgbox = true;
                     }
-                    if (this.dealtCards[i] / 4 == this.dealtCards[tc] / 4)
+                    if (this.dealtCards[index] / 4 == this.dealtCards[tc] / 4)
                     {
                         if (!msgbox)
                         {
-                            if (this.dealtCards[i] / 4 == 0)
+                            current = 1;
+
+                            if (this.dealtCards[index] / 4 == 0)
                             {
-                                current = 1;
-                                Power = 13 * 4 + this.dealtCards[i + 1] / 4 + current * 100;
-                                Win.Add(new Type() { Power = Power, Current = 1 });
-                                sorted = Win.OrderByDescending(op => op.Current).ThenByDescending(op => op.Power).First();
+                                Power = 13 * 4 + this.dealtCards[index + 1] / 4 + current * 100;
                             }
                             else
                             {
-                                current = 1;
-                                Power = (this.dealtCards[tc] / 4) * 4 + this.dealtCards[i + 1] / 4 + current * 100;
-                                Win.Add(new Type() { Power = Power, Current = 1 });
-                                sorted = Win.OrderByDescending(op => op.Current).ThenByDescending(op => op.Power).First();
+                                Power = (this.dealtCards[tc] / 4) * 4 + this.dealtCards[index + 1] / 4 + current * 100;
                             }
+
+                            Win.Add(new Type() { Power = Power, Current = 1 });
+                            sorted = Win.OrderByDescending(op => op.Current).ThenByDescending(op => op.Power).First();
                         }
                         msgbox = true;
                     }
@@ -1743,7 +1740,7 @@
             }
         }
 
-        void Winner(double current, double Power, string currentText, int chips, string lastly)
+        void Winner(double current, double Power, string playerName, int chips, string lastly)
         {
             if (lastly == " ")
             {
@@ -1760,50 +1757,50 @@
                 if (Power == sorted.Power)
                 {
                     winners++;
-                    CheckWinners.Add(currentText);
+                    CheckWinners.Add(playerName);
                     if (current == -1)
                     {
-                        MessageBox.Show(currentText + " High Card ");
+                        MessageBox.Show(playerName + " High Card ");
                     }
                     if (current == 1 || current == 0)
                     {
-                        MessageBox.Show(currentText + " Pair ");
+                        MessageBox.Show(playerName + " Pair ");
                     }
                     if (current == 2)
                     {
-                        MessageBox.Show(currentText + " Two Pair ");
+                        MessageBox.Show(playerName + " Two Pair ");
                     }
                     if (current == 3)
                     {
-                        MessageBox.Show(currentText + " Three of a Kind ");
+                        MessageBox.Show(playerName + " Three of a Kind ");
                     }
                     if (current == 4)
                     {
-                        MessageBox.Show(currentText + " Straight ");
+                        MessageBox.Show(playerName + " Straight ");
                     }
                     if (current == 5 || current == 5.5)
                     {
-                        MessageBox.Show(currentText + " Flush ");
+                        MessageBox.Show(playerName + " Flush ");
                     }
                     if (current == 6)
                     {
-                        MessageBox.Show(currentText + " Full House ");
+                        MessageBox.Show(playerName + " Full House ");
                     }
                     if (current == 7)
                     {
-                        MessageBox.Show(currentText + " Four of a Kind ");
+                        MessageBox.Show(playerName + " Four of a Kind ");
                     }
                     if (current == 8)
                     {
-                        MessageBox.Show(currentText + " Straight Flush ");
+                        MessageBox.Show(playerName + " Straight Flush ");
                     }
                     if (current == 9)
                     {
-                        MessageBox.Show(currentText + " Royal Flush ! ");
+                        MessageBox.Show(playerName + " Royal Flush ! ");
                     }
                 }
             }
-            if (currentText == lastly)//lastfixed
+            if (playerName == lastly)//lastfixed
             {
                 if (winners > 1)
                 {
@@ -2896,6 +2893,7 @@
             {
                 this.playerChips -= this.pokerCall;
                 textBoxPlayerChips.Text = "Chips : " + this.playerChips.ToString();
+
                 if (textBoxPot.Text != "")
                 {
                     textBoxPot.Text = (int.Parse(textBoxPot.Text) + this.pokerCall).ToString();
@@ -2904,6 +2902,7 @@
                 {
                     textBoxPot.Text = this.pokerCall.ToString();
                 }
+
                 Pturn = false;
                 labelPlayerStatus.Text = "Call " + this.pokerCall;
                 pCall = this.pokerCall;
