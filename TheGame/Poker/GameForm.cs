@@ -758,8 +758,8 @@
 
                 for (i = 0; i < DealtCards - 1; i++)
                 {
-                    if (this.dealtCards[i] == int.Parse(Holder[firstCard].Tag.ToString()) && this.dealtCards[i + 1] == int.Parse(Holder[secondCard].Tag.ToString()))
-                    {
+                    //if (this.dealtCards[i] == int.Parse(Holder[firstCard].Tag.ToString()) && this.dealtCards[i + 1] == int.Parse(Holder[secondCard].Tag.ToString()))
+                    //{
                         //Pair from Hand current = 1
 
                         rPairFromHand(ref current, ref Power, i);
@@ -799,7 +799,7 @@
                         #region High Card current = -1
                         rHighCard(ref current, ref Power);
                         #endregion
-                    }
+                    //}
                 }
             }
         }
