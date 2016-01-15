@@ -66,9 +66,31 @@
         private bool bot4GameEnded = false;
         private bool bot5GameEnded = false;
 
-        bool pFolded, b1Folded, b2Folded, b3Folded, b4Folded, b5Folded, intsadded, changed;
-        int pCall = 0, b1Call = 0, b2Call = 0, b3Call = 0, b4Call = 0, b5Call = 0, pRaise = 0, b1Raise = 0, b2Raise = 0, b3Raise = 0, b4Raise = 0, b5Raise = 0;
-        private int height, width;
+        private bool playerFolded;
+        private bool bot1Folded;
+        private bool bot2Folded;
+        private bool bot3Folded;
+        private bool bot4Folded;
+        private bool bot5Folded;
+
+        private bool intsadded;
+        private bool changed;
+
+        private int playerCall = 0;
+        private int bot1Call = 0;
+        private int bot2Call = 0;
+        private int bot3Call = 0;
+        private int bot4Call = 0;
+        private int bot5Call = 0;
+        private int playerRaise = 0;
+        private int bot1Raise = 0;
+        private int bot2Raise = 0;
+        private int bot3Raise = 0;
+        private int bot4Raise = 0;
+        private int bot5Raise = 0;
+
+        private int height;
+        private int width;
 
         private int winnersCount = 0;
         //used in CheckRaise method :   if (rounds == Flop); in Finish method is seted again on 1;
@@ -548,7 +570,7 @@
             {
                 if (Pturn)
                 {
-                    FixCall(labelPlayerStatus, ref pCall, ref pRaise, 1);
+                    FixCall(labelPlayerStatus, ref this.playerCall, ref playerRaise, 1);
                     //MessageBox.Show("Player's Turn");
                     progressBarTimer.Visible = true;
                     progressBarTimer.Value = 1000;
@@ -561,21 +583,21 @@
                     buttonRaise.Enabled = true;
                     buttonFold.Enabled = true;
                     turnCount++;
-                    FixCall(labelPlayerStatus, ref pCall, ref pRaise, 2);
+                    FixCall(labelPlayerStatus, ref this.playerCall, ref playerRaise, 2);
                 }
             }
             
             if (this.playerGameEnded || !Pturn)
             {
                 await AllIn();
-                if (this.playerGameEnded && !pFolded)
+                if (this.playerGameEnded && !this.playerFolded)
                 {
                     if (buttonCall.Text.Contains("All in") == false || buttonRaise.Text.Contains("All in") == false)
                     {
                         bools.RemoveAt(0);
                         bools.Insert(0, null);
                         maxPlayersLeftCount--;
-                        pFolded = true;
+                        this.playerFolded = true;
                     }
                 }
                 await CheckRaise(0, 0);
@@ -591,8 +613,8 @@
                 {
                     if (this.bot1Turn)
                     {
-                        FixCall(labelBot1Status, ref b1Call, ref b1Raise, 1);
-                        FixCall(labelBot1Status, ref b1Call, ref b1Raise, 2);
+                        FixCall(labelBot1Status, ref this.bot1Call, ref bot1Raise, 1);
+                        FixCall(labelBot1Status, ref this.bot1Call, ref bot1Raise, 2);
                         Rules(2, 3, "Bot 1", ref this.bot1Type, ref this.bot1Power, this.bot1GameEnded);
                         MessageBox.Show("Bot 1's Turn");
                         AI(2, 3, ref bot1Chips, ref this.bot1Turn, ref this.bot1GameEnded, labelBot1Status, 0, this.bot1Power, this.bot1Type);
@@ -602,12 +624,12 @@
                         this.bot2Turn = true;
                     }
                 }
-                if (this.bot1GameEnded && !b1Folded)
+                if (this.bot1GameEnded && !this.bot1Folded)
                 {
                     bools.RemoveAt(1);
                     bools.Insert(1, null);
                     maxPlayersLeftCount--;
-                    b1Folded = true;
+                    this.bot1Folded = true;
                 }
                 if (this.bot1GameEnded || !this.bot1Turn)
                 {
@@ -618,8 +640,8 @@
                 {
                     if (this.bot2Turn)
                     {
-                        FixCall(labelBot2Status, ref b2Call, ref b2Raise, 1);
-                        FixCall(labelBot2Status, ref b2Call, ref b2Raise, 2);
+                        FixCall(labelBot2Status, ref this.bot2Call, ref bot2Raise, 1);
+                        FixCall(labelBot2Status, ref this.bot2Call, ref bot2Raise, 2);
                         Rules(4, 5, "Bot 2", ref this.bot2Type, ref this.bot2Power, this.bot2GameEnded);
                         MessageBox.Show("Bot 2's Turn");
                         AI(4, 5, ref bot2Chips, ref this.bot2Turn, ref this.bot2GameEnded, labelBot2Status, 1, this.bot2Power, this.bot2Type);
@@ -629,12 +651,12 @@
                         this.bot3Turn = true;
                     }
                 }
-                if (this.bot2GameEnded && !b2Folded)
+                if (this.bot2GameEnded && !this.bot2Folded)
                 {
                     bools.RemoveAt(2);
                     bools.Insert(2, null);
                     maxPlayersLeftCount--;
-                    b2Folded = true;
+                    this.bot2Folded = true;
                 }
                 if (this.bot2GameEnded || !this.bot2Turn)
                 {
@@ -645,8 +667,8 @@
                 {
                     if (this.bot3Turn)
                     {
-                        FixCall(labelBot3Status, ref b3Call, ref b3Raise, 1);
-                        FixCall(labelBot3Status, ref b3Call, ref b3Raise, 2);
+                        FixCall(labelBot3Status, ref bot3Call, ref bot3Raise, 1);
+                        FixCall(labelBot3Status, ref bot3Call, ref bot3Raise, 2);
                         Rules(6, 7, "Bot 3", ref this.bot3Type, ref this.bot3Power, this.bot3GameEnded);
                         MessageBox.Show("Bot 3's Turn");
                         AI(6, 7, ref bot3Chips, ref this.bot3Turn, ref this.bot3GameEnded, labelBot3Status, 2, this.bot3Power, this.bot3Type);
@@ -656,12 +678,12 @@
                         this.bot4Turn = true;
                     }
                 }
-                if (this.bot3GameEnded && !b3Folded)
+                if (this.bot3GameEnded && !this.bot3Folded)
                 {
                     bools.RemoveAt(3);
                     bools.Insert(3, null);
                     maxPlayersLeftCount--;
-                    b3Folded = true;
+                    this.bot3Folded = true;
                 }
                 if (this.bot3GameEnded || !this.bot3Turn)
                 {
@@ -672,8 +694,8 @@
                 {
                     if (this.bot4Turn)
                     {
-                        FixCall(labelBot4Status, ref b4Call, ref b4Raise, 1);
-                        FixCall(labelBot4Status, ref b4Call, ref b4Raise, 2);
+                        FixCall(labelBot4Status, ref bot4Call, ref bot4Raise, 1);
+                        FixCall(labelBot4Status, ref bot4Call, ref bot4Raise, 2);
                         Rules(8, 9, "Bot 4", ref this.bot4Type, ref this.bot4Power, this.bot4GameEnded);
                         MessageBox.Show("Bot 4's Turn");
                         AI(8, 9, ref bot4Chips, ref this.bot4Turn, ref this.bot4GameEnded, labelBot4Status, 3, this.bot4Power, this.bot4Type);
@@ -683,12 +705,12 @@
                         this.bot5Turn = true;
                     }
                 }
-                if (this.bot4GameEnded && !b4Folded)
+                if (this.bot4GameEnded && !this.bot4Folded)
                 {
                     bools.RemoveAt(4);
                     bools.Insert(4, null);
                     maxPlayersLeftCount--;
-                    b4Folded = true;
+                    this.bot4Folded = true;
                 }
                 if (bot4GameEnded || !this.bot4Turn)
                 {
@@ -699,8 +721,8 @@
                 {
                     if (this.bot5Turn)
                     {
-                        FixCall(labelBot5Status, ref b5Call, ref b5Raise, 1);
-                        FixCall(labelBot5Status, ref b5Call, ref b5Raise, 2);
+                        FixCall(labelBot5Status, ref bot5Call, ref bot5Raise, 1);
+                        FixCall(labelBot5Status, ref bot5Call, ref bot5Raise, 2);
                         Rules(10, 11, "Bot 5", ref this.bot5Type, ref this.bot5Power, bot5GameEnded);
                         MessageBox.Show("Bot 5's Turn");
                         AI(10, 11, ref bot5Chips, ref this.bot5Turn, ref  bot5GameEnded, labelBot5Status, 4, this.bot5Power, this.bot5Type);
@@ -709,26 +731,26 @@
                         this.bot5Turn = false;
                     }
                 }
-                if (bot5GameEnded && !b5Folded)
+                if (bot5GameEnded && !this.bot5Folded)
                 {
                     bools.RemoveAt(5);
                     bools.Insert(5, null);
                     maxPlayersLeftCount--;
-                    b5Folded = true;
+                    this.bot5Folded = true;
                 }
                 if (bot5GameEnded || !this.bot5Turn)
                 {
                     await CheckRaise(5, 5);
                     Pturn = true;
                 }
-                if (this.playerGameEnded && !pFolded)
+                if (this.playerGameEnded && !this.playerFolded)
                 {
                     if (buttonCall.Text.Contains("All in") == false || buttonRaise.Text.Contains("All in") == false)
                     {
                         bools.RemoveAt(0);
                         bools.Insert(0, null);
                         maxPlayersLeftCount--;
-                        pFolded = true;
+                        this.playerFolded = true;
                     }
                 }
             #endregion
@@ -1954,12 +1976,12 @@
                     if (Holder[j].Image != Deck[j])
                     {
                         Holder[j].Image = Deck[j];
-                        pCall = 0; pRaise = 0;
-                        b1Call = 0; b1Raise = 0;
-                        b2Call = 0; b2Raise = 0;
-                        b3Call = 0; b3Raise = 0;
-                        b4Call = 0; b4Raise = 0;
-                        b5Call = 0; b5Raise = 0;
+                        this.playerCall = 0; playerRaise = 0;
+                        this.bot1Call = 0; bot1Raise = 0;
+                        this.bot2Call = 0; bot2Raise = 0;
+                        bot3Call = 0; bot3Raise = 0;
+                        bot4Call = 0; bot4Raise = 0;
+                        bot5Call = 0; bot5Raise = 0;
                     }
                 }
             }
@@ -1970,12 +1992,12 @@
                     if (Holder[j].Image != Deck[j])
                     {
                         Holder[j].Image = Deck[j];
-                        pCall = 0; pRaise = 0;
-                        b1Call = 0; b1Raise = 0;
-                        b2Call = 0; b2Raise = 0;
-                        b3Call = 0; b3Raise = 0;
-                        b4Call = 0; b4Raise = 0;
-                        b5Call = 0; b5Raise = 0;
+                        this.playerCall = 0; playerRaise = 0;
+                        this.bot1Call = 0; bot1Raise = 0;
+                        this.bot2Call = 0; bot2Raise = 0;
+                        bot3Call = 0; bot3Raise = 0;
+                        bot4Call = 0; bot4Raise = 0;
+                        bot5Call = 0; bot5Raise = 0;
                     }
                 }
             }
@@ -1986,12 +2008,12 @@
                     if (Holder[j].Image != Deck[j])
                     {
                         Holder[j].Image = Deck[j];
-                        pCall = 0; pRaise = 0;
-                        b1Call = 0; b1Raise = 0;
-                        b2Call = 0; b2Raise = 0;
-                        b3Call = 0; b3Raise = 0;
-                        b4Call = 0; b4Raise = 0;
-                        b5Call = 0; b5Raise = 0;
+                        this.playerCall = 0; playerRaise = 0;
+                        this.bot1Call = 0; bot1Raise = 0;
+                        this.bot2Call = 0; bot2Raise = 0;
+                        bot3Call = 0; bot3Raise = 0;
+                        bot4Call = 0; bot4Raise = 0;
+                        bot5Call = 0; bot5Raise = 0;
                     }
                 }
             }
@@ -2063,12 +2085,12 @@
                     }
                 }
                 this.playerCardsPanel.Visible = false; this.bot1CardsPanel.Visible = false; this.bot2CardsPanel.Visible = false; this.bot3CardsPanel.Visible = false; this.bot4CardsPanel.Visible = false; this.bot5CardsPanel.Visible = false;
-                pCall = 0; pRaise = 0;
-                b1Call = 0; b1Raise = 0;
-                b2Call = 0; b2Raise = 0;
-                b3Call = 0; b3Raise = 0;
-                b4Call = 0; b4Raise = 0;
-                b5Call = 0; b5Raise = 0;
+                this.playerCall = 0; playerRaise = 0;
+                this.bot1Call = 0; bot1Raise = 0;
+                this.bot2Call = 0; bot2Raise = 0;
+                bot3Call = 0; bot3Raise = 0;
+                bot4Call = 0; bot4Raise = 0;
+                bot5Call = 0; bot5Raise = 0;
                 lastBotPlayed = 0;
                 this.pokerCall = bb;
                 this.raise = 0;
@@ -2287,9 +2309,9 @@
             this.bot1Type = -1; this.bot2Type = -1; this.bot3Type = -1; this.bot4Type = -1; this.bot5Type = -1;
             this.bot1Turn = false; this.bot2Turn = false; this.bot3Turn = false; this.bot4Turn = false; this.bot5Turn = false;
             this.bot1GameEnded = false; this.bot2GameEnded = false; this.bot3GameEnded = false; this.bot4GameEnded = false; this.bot5GameEnded = false;
-            pFolded = false; b1Folded = false; b2Folded = false; b3Folded = false; b4Folded = false; b5Folded = false;
+            this.playerFolded = false; this.bot1Folded = false; this.bot2Folded = false; this.bot3Folded = false; this.bot4Folded = false; this.bot5Folded = false;
             this.playerGameEnded = false; Pturn = true; restart = false; raising = false;
-            pCall = 0; b1Call = 0; b2Call = 0; b3Call = 0; b4Call = 0; b5Call = 0; pRaise = 0; b1Raise = 0; b2Raise = 0; b3Raise = 0; b4Raise = 0; b5Raise = 0;
+            this.playerCall = 0; this.bot1Call = 0; this.bot2Call = 0; bot3Call = 0; bot4Call = 0; bot5Call = 0; playerRaise = 0; bot1Raise = 0; bot2Raise = 0; bot3Raise = 0; bot4Raise = 0; bot5Raise = 0;
             height = 0; width = 0; winnersCount = 0; Flop = 1; Turn = 2; River = 3; End = 4; maxPlayersLeftCount = 6;
             lastBotPlayed = 123; raisedTurn = 1;
             bools.Clear();
@@ -2931,7 +2953,7 @@
 
                 Pturn = false;
                 labelPlayerStatus.Text = "Call " + this.pokerCall;
-                pCall = this.pokerCall;
+                this.playerCall = this.pokerCall;
             }
             else if (this.playerChips <= this.pokerCall && this.pokerCall > 0)
             {
@@ -2941,7 +2963,7 @@
                 textBoxPlayerChips.Text = "Chips : " + this.playerChips.ToString();
                 Pturn = false;
                 buttonFold.Enabled = false;
-                pCall = this.playerChips;
+                this.playerCall = this.playerChips;
             }
             await Turns();
         }
@@ -2971,7 +2993,7 @@
                             this.playerChips -= int.Parse(textBoxRaise.Text);
                             raising = true;
                             lastBotPlayed = 0;
-                            pRaise = Convert.ToInt32(this.raise);
+                            playerRaise = Convert.ToInt32(this.raise);
                         }
                         else
                         {
@@ -2982,7 +3004,7 @@
                             this.playerChips = 0;
                             raising = true;
                             lastBotPlayed = 0;
-                            pRaise = Convert.ToInt32(this.raise);
+                            playerRaise = Convert.ToInt32(this.raise);
                         }
                     }
                 }
