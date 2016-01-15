@@ -97,18 +97,18 @@
         private int Flop = 1;
         //used in CheckRaise method :  if (rounds == Turn); in Finish method is seted again on 2;
         private int Turn = 2;
-        private int River = 3; 
+        private int River = 3;
         // used in CheckRaise method :  (rounds == River); in Finish method is seted again on 3;
-        private int End = 4; 
+        private int End = 4;
         // used in CheckRaise method :   if (rounds == End && maxPlayersLeftCount == 6);
         //used in AllIn method->  #region FiveOrLessLeft: if (abc < 6 && abc > 1 && rounds >= End) 
         //in Finish method is seted again on 4;
         private int maxPlayersLeftCount = 6;
         //used in Turns method -> region Rotating : in every positive check is game ending  maxPlayersLeftCount--;
-                        // used in CheckRaise method :   if (rounds == End && maxPlayersLeftCount == 6); and  if (turnCount >= maxPlayersLeftCount - 1 || !changed && turnCount == maxPlayersLeftCount);
-                         //used in AllIn method : if (ints.ToArray().Length == maxPlayersLeftCount)
-                         //in Finish method is seted again on 6;
-        private int lastBotPlayed = 123; 
+        // used in CheckRaise method :   if (rounds == End && maxPlayersLeftCount == 6); and  if (turnCount >= maxPlayersLeftCount - 1 || !changed && turnCount == maxPlayersLeftCount);
+        //used in AllIn method : if (ints.ToArray().Length == maxPlayersLeftCount)
+        //in Finish method is seted again on 6;
+        private int lastBotPlayed = 123;
         int raisedTurn = 1;
         List<bool?> bools = new List<bool?>();
 
@@ -119,7 +119,7 @@
         bool playerGameEnded = false, Pturn = true, restart = false, raising = false;
         Poker.Type winningCard;
 
-    
+
 
         string[] ImageURIArray = Directory.GetFiles("Assets\\Cards", "*.png", SearchOption.TopDirectoryOnly);
         /*string[] ImgLocation ={
@@ -524,7 +524,7 @@
                 }
                 if (bot5Chips <= 0)
                 {
-                   this.bot5GameEnded = true;
+                    this.bot5GameEnded = true;
                     Holder[10].Visible = false;
                     Holder[11].Visible = false;
                 }
@@ -569,9 +569,9 @@
 
             //if (i == 17)
             //{
-                buttonRaise.Enabled = true;
-                buttonCall.Enabled = true;
-                buttonFold.Enabled = true;
+            buttonRaise.Enabled = true;
+            buttonCall.Enabled = true;
+            buttonFold.Enabled = true;
             //}
         }
         async Task Turns()
@@ -597,7 +597,7 @@
                     FixCall(labelPlayerStatus, ref this.playerCall, ref playerRaise, 2);
                 }
             }
-            
+
             if (this.playerGameEnded || !Pturn)
             {
                 await AllIn();
@@ -776,89 +776,89 @@
 
         void Rules(int firstCard, int secondCard, string playerName, ref double pokerHandMultiplier, ref double power, bool foldedTurn)
         {
-            if (firstCard == 0 && secondCard == 1)
+            //if (firstCard == 0 && secondCard == 1)
+            //{
+            //}
+
+            //if (!foldedTurn || firstCard == 0 && secondCard == 1 && labelPlayerStatus.Text.Contains("Fold") == false)
+            //{
+            #region Variables
+            bool done = false;
+            bool vf = false;
+            int[] cardsOnTable = new int[5];
+            int[] cardsOnTableWithPlayerCards = new int[7];
+            cardsOnTableWithPlayerCards[0] = this.dealtCards[firstCard];
+            cardsOnTableWithPlayerCards[1] = this.dealtCards[secondCard];
+
+            cardsOnTable[0] = cardsOnTableWithPlayerCards[2] = this.dealtCards[12];
+            cardsOnTable[1] = cardsOnTableWithPlayerCards[3] = this.dealtCards[13];
+            cardsOnTable[2] = cardsOnTableWithPlayerCards[4] = this.dealtCards[14];
+            cardsOnTable[3] = cardsOnTableWithPlayerCards[5] = this.dealtCards[15];
+            cardsOnTable[4] = cardsOnTableWithPlayerCards[6] = this.dealtCards[16];
+
+            var clubs = cardsOnTableWithPlayerCards.Where(o => o % 4 == 0).ToArray();
+            var diamonds = cardsOnTableWithPlayerCards.Where(o => o % 4 == 1).ToArray();
+            var hearts = cardsOnTableWithPlayerCards.Where(o => o % 4 == 2).ToArray();
+            var spades = cardsOnTableWithPlayerCards.Where(o => o % 4 == 3).ToArray();
+
+            var cardsOfClubs = clubs.Select(o => o / 4).Distinct().ToArray();
+            var cardsOfDiamonds = diamonds.Select(o => o / 4).Distinct().ToArray();
+            var cardsOfHearts = hearts.Select(o => o / 4).Distinct().ToArray();
+            var cardsOfSpades = spades.Select(o => o / 4).Distinct().ToArray();
+
+            Array.Sort(cardsOnTableWithPlayerCards);
+            Array.Sort(cardsOfClubs);
+            Array.Sort(cardsOfDiamonds);
+            Array.Sort(cardsOfHearts);
+            Array.Sort(cardsOfSpades);
+            #endregion
+
+            for (int i = 0; i < DealtCards - 1; i++)
             {
-            }
+                //if (this.dealtCards[i] == int.Parse(Holder[firstCard].Tag.ToString()) && this.dealtCards[i + 1] == int.Parse(Holder[secondCard].Tag.ToString()))
+                //{
+                //Pair from Hand PokerHandMultiplier = 1
 
-            if (!foldedTurn || firstCard == 0 && secondCard == 1 && labelPlayerStatus.Text.Contains("Fold") == false)
-            {
-                #region Variables
-                bool done = false;
-                bool vf = false;
-                int[] cardsOnTable = new int[5];
-                int[] cardsOnTableWithPlayerCards = new int[7];
-                cardsOnTableWithPlayerCards[0] = this.dealtCards[firstCard];
-                cardsOnTableWithPlayerCards[1] = this.dealtCards[secondCard];
+                rPairFromHand(ref pokerHandMultiplier, ref power, i);
 
-                cardsOnTable[0] = cardsOnTableWithPlayerCards[2] = this.dealtCards[12];
-                cardsOnTable[1] = cardsOnTableWithPlayerCards[3] = this.dealtCards[13];
-                cardsOnTable[2] = cardsOnTableWithPlayerCards[4] = this.dealtCards[14];
-                cardsOnTable[3] = cardsOnTableWithPlayerCards[5] = this.dealtCards[15];
-                cardsOnTable[4] = cardsOnTableWithPlayerCards[6] = this.dealtCards[16];
-
-                var clubs = cardsOnTableWithPlayerCards.Where(o => o % 4 == 0).ToArray();
-                var diamonds = cardsOnTableWithPlayerCards.Where(o => o % 4 == 1).ToArray();
-                var hearts = cardsOnTableWithPlayerCards.Where(o => o % 4 == 2).ToArray();
-                var spades = cardsOnTableWithPlayerCards.Where(o => o % 4 == 3).ToArray();
-
-                var cardsOfClubs = clubs.Select(o => o / 4).Distinct().ToArray();
-                var cardsOfDiamonds = diamonds.Select(o => o / 4).Distinct().ToArray();
-                var cardsOfHearts = hearts.Select(o => o / 4).Distinct().ToArray();
-                var cardsOfSpades = spades.Select(o => o / 4).Distinct().ToArray();
-
-                Array.Sort(cardsOnTableWithPlayerCards);
-                Array.Sort(cardsOfClubs);
-                Array.Sort(cardsOfDiamonds);
-                Array.Sort(cardsOfHearts);
-                Array.Sort(cardsOfSpades);
+                #region Pair or Two Pair from Table PokerHandMultiplier = 2 || 0
+                rPairTwoPair(ref pokerHandMultiplier, ref power, i);
                 #endregion
 
-                for (int i = 0; i < DealtCards - 1; i++)
-                {
-                    //if (this.dealtCards[i] == int.Parse(Holder[firstCard].Tag.ToString()) && this.dealtCards[i + 1] == int.Parse(Holder[secondCard].Tag.ToString()))
-                    //{
-                        //Pair from Hand PokerHandMultiplier = 1
+                #region Two Pair PokerHandMultiplier = 2
+                rTwoPair(ref pokerHandMultiplier, ref power, i);
+                #endregion
 
-                        rPairFromHand(ref pokerHandMultiplier, ref power, i);
+                #region Three of a kind PokerHandMultiplier = 3
+                rThreeOfAKind(ref pokerHandMultiplier, ref power, cardsOnTableWithPlayerCards);
+                #endregion
 
-                        #region Pair or Two Pair from Table PokerHandMultiplier = 2 || 0
-                        rPairTwoPair(ref pokerHandMultiplier, ref power, i);
-                        #endregion
+                #region Straight PokerHandMultiplier = 4
+                rStraight(ref pokerHandMultiplier, ref power, cardsOnTableWithPlayerCards);
+                #endregion
 
-                        #region Two Pair PokerHandMultiplier = 2
-                        rTwoPair(ref pokerHandMultiplier, ref power, i);
-                        #endregion
+                #region Flush PokerHandMultiplier = 5 || 5.5
+                rFlush(ref pokerHandMultiplier, ref power, cardsOnTable, i);
+                #endregion
 
-                        #region Three of a kind PokerHandMultiplier = 3
-                        rThreeOfAKind(ref pokerHandMultiplier, ref power, cardsOnTableWithPlayerCards);
-                        #endregion
+                #region Full House PokerHandMultiplier = 6
+                rFullHouse(ref pokerHandMultiplier, ref power, ref done, cardsOnTableWithPlayerCards);
+                #endregion
 
-                        #region Straight PokerHandMultiplier = 4
-                        rStraight(ref pokerHandMultiplier, ref power, cardsOnTableWithPlayerCards);
-                        #endregion
+                #region Four of a Kind PokerHandMultiplier = 7
+                rFourOfAKind(ref pokerHandMultiplier, ref power, cardsOnTableWithPlayerCards);
+                #endregion
 
-                        #region Flush PokerHandMultiplier = 5 || 5.5
-                        rFlush(ref pokerHandMultiplier, ref power, ref vf, cardsOnTable, i);
-                        #endregion
+                #region Straight Flush PokerHandMultiplier = 8 || 9
+                rStraightFlush(ref pokerHandMultiplier, ref power, cardsOfClubs, cardsOfDiamonds, cardsOfHearts, cardsOfSpades);
+                #endregion
 
-                        #region Full House PokerHandMultiplier = 6
-                        rFullHouse(ref pokerHandMultiplier, ref power, ref done, cardsOnTableWithPlayerCards);
-                        #endregion
-
-                        #region Four of a Kind PokerHandMultiplier = 7
-                        rFourOfAKind(ref pokerHandMultiplier, ref power, cardsOnTableWithPlayerCards);
-                        #endregion
-
-                        #region Straight Flush PokerHandMultiplier = 8 || 9
-                        rStraightFlush(ref pokerHandMultiplier, ref power, cardsOfClubs, cardsOfDiamonds, cardsOfHearts, cardsOfSpades);
-                        #endregion
-
-                        #region High Card PokerHandMultiplier = -1
-                        rHighCard(ref pokerHandMultiplier, ref power, i);
-                        #endregion
-                    //}
-                }
+                #region High Card PokerHandMultiplier = -1
+                rHighCard(ref pokerHandMultiplier, ref power, i);
+                #endregion
+                //}
             }
+            //}
         }
         private void rStraightFlush(ref double PokerHandMultiplier, ref double Power, int[] cardsOfClubs, int[] cardsOfDiamonds, int[] cardsOfHearts, int[] cardsOfSpades)
         {
@@ -1010,482 +1010,126 @@
                 }
             }
         }
-        private void rFlush(ref double PokerHandMultiplier, ref double Power, ref bool vf, int[] cardsOnTable, int index)
+        #region Flush
+        private void rFlush(ref double PokerHandMultiplier, ref double Power, int[] cardsOnTable, int index)
         {
-            if (PokerHandMultiplier >= -1)
+            //if (PokerHandMultiplier >= -1)
+            //{
+            var cardsOfClubs = cardsOnTable.Where(o => o % 4 == 0).ToArray();
+            var cardsOfDiamonds = cardsOnTable.Where(o => o % 4 == 1).ToArray();
+            var cardsOfHearts = cardsOnTable.Where(o => o % 4 == 2).ToArray();
+            var cardsOfSpades = cardsOnTable.Where(o => o % 4 == 3).ToArray();
+
+            if (cardsOfClubs.Length > 2)
             {
-                var cardsOFClubs = cardsOnTable.Where(o => o % 4 == 0).ToArray();
-                var cardsOFDiamonds = cardsOnTable.Where(o => o % 4 == 1).ToArray();
-                var cardsOFHearts = cardsOnTable.Where(o => o % 4 == 2).ToArray();
-                var cardsOfSpades = cardsOnTable.Where(o => o % 4 == 3).ToArray();
+                this.CheckForFlush(PokerHandMultiplier, Power, index, cardsOfClubs);
+            }
 
-                if (cardsOFClubs.Length == 3 || cardsOFClubs.Length == 4)
+            if (cardsOfDiamonds.Length > 2)
+            {
+                this.CheckForFlush(PokerHandMultiplier, Power, index, cardsOfDiamonds);
+            }
+
+            if (cardsOfHearts.Length > 2)
+            {
+                this.CheckForFlush(PokerHandMultiplier, Power, index, cardsOfHearts);
+            }
+            if (cardsOfSpades.Length > 2)
+            {
+                this.CheckForFlush(PokerHandMultiplier, Power, index, cardsOfSpades);
+            }
+            //}
+        }
+        private void CheckForFlush(double PokerHandMultiplier, double Power, int index, int[] cardsOfSuit)
+        {
+            PokerHandMultiplier = 5;
+
+            if (this.dealtCards[index] % 4 == 0 && this.dealtCards[index] % 4 == this.dealtCards[index + 1] % 4)
+            {
+                if (this.dealtCards[index] / 4 > cardsOfSuit.Max() / 4)
                 {
-                    if (this.dealtCards[index] % 4 == this.dealtCards[index + 1] % 4 &&
-                        this.dealtCards[index] % 4 == cardsOFClubs[0] % 4)
-                    {
-                        if (this.dealtCards[index] / 4 > cardsOFClubs.Max() / 4)
-                        {
-                            PokerHandMultiplier = 5;
-                            Power = this.dealtCards[index] + PokerHandMultiplier * 100;
-                            this.winningCards.Add(new Type() { Power = Power, Current = 5 });
-                            this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                            vf = true;
-                        }
-                        if (this.dealtCards[index + 1] / 4 > cardsOFClubs.Max() / 4)
-                        {
-                            PokerHandMultiplier = 5;
-                            Power = this.dealtCards[index + 1] + PokerHandMultiplier * 100;
-                            this.winningCards.Add(new Type() { Power = Power, Current = 5 });
-                            this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                            vf = true;
-                        }
-                        else if (this.dealtCards[index] / 4 < cardsOFClubs.Max() / 4 && this.dealtCards[index + 1] / 4 < cardsOFClubs.Max() / 4)
-                        {
-                            PokerHandMultiplier = 5;
-                            Power = cardsOFClubs.Max() + PokerHandMultiplier * 100;
-                            this.winningCards.Add(new Type() { Power = Power, Current = 5 });
-                            this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                            vf = true;
-                        }
-                    }
+                    this.SetWinningCard(PokerHandMultiplier, index);
                 }
-                if (cardsOFClubs.Length == 4)//different cards in hand
+                else if (this.dealtCards[index + 1] / 4 > cardsOfSuit.Max() / 4)
                 {
-                    if (this.dealtCards[index] % 4 != this.dealtCards[index + 1] % 4 && this.dealtCards[index] % 4 == cardsOFClubs[0] % 4)
-                    {
-                        if (this.dealtCards[index] / 4 > cardsOFClubs.Max() / 4)
-                        {
-                            PokerHandMultiplier = 5;
-                            Power = this.dealtCards[index] + PokerHandMultiplier * 100;
-                            this.winningCards.Add(new Type() { Power = Power, Current = 5 });
-                            this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                            vf = true;
-                        }
-                        else
-                        {
-                            PokerHandMultiplier = 5;
-                            Power = cardsOFClubs.Max() + PokerHandMultiplier * 100;
-                            this.winningCards.Add(new Type() { Power = Power, Current = 5 });
-                            this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                            vf = true;
-                        }
-                    }
-                    if (this.dealtCards[index + 1] % 4 != this.dealtCards[index] % 4 && this.dealtCards[index + 1] % 4 == cardsOFClubs[0] % 4)
-                    {
-                        if (this.dealtCards[index + 1] / 4 > cardsOFClubs.Max() / 4)
-                        {
-                            PokerHandMultiplier = 5;
-                            Power = this.dealtCards[index + 1] + PokerHandMultiplier * 100;
-                            this.winningCards.Add(new Type() { Power = Power, Current = 5 });
-                            this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                            vf = true;
-                        }
-                        else
-                        {
-                            PokerHandMultiplier = 5;
-                            Power = cardsOFClubs.Max() + PokerHandMultiplier * 100;
-                            this.winningCards.Add(new Type() { Power = Power, Current = 5 });
-                            this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                            vf = true;
-                        }
-                    }
+                    this.SetWinningCard(PokerHandMultiplier, index + 1);
                 }
-                if (cardsOFClubs.Length == 5)
+                else
                 {
-                    if (this.dealtCards[index] % 4 == cardsOFClubs[0] % 4 && this.dealtCards[index] / 4 > cardsOFClubs.Min() / 4)
+                    this.SetWinningCardFromSuitMax(PokerHandMultiplier, cardsOfSuit);
+                }
+            }
+
+            if (cardsOfSuit.Length == 4) //different cards in hand
+            {
+                if (this.dealtCards[index] % 4 == 0 &&
+                    this.dealtCards[index] % 4 != this.dealtCards[index + 1] % 4)
+                {
+                    if (this.dealtCards[index] / 4 > cardsOfSuit.Max() / 4)
                     {
-                        PokerHandMultiplier = 5;
-                        Power = this.dealtCards[index] + PokerHandMultiplier * 100;
-                        this.winningCards.Add(new Type() { Power = Power, Current = 5 });
-                        this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                        vf = true;
+                        this.SetWinningCard(PokerHandMultiplier, index);
                     }
-                    if (this.dealtCards[index + 1] % 4 == cardsOFClubs[0] % 4 && this.dealtCards[index + 1] / 4 > cardsOFClubs.Min() / 4)
+                    else
                     {
-                        PokerHandMultiplier = 5;
-                        Power = this.dealtCards[index + 1] + PokerHandMultiplier * 100;
-                        this.winningCards.Add(new Type() { Power = Power, Current = 5 });
-                        this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                        vf = true;
-                    }
-                    else if (this.dealtCards[index] / 4 < cardsOFClubs.Min() / 4 && this.dealtCards[index + 1] / 4 < cardsOFClubs.Min())
-                    {
-                        PokerHandMultiplier = 5;
-                        Power = cardsOFClubs.Max() + PokerHandMultiplier * 100;
-                        this.winningCards.Add(new Type() { Power = Power, Current = 5 });
-                        this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                        vf = true;
+                        this.SetWinningCardFromSuitMax(PokerHandMultiplier, cardsOfSuit);
                     }
                 }
 
-                if (cardsOFDiamonds.Length == 3 || cardsOFDiamonds.Length == 4)
+                if (this.dealtCards[index + 1] % 4 == 0 && this.dealtCards[index + 1] % 4 != this.dealtCards[index] % 4)
                 {
-                    if (this.dealtCards[index] % 4 == this.dealtCards[index + 1] % 4 && this.dealtCards[index] % 4 == cardsOFDiamonds[0] % 4)
+                    if (this.dealtCards[index + 1] / 4 > cardsOfSuit.Max() / 4)
                     {
-                        if (this.dealtCards[index] / 4 > cardsOFDiamonds.Max() / 4)
-                        {
-                            PokerHandMultiplier = 5;
-                            Power = this.dealtCards[index] + PokerHandMultiplier * 100;
-                            this.winningCards.Add(new Type() { Power = Power, Current = 5 });
-                            this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                            vf = true;
-                        }
-                        if (this.dealtCards[index + 1] / 4 > cardsOFDiamonds.Max() / 4)
-                        {
-                            PokerHandMultiplier = 5;
-                            Power = this.dealtCards[index + 1] + PokerHandMultiplier * 100;
-                            this.winningCards.Add(new Type() { Power = Power, Current = 5 });
-                            this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                            vf = true;
-                        }
-                        else if (this.dealtCards[index] / 4 < cardsOFDiamonds.Max() / 4 && this.dealtCards[index + 1] / 4 < cardsOFDiamonds.Max() / 4)
-                        {
-                            PokerHandMultiplier = 5;
-                            Power = cardsOFDiamonds.Max() + PokerHandMultiplier * 100;
-                            this.winningCards.Add(new Type() { Power = Power, Current = 5 });
-                            this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                            vf = true;
-                        }
+                        this.SetWinningCard(PokerHandMultiplier, index + 1);
                     }
-                }
-                if (cardsOFDiamonds.Length == 4)//different cards in hand
-                {
-                    if (this.dealtCards[index] % 4 != this.dealtCards[index + 1] % 4 && this.dealtCards[index] % 4 == cardsOFDiamonds[0] % 4)
+                    else
                     {
-                        if (this.dealtCards[index] / 4 > cardsOFDiamonds.Max() / 4)
-                        {
-                            PokerHandMultiplier = 5;
-                            Power = this.dealtCards[index] + PokerHandMultiplier * 100;
-                            this.winningCards.Add(new Type() { Power = Power, Current = 5 });
-                            this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                            vf = true;
-                        }
-                        else
-                        {
-                            PokerHandMultiplier = 5;
-                            Power = cardsOFDiamonds.Max() + PokerHandMultiplier * 100;
-                            this.winningCards.Add(new Type() { Power = Power, Current = 5 });
-                            this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                            vf = true;
-                        }
-                    }
-                    if (this.dealtCards[index + 1] % 4 != this.dealtCards[index] % 4 && this.dealtCards[index + 1] % 4 == cardsOFDiamonds[0] % 4)
-                    {
-                        if (this.dealtCards[index + 1] / 4 > cardsOFDiamonds.Max() / 4)
-                        {
-                            PokerHandMultiplier = 5;
-                            Power = this.dealtCards[index + 1] + PokerHandMultiplier * 100;
-                            this.winningCards.Add(new Type() { Power = Power, Current = 5 });
-                            this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                            vf = true;
-                        }
-                        else
-                        {
-                            PokerHandMultiplier = 5;
-                            Power = cardsOFDiamonds.Max() + PokerHandMultiplier * 100;
-                            this.winningCards.Add(new Type() { Power = Power, Current = 5 });
-                            this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                            vf = true;
-                        }
-                    }
-                }
-                if (cardsOFDiamonds.Length == 5)
-                {
-                    if (this.dealtCards[index] % 4 == cardsOFDiamonds[0] % 4 && this.dealtCards[index] / 4 > cardsOFDiamonds.Min() / 4)
-                    {
-                        PokerHandMultiplier = 5;
-                        Power = this.dealtCards[index] + PokerHandMultiplier * 100;
-                        this.winningCards.Add(new Type() { Power = Power, Current = 5 });
-                        this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                        vf = true;
-                    }
-                    if (this.dealtCards[index + 1] % 4 == cardsOFDiamonds[0] % 4 && this.dealtCards[index + 1] / 4 > cardsOFDiamonds.Min() / 4)
-                    {
-                        PokerHandMultiplier = 5;
-                        Power = this.dealtCards[index + 1] + PokerHandMultiplier * 100;
-                        this.winningCards.Add(new Type() { Power = Power, Current = 5 });
-                        this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                        vf = true;
-                    }
-                    else if (this.dealtCards[index] / 4 < cardsOFDiamonds.Min() / 4 && this.dealtCards[index + 1] / 4 < cardsOFDiamonds.Min())
-                    {
-                        PokerHandMultiplier = 5;
-                        Power = cardsOFDiamonds.Max() + PokerHandMultiplier * 100;
-                        this.winningCards.Add(new Type() { Power = Power, Current = 5 });
-                        this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                        vf = true;
-                    }
-                }
-
-                if (cardsOFHearts.Length == 3 || cardsOFHearts.Length == 4)
-                {
-                    if (this.dealtCards[index] % 4 == this.dealtCards[index + 1] % 4 && this.dealtCards[index] % 4 == cardsOFHearts[0] % 4)
-                    {
-                        if (this.dealtCards[index] / 4 > cardsOFHearts.Max() / 4)
-                        {
-                            PokerHandMultiplier = 5;
-                            Power = this.dealtCards[index] + PokerHandMultiplier * 100;
-                            this.winningCards.Add(new Type() { Power = Power, Current = 5 });
-                            this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                            vf = true;
-                        }
-                        if (this.dealtCards[index + 1] / 4 > cardsOFHearts.Max() / 4)
-                        {
-                            PokerHandMultiplier = 5;
-                            Power = this.dealtCards[index + 1] + PokerHandMultiplier * 100;
-                            this.winningCards.Add(new Type() { Power = Power, Current = 5 });
-                            this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                            vf = true;
-                        }
-                        else if (this.dealtCards[index] / 4 < cardsOFHearts.Max() / 4 && this.dealtCards[index + 1] / 4 < cardsOFHearts.Max() / 4)
-                        {
-                            PokerHandMultiplier = 5;
-                            Power = cardsOFHearts.Max() + PokerHandMultiplier * 100;
-                            this.winningCards.Add(new Type() { Power = Power, Current = 5 });
-                            this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                            vf = true;
-                        }
-                    }
-                }
-                if (cardsOFHearts.Length == 4)//different cards in hand
-                {
-                    if (this.dealtCards[index] % 4 != this.dealtCards[index + 1] % 4 && this.dealtCards[index] % 4 == cardsOFHearts[0] % 4)
-                    {
-                        if (this.dealtCards[index] / 4 > cardsOFHearts.Max() / 4)
-                        {
-                            PokerHandMultiplier = 5;
-                            Power = this.dealtCards[index] + PokerHandMultiplier * 100;
-                            this.winningCards.Add(new Type() { Power = Power, Current = 5 });
-                            this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                            vf = true;
-                        }
-                        else
-                        {
-                            PokerHandMultiplier = 5;
-                            Power = cardsOFHearts.Max() + PokerHandMultiplier * 100;
-                            this.winningCards.Add(new Type() { Power = Power, Current = 5 });
-                            this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                            vf = true;
-                        }
-                    }
-                    if (this.dealtCards[index + 1] % 4 != this.dealtCards[index] % 4 && this.dealtCards[index + 1] % 4 == cardsOFHearts[0] % 4)
-                    {
-                        if (this.dealtCards[index + 1] / 4 > cardsOFHearts.Max() / 4)
-                        {
-                            PokerHandMultiplier = 5;
-                            Power = this.dealtCards[index + 1] + PokerHandMultiplier * 100;
-                            this.winningCards.Add(new Type() { Power = Power, Current = 5 });
-                            this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                            vf = true;
-                        }
-                        else
-                        {
-                            PokerHandMultiplier = 5;
-                            Power = cardsOFHearts.Max() + PokerHandMultiplier * 100;
-                            this.winningCards.Add(new Type() { Power = Power, Current = 5 });
-                            this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                            vf = true;
-                        }
-                    }
-                }
-                if (cardsOFHearts.Length == 5)
-                {
-                    if (this.dealtCards[index] % 4 == cardsOFHearts[0] % 4 && this.dealtCards[index] / 4 > cardsOFHearts.Min() / 4)
-                    {
-                        PokerHandMultiplier = 5;
-                        Power = this.dealtCards[index] + PokerHandMultiplier * 100;
-                        this.winningCards.Add(new Type() { Power = Power, Current = 5 });
-                        this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                        vf = true;
-                    }
-                    if (this.dealtCards[index + 1] % 4 == cardsOFHearts[0] % 4 && this.dealtCards[index + 1] / 4 > cardsOFHearts.Min() / 4)
-                    {
-                        PokerHandMultiplier = 5;
-                        Power = this.dealtCards[index + 1] + PokerHandMultiplier * 100;
-                        this.winningCards.Add(new Type() { Power = Power, Current = 5 });
-                        this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                        vf = true;
-                    }
-                    else if (this.dealtCards[index] / 4 < cardsOFHearts.Min() / 4 && this.dealtCards[index + 1] / 4 < cardsOFHearts.Min())
-                    {
-                        PokerHandMultiplier = 5;
-                        Power = cardsOFHearts.Max() + PokerHandMultiplier * 100;
-                        this.winningCards.Add(new Type() { Power = Power, Current = 5 });
-                        this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                        vf = true;
-                    }
-                }
-
-                if (cardsOfSpades.Length == 3 || cardsOfSpades.Length == 4)
-                {
-                    if (this.dealtCards[index] % 4 == this.dealtCards[index + 1] % 4 && this.dealtCards[index] % 4 == cardsOfSpades[0] % 4)
-                    {
-                        if (this.dealtCards[index] / 4 > cardsOfSpades.Max() / 4)
-                        {
-                            PokerHandMultiplier = 5;
-                            Power = this.dealtCards[index] + PokerHandMultiplier * 100;
-                            this.winningCards.Add(new Type() { Power = Power, Current = 5 });
-                            this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                            vf = true;
-                        }
-                        if (this.dealtCards[index + 1] / 4 > cardsOfSpades.Max() / 4)
-                        {
-                            PokerHandMultiplier = 5;
-                            Power = this.dealtCards[index + 1] + PokerHandMultiplier * 100;
-                            this.winningCards.Add(new Type() { Power = Power, Current = 5 });
-                            this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                            vf = true;
-                        }
-                        else if (this.dealtCards[index] / 4 < cardsOfSpades.Max() / 4 && this.dealtCards[index + 1] / 4 < cardsOfSpades.Max() / 4)
-                        {
-                            PokerHandMultiplier = 5;
-                            Power = cardsOfSpades.Max() + PokerHandMultiplier * 100;
-                            this.winningCards.Add(new Type() { Power = Power, Current = 5 });
-                            this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                            vf = true;
-                        }
-                    }
-                }
-                if (cardsOfSpades.Length == 4)//different cards in hand
-                {
-                    if (this.dealtCards[index] % 4 != this.dealtCards[index + 1] % 4 && this.dealtCards[index] % 4 == cardsOfSpades[0] % 4)
-                    {
-                        if (this.dealtCards[index] / 4 > cardsOfSpades.Max() / 4)
-                        {
-                            PokerHandMultiplier = 5;
-                            Power = this.dealtCards[index] + PokerHandMultiplier * 100;
-                            this.winningCards.Add(new Type() { Power = Power, Current = 5 });
-                            this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                            vf = true;
-                        }
-                        else
-                        {
-                            PokerHandMultiplier = 5;
-                            Power = cardsOfSpades.Max() + PokerHandMultiplier * 100;
-                            this.winningCards.Add(new Type() { Power = Power, Current = 5 });
-                            this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                            vf = true;
-                        }
-                    }
-                    if (this.dealtCards[index + 1] % 4 != this.dealtCards[index] % 4 && this.dealtCards[index + 1] % 4 == cardsOfSpades[0] % 4)
-                    {
-                        if (this.dealtCards[index + 1] / 4 > cardsOfSpades.Max() / 4)
-                        {
-                            PokerHandMultiplier = 5;
-                            Power = this.dealtCards[index + 1] + PokerHandMultiplier * 100;
-                            this.winningCards.Add(new Type() { Power = Power, Current = 5 });
-                            this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                            vf = true;
-                        }
-                        else
-                        {
-                            PokerHandMultiplier = 5;
-                            Power = cardsOfSpades.Max() + PokerHandMultiplier * 100;
-                            this.winningCards.Add(new Type() { Power = Power, Current = 5 });
-                            this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                            vf = true;
-                        }
-                    }
-                }
-                if (cardsOfSpades.Length == 5)
-                {
-                    if (this.dealtCards[index] % 4 == cardsOfSpades[0] % 4 && this.dealtCards[index] / 4 > cardsOfSpades.Min() / 4)
-                    {
-                        PokerHandMultiplier = 5;
-                        Power = this.dealtCards[index] + PokerHandMultiplier * 100;
-                        this.winningCards.Add(new Type() { Power = Power, Current = 5 });
-                        this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                        vf = true;
-                    }
-                    if (this.dealtCards[index + 1] % 4 == cardsOfSpades[0] % 4 && this.dealtCards[index + 1] / 4 > cardsOfSpades.Min() / 4)
-                    {
-                        PokerHandMultiplier = 5;
-                        Power = this.dealtCards[index + 1] + PokerHandMultiplier * 100;
-                        this.winningCards.Add(new Type() { Power = Power, Current = 5 });
-                        this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                        vf = true;
-                    }
-                    else if (this.dealtCards[index] / 4 < cardsOfSpades.Min() / 4 && this.dealtCards[index + 1] / 4 < cardsOfSpades.Min())
-                    {
-                        PokerHandMultiplier = 5;
-                        Power = cardsOfSpades.Max() + PokerHandMultiplier * 100;
-                        this.winningCards.Add(new Type() { Power = Power, Current = 5 });
-                        this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                        vf = true;
-                    }
-                }
-                //ace
-                if (cardsOFClubs.Length > 0)
-                {
-                    if (this.dealtCards[index] / 4 == 0 && this.dealtCards[index] % 4 == cardsOFClubs[0] % 4 && vf && cardsOFClubs.Length > 0)
-                    {
-                        PokerHandMultiplier = 5.5;
-                        Power = 13 + PokerHandMultiplier * 100;
-                        this.winningCards.Add(new Type() { Power = Power, Current = 5.5 });
-                        this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                    }
-                    if (this.dealtCards[index + 1] / 4 == 0 && this.dealtCards[index + 1] % 4 == cardsOFClubs[0] % 4 && vf && cardsOFClubs.Length > 0)
-                    {
-                        PokerHandMultiplier = 5.5;
-                        Power = 13 + PokerHandMultiplier * 100;
-                        this.winningCards.Add(new Type() { Power = Power, Current = 5.5 });
-                        this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                    }
-                }
-                if (cardsOFDiamonds.Length > 0)
-                {
-                    if (this.dealtCards[index] / 4 == 0 && this.dealtCards[index] % 4 == cardsOFDiamonds[0] % 4 && vf && cardsOFDiamonds.Length > 0)
-                    {
-                        PokerHandMultiplier = 5.5;
-                        Power = 13 + PokerHandMultiplier * 100;
-                        this.winningCards.Add(new Type() { Power = Power, Current = 5.5 });
-                        this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                    }
-                    if (this.dealtCards[index + 1] / 4 == 0 && this.dealtCards[index + 1] % 4 == cardsOFDiamonds[0] % 4 && vf && cardsOFDiamonds.Length > 0)
-                    {
-                        PokerHandMultiplier = 5.5;
-                        Power = 13 + PokerHandMultiplier * 100;
-                        this.winningCards.Add(new Type() { Power = Power, Current = 5.5 });
-                        this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                    }
-                }
-                if (cardsOFHearts.Length > 0)
-                {
-                    if (this.dealtCards[index] / 4 == 0 && this.dealtCards[index] % 4 == cardsOFHearts[0] % 4 && vf && cardsOFHearts.Length > 0)
-                    {
-                        PokerHandMultiplier = 5.5;
-                        Power = 13 + PokerHandMultiplier * 100;
-                        this.winningCards.Add(new Type() { Power = Power, Current = 5.5 });
-                        this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                    }
-                    if (this.dealtCards[index + 1] / 4 == 0 && this.dealtCards[index + 1] % 4 == cardsOFHearts[0] % 4 && vf && cardsOFHearts.Length > 0)
-                    {
-                        PokerHandMultiplier = 5.5;
-                        Power = 13 + PokerHandMultiplier * 100;
-                        this.winningCards.Add(new Type() { Power = Power, Current = 5.5 });
-                        this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                    }
-                }
-                if (cardsOfSpades.Length > 0)
-                {
-                    if (this.dealtCards[index] / 4 == 0 && this.dealtCards[index] % 4 == cardsOfSpades[0] % 4 && vf && cardsOfSpades.Length > 0)
-                    {
-                        PokerHandMultiplier = 5.5;
-                        Power = 13 + PokerHandMultiplier * 100;
-                        this.winningCards.Add(new Type() { Power = Power, Current = 5.5 });
-                        this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
-                    }
-                    if (this.dealtCards[index + 1] / 4 == 0 && this.dealtCards[index + 1] % 4 == cardsOfSpades[0] % 4 && vf)
-                    {
-                        PokerHandMultiplier = 5.5;
-                        Power = 13 + PokerHandMultiplier * 100;
-                        this.winningCards.Add(new Type() { Power = Power, Current = 5.5 });
-                        this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
+                        this.SetWinningCardFromSuitMax(PokerHandMultiplier, cardsOfSuit);
                     }
                 }
             }
+
+            if (cardsOfSuit.Length == 5)
+            {
+                if (this.dealtCards[index] % 4 == cardsOfSuit[0] % 4 &&
+                    this.dealtCards[index] / 4 > cardsOfSuit.Min() / 4)
+                {
+                    this.SetWinningCard(PokerHandMultiplier, index);
+                }
+                else if (this.dealtCards[index + 1] % 4 == cardsOfSuit[0] % 4 &&
+                         this.dealtCards[index + 1] / 4 > cardsOfSuit.Min() / 4)
+                {
+                    this.SetWinningCard(PokerHandMultiplier, index + 1);
+                }
+                else if (this.dealtCards[index] / 4 < cardsOfSuit.Min() / 4 &&
+                         this.dealtCards[index + 1] / 4 < cardsOfSuit.Min())
+                {
+                    this.SetWinningCardFromSuitMax(PokerHandMultiplier, cardsOfSuit);
+                }
+            }
         }
+
+        private void SetWinningCardFromSuitMax(double PokerHandMultiplier, int[] cardsOfSuit)
+        {
+            var power = cardsOfSuit.Max() + PokerHandMultiplier * 100;
+            this.AddToWinnigCards(PokerHandMultiplier, power);
+        }
+
+        private void SetWinningCard(double PokerHandMultiplier, int index)
+        {
+            double power = this.dealtCards[index] + PokerHandMultiplier * 100;
+            this.AddToWinnigCards(PokerHandMultiplier, power);
+        }
+
+        private void AddToWinnigCards(double PokerHandMultiplier, double power)
+        {
+            this.winningCards.Add(new Type() {Power = power, Current = PokerHandMultiplier});
+            this.winningCard = this.winningCards
+                .OrderByDescending(op1 => op1.Current)
+                .ThenByDescending(op1 => op1.Power)
+                .First();
+        }
+
+        #endregion
         private void rStraight(ref double PokerHandMultiplier, ref double Power, int[] Straight)
         {
             if (PokerHandMultiplier >= -1)
@@ -2046,7 +1690,7 @@
                 if (!labelBot2Status.Text.Contains("Fold"))
                 {
                     fixedLast = "Bot 2";
-                    Rules(4, 5, "Bot 2", ref this.bot2HandMultiplier, ref this.bot2CardPower,this.bot2GameEnded);
+                    Rules(4, 5, "Bot 2", ref this.bot2HandMultiplier, ref this.bot2CardPower, this.bot2GameEnded);
                 }
                 if (!labelBot3Status.Text.Contains("Fold"))
                 {
