@@ -12,7 +12,6 @@
     public partial class GameForm : Form
     {
         #region Constants
-
         private const int InitialBigBlind = 500;
         private const int InitialSmallBlind = 250;
         private const int BotCount = 5;
@@ -21,12 +20,8 @@
         private const int CardWidth = 80;
         private const int CardHeight = 130;
         private const int DealingCardsDelay = 200;
-
-
-
-
-
-
+        private const int CardPanelWidth = 180;
+        private const int CardPanelHeight = 150;
         #endregion
 
         #region Variables
@@ -210,9 +205,7 @@
             buttonCheck.Enabled = false;
             MaximizeBox = false;
             MinimizeBox = false;
-            bool check = false;
             Bitmap backImage = new Bitmap("Assets\\Back\\Back.png");
-            int horizontal = 580, vertical = 480;
             Random r = new Random();
 
             for (int i = this.ImageURIArray.Length; i > 0; i--)
@@ -243,235 +236,9 @@
                 this.Controls.Add(this.CardHolder[cardIndex]);
                 this.CardHolder[cardIndex].Name = "pb" + cardIndex.ToString();
                 await Task.Delay(DealingCardsDelay);
-                #region Throwing Cards
-                if (cardIndex < 2)
-                {
-                    if (this.CardHolder[0].Tag != null)
-                    {
-                        this.CardHolder[1].Tag = this.dealtCards[1];
-                    }
-                    this.CardHolder[0].Tag = this.dealtCards[0];
-                    this.CardHolder[cardIndex].Image = Deck[cardIndex];
-                    this.CardHolder[cardIndex].Anchor = (AnchorStyles.Bottom);
-                    //Holder[i].Dock = DockStyle.Top;
-                    this.CardHolder[cardIndex].Location = new Point(horizontal, vertical);
-                    horizontal += this.CardHolder[cardIndex].Width;
-                    this.Controls.Add(this.playerCardsPanel);
-                    this.playerCardsPanel.Location = new Point(this.CardHolder[0].Left - 10, this.CardHolder[0].Top - 10);
-                    this.playerCardsPanel.BackColor = Color.DarkBlue;
-                    this.playerCardsPanel.Height = 150;
-                    this.playerCardsPanel.Width = 180;
-                    this.playerCardsPanel.Visible = false;
-                }
-                if (this.bot1Chips > 0)
-                {
-                    foldedPlayers--;
-                    if (cardIndex >= 2 && cardIndex < 4)
-                    {
-                        if (this.CardHolder[2].Tag != null)
-                        {
-                            this.CardHolder[3].Tag = this.dealtCards[3];
-                        }
-                        this.CardHolder[2].Tag = this.dealtCards[2];
-                        if (!check)
-                        {
-                            horizontal = 15;
-                            vertical = 420;
-                        }
-                        check = true;
-                        this.CardHolder[cardIndex].Anchor = (AnchorStyles.Bottom | AnchorStyles.Left);
 
-                        //Holder[cardIndex].Image = backImage;
-                        this.CardHolder[cardIndex].Image = Deck[cardIndex];
+                this.DealCards(cardIndex);
 
-                        this.CardHolder[cardIndex].Location = new Point(horizontal, vertical);
-                        horizontal += this.CardHolder[cardIndex].Width;
-                        this.CardHolder[cardIndex].Visible = true;
-                        this.Controls.Add(this.bot1CardsPanel);
-                        this.bot1CardsPanel.Location = new Point(this.CardHolder[2].Left - 10, this.CardHolder[2].Top - 10);
-                        this.bot1CardsPanel.BackColor = Color.DarkBlue;
-                        this.bot1CardsPanel.Height = 150;
-                        this.bot1CardsPanel.Width = 180;
-                        this.bot1CardsPanel.Visible = false;
-                        if (cardIndex == 3)
-                        {
-                            check = false;
-                        }
-                    }
-                }
-                if (this.bot2Chips > 0)
-                {
-                    foldedPlayers--;
-                    if (cardIndex >= 4 && cardIndex < 6)
-                    {
-                        if (this.CardHolder[4].Tag != null)
-                        {
-                            this.CardHolder[5].Tag = this.dealtCards[5];
-                        }
-                        this.CardHolder[4].Tag = this.dealtCards[4];
-                        if (!check)
-                        {
-                            horizontal = 75;
-                            vertical = 65;
-                        }
-                        check = true;
-                        this.CardHolder[cardIndex].Anchor = (AnchorStyles.Top | AnchorStyles.Left);
-
-                        //Holder[cardIndex].Image = backImage;
-                        this.CardHolder[cardIndex].Image = Deck[cardIndex];
-
-                        this.CardHolder[cardIndex].Location = new Point(horizontal, vertical);
-                        horizontal += this.CardHolder[cardIndex].Width;
-                        this.CardHolder[cardIndex].Visible = true;
-                        this.Controls.Add(this.bot2CardsPanel);
-                        this.bot2CardsPanel.Location = new Point(this.CardHolder[4].Left - 10, this.CardHolder[4].Top - 10);
-                        this.bot2CardsPanel.BackColor = Color.DarkBlue;
-                        this.bot2CardsPanel.Height = 150;
-                        this.bot2CardsPanel.Width = 180;
-                        this.bot2CardsPanel.Visible = false;
-                        if (cardIndex == 5)
-                        {
-                            check = false;
-                        }
-                    }
-                }
-                if (bot3Chips > 0)
-                {
-                    foldedPlayers--;
-                    if (cardIndex >= 6 && cardIndex < 8)
-                    {
-                        if (this.CardHolder[6].Tag != null)
-                        {
-                            this.CardHolder[7].Tag = this.dealtCards[7];
-                        }
-                        this.CardHolder[6].Tag = this.dealtCards[6];
-                        if (!check)
-                        {
-                            horizontal = 590;
-                            vertical = 25;
-                        }
-                        check = true;
-                        this.CardHolder[cardIndex].Anchor = (AnchorStyles.Top);
-
-                        //Holder[cardIndex].Image = backImage;
-                        this.CardHolder[cardIndex].Image = Deck[cardIndex];
-
-                        this.CardHolder[cardIndex].Location = new Point(horizontal, vertical);
-                        horizontal += this.CardHolder[cardIndex].Width;
-                        this.CardHolder[cardIndex].Visible = true;
-                        this.Controls.Add(this.bot3CardsPanel);
-                        this.bot3CardsPanel.Location = new Point(this.CardHolder[6].Left - 10, this.CardHolder[6].Top - 10);
-                        this.bot3CardsPanel.BackColor = Color.DarkBlue;
-                        this.bot3CardsPanel.Height = 150;
-                        this.bot3CardsPanel.Width = 180;
-                        this.bot3CardsPanel.Visible = false;
-                        if (cardIndex == 7)
-                        {
-                            check = false;
-                        }
-                    }
-                }
-                if (bot4Chips > 0)
-                {
-                    foldedPlayers--;
-                    if (cardIndex >= 8 && cardIndex < 10)
-                    {
-                        if (this.CardHolder[8].Tag != null)
-                        {
-                            this.CardHolder[9].Tag = this.dealtCards[9];
-                        }
-                        this.CardHolder[8].Tag = this.dealtCards[8];
-                        if (!check)
-                        {
-                            horizontal = 1115;
-                            vertical = 65;
-                        }
-                        check = true;
-                        this.CardHolder[cardIndex].Anchor = (AnchorStyles.Top | AnchorStyles.Right);
-
-                        //Holder[cardIndex].Image = backImage;
-                        this.CardHolder[cardIndex].Image = Deck[cardIndex];
-
-                        this.CardHolder[cardIndex].Location = new Point(horizontal, vertical);
-                        horizontal += this.CardHolder[cardIndex].Width;
-                        this.CardHolder[cardIndex].Visible = true;
-                        this.Controls.Add(this.bot4CardsPanel);
-                        this.bot4CardsPanel.Location = new Point(this.CardHolder[8].Left - 10, this.CardHolder[8].Top - 10);
-                        this.bot4CardsPanel.BackColor = Color.DarkBlue;
-                        this.bot4CardsPanel.Height = 150;
-                        this.bot4CardsPanel.Width = 180;
-                        this.bot4CardsPanel.Visible = false;
-                        if (cardIndex == 9)
-                        {
-                            check = false;
-                        }
-                    }
-                }
-                if (bot5Chips > 0)
-                {
-                    foldedPlayers--;
-                    if (cardIndex >= 10 && cardIndex < 12)
-                    {
-                        if (this.CardHolder[10].Tag != null)
-                        {
-                            this.CardHolder[11].Tag = this.dealtCards[11];
-                        }
-                        this.CardHolder[10].Tag = this.dealtCards[10];
-                        if (!check)
-                        {
-                            horizontal = 1160;
-                            vertical = 420;
-                        }
-                        check = true;
-                        this.CardHolder[cardIndex].Anchor = (AnchorStyles.Bottom | AnchorStyles.Right);
-
-                        //Holder[cardIndex].Image = backImage;
-                        this.CardHolder[cardIndex].Image = Deck[cardIndex];
-
-                        this.CardHolder[cardIndex].Location = new Point(horizontal, vertical);
-                        horizontal += this.CardHolder[cardIndex].Width;
-                        this.CardHolder[cardIndex].Visible = true;
-                        this.Controls.Add(this.bot5CardsPanel);
-                        this.bot5CardsPanel.Location = new Point(this.CardHolder[10].Left - 10, this.CardHolder[10].Top - 10);
-                        this.bot5CardsPanel.BackColor = Color.DarkBlue;
-                        this.bot5CardsPanel.Height = 150;
-                        this.bot5CardsPanel.Width = 180;
-                        this.bot5CardsPanel.Visible = false;
-                        if (cardIndex == 11)
-                        {
-                            check = false;
-                        }
-                    }
-                }
-                if (cardIndex >= 12)
-                {
-                    this.CardHolder[12].Tag = this.dealtCards[12];
-                    if (cardIndex > 12) this.CardHolder[13].Tag = this.dealtCards[13];
-                    if (cardIndex > 13) this.CardHolder[14].Tag = this.dealtCards[14];
-                    if (cardIndex > 14) this.CardHolder[15].Tag = this.dealtCards[15];
-                    if (cardIndex > 15)
-                    {
-                        this.CardHolder[16].Tag = this.dealtCards[16];
-
-                    }
-                    if (!check)
-                    {
-                        horizontal = 410;
-                        vertical = 265;
-                    }
-                    check = true;
-                    if (this.CardHolder[cardIndex] != null)
-                    {
-                        this.CardHolder[cardIndex].Anchor = AnchorStyles.None;
-
-                        //Holder[cardIndex].Image = backImage;
-                        this.CardHolder[cardIndex].Image = Deck[cardIndex];
-
-                        this.CardHolder[cardIndex].Location = new Point(horizontal, vertical);
-                        horizontal += 110;
-                    }
-                }
-                #endregion
                 if (bot1Chips <= 0)
                 {
                     this.bot1GameEnded = true;
@@ -595,6 +362,123 @@
             buttonCall.Enabled = true;
             buttonFold.Enabled = true;
             //}
+        }
+
+        private void DealCards(int cardIndex)
+        {
+            int anchorPointHorizontalPosition;
+            int anchorPointVerticalPosition;
+
+            if (cardIndex < 2)
+            {
+                anchorPointHorizontalPosition = 580;
+                anchorPointVerticalPosition = 480;
+
+                this.FillInCardsControls(cardIndex, anchorPointHorizontalPosition, anchorPointVerticalPosition);
+            }
+
+            if (cardIndex >= 2 && cardIndex < 4)
+            {
+                if (this.bot1Chips > 0)
+                {
+                    anchorPointHorizontalPosition = 15;
+                    anchorPointVerticalPosition = 420;
+
+                    this.FillInCardsControls(cardIndex, anchorPointHorizontalPosition, anchorPointVerticalPosition);
+                }
+            }
+
+            if (cardIndex >= 4 && cardIndex < 6)
+            {
+                if (this.bot2Chips > 0)
+                {
+                    anchorPointHorizontalPosition = 75;
+                    anchorPointVerticalPosition = 65;
+
+                    this.FillInCardsControls(cardIndex, anchorPointHorizontalPosition, anchorPointVerticalPosition);
+                }
+            }
+
+            if (cardIndex >= 6 && cardIndex < 8)
+            {
+                if (this.bot3Chips > 0)
+                {
+                    anchorPointHorizontalPosition = 590;
+                    anchorPointVerticalPosition = 25;
+
+                    this.FillInCardsControls(cardIndex, anchorPointHorizontalPosition, anchorPointVerticalPosition);
+                }
+            }
+
+            if (cardIndex >= 8 && cardIndex < 10)
+            {
+                if (this.bot4Chips > 0)
+                {
+                    anchorPointHorizontalPosition = 1115;
+                    anchorPointVerticalPosition = 65;
+
+                    this.FillInCardsControls(cardIndex, anchorPointHorizontalPosition, anchorPointVerticalPosition);
+                }
+            }
+
+            if (cardIndex >= 10 && cardIndex < 12)
+            {
+                if (this.bot5Chips > 0)
+                {
+                    anchorPointHorizontalPosition = 1160;
+                    anchorPointVerticalPosition = 420;
+
+                    this.FillInCardsControls(cardIndex, anchorPointHorizontalPosition, anchorPointVerticalPosition);
+                }
+            }
+
+            if (cardIndex >= 12)
+            {
+                anchorPointVerticalPosition = 265;
+                anchorPointHorizontalPosition = 410 + (cardIndex % 12) * (CardWidth + 10);
+
+                this.FillInCardHolder(cardIndex, anchorPointHorizontalPosition, anchorPointVerticalPosition);
+            }
+        }
+
+        private void FillInCardsControls(int cardIndex, int anchorPointHorizontalPosition, int anchorPointVerticalPosition)
+        {
+            if (cardIndex >= 2 && cardIndex < 12)
+            {
+                this.foldedPlayers--;
+            }
+
+            this.FillInCardHolder(cardIndex, anchorPointHorizontalPosition, anchorPointVerticalPosition);
+
+            this.FillInPlayerPanel(cardIndex, this.playerCardsPanel);
+        }
+
+        private void FillInPlayerPanel(int cardIndex, Panel playerCardsPanel)
+        {
+            if (cardIndex % 2 == 0)
+            {
+                playerCardsPanel.Location = new Point(this.CardHolder[cardIndex].Left - 10,
+                    this.CardHolder[cardIndex].Top - 10);
+                playerCardsPanel.BackColor = Color.DarkBlue;
+                playerCardsPanel.Height = CardPanelHeight;
+                playerCardsPanel.Width = CardPanelWidth;
+                playerCardsPanel.Visible = false;
+                this.Controls.Add(playerCardsPanel);
+            }
+        }
+
+        private void FillInCardHolder(int cardIndex, int anchorPointHorizontalPosition,
+            int anchorPointVerticalPosition)
+        {
+            this.CardHolder[cardIndex].Tag = this.dealtCards[cardIndex];
+            this.CardHolder[cardIndex].Image = this.Deck[cardIndex];
+            this.CardHolder[cardIndex].Anchor = (AnchorStyles.Bottom);
+            if (cardIndex % 2 == 1 && cardIndex < 12)
+            {
+                anchorPointHorizontalPosition += CardWidth;
+            }
+
+            this.CardHolder[cardIndex].Location = new Point(anchorPointHorizontalPosition, anchorPointVerticalPosition);
         }
 
         //Veronika
@@ -1039,7 +923,7 @@
                 }
             }
         }
-        
+
         #region Flush
         private void rFlush(ref double PokerHandMultiplier, ref double Power, int[] cardsOnTable, int index)
         {
