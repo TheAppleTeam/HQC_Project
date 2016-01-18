@@ -5,16 +5,6 @@ VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Poker", "Poker\Poker.csproj", "{3F8B18D1-AFFB-4AAE-A26E-316A4F773A13}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GameObjects", "GameObjects", "{3886E49E-FDF4-44F2-94CF-E802AB092191}"
-	ProjectSection(SolutionItems) = preProject
-		Card.cs = Card.cs
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Player", "Player", "{4213D8E6-A977-43E4-8AD6-2B8F067C5C3F}"
-	ProjectSection(SolutionItems) = preProject
-		AbstractPlayer.cs = AbstractPlayer.cs
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,8 +18,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{4213D8E6-A977-43E4-8AD6-2B8F067C5C3F} = {3886E49E-FDF4-44F2-94CF-E802AB092191}
 	EndGlobalSection
 EndGlobal

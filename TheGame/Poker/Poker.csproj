@@ -56,6 +56,9 @@
     <Compile Include="GameForm.Designer.cs">
       <DependentUpon>GameForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="GameObjects\Cards\Card.cs" />
+    <Compile Include="GameObjects\Cards\CardSuit.cs" />
+    <Compile Include="GameObjects\Player\AbstractPlayer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProgressBars.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -7,6 +7,7 @@
     using System.Linq;
     using System.Threading.Tasks;
     using System.Windows.Forms;
+    using GameObjects.Cards;
 
     public partial class GameForm : Form
     {
@@ -270,8 +271,10 @@
                         }
                         check = true;
                         Holder[cardIndex].Anchor = (AnchorStyles.Bottom | AnchorStyles.Left);
-                        Holder[cardIndex].Image = backImage;
-                        //Holder[i].Image = Deck[i];
+
+                        //Holder[cardIndex].Image = backImage;
+                        Holder[cardIndex].Image = Deck[cardIndex];
+
                         Holder[cardIndex].Location = new Point(horizontal, vertical);
                         horizontal += Holder[cardIndex].Width;
                         Holder[cardIndex].Visible = true;
@@ -304,8 +307,10 @@
                         }
                         check = true;
                         Holder[cardIndex].Anchor = (AnchorStyles.Top | AnchorStyles.Left);
-                        Holder[cardIndex].Image = backImage;
-                        //Holder[i].Image = Deck[i];
+
+                        //Holder[cardIndex].Image = backImage;
+                        Holder[cardIndex].Image = Deck[cardIndex];
+
                         Holder[cardIndex].Location = new Point(horizontal, vertical);
                         horizontal += Holder[cardIndex].Width;
                         Holder[cardIndex].Visible = true;
@@ -338,8 +343,10 @@
                         }
                         check = true;
                         Holder[cardIndex].Anchor = (AnchorStyles.Top);
-                        Holder[cardIndex].Image = backImage;
-                        //Holder[i].Image = Deck[i];
+
+                        //Holder[cardIndex].Image = backImage;
+                        Holder[cardIndex].Image = Deck[cardIndex];
+
                         Holder[cardIndex].Location = new Point(horizontal, vertical);
                         horizontal += Holder[cardIndex].Width;
                         Holder[cardIndex].Visible = true;
@@ -372,8 +379,10 @@
                         }
                         check = true;
                         Holder[cardIndex].Anchor = (AnchorStyles.Top | AnchorStyles.Right);
-                        Holder[cardIndex].Image = backImage;
-                        //Holder[i].Image = Deck[i];
+
+                        //Holder[cardIndex].Image = backImage;
+                        Holder[cardIndex].Image = Deck[cardIndex];
+
                         Holder[cardIndex].Location = new Point(horizontal, vertical);
                         horizontal += Holder[cardIndex].Width;
                         Holder[cardIndex].Visible = true;
@@ -406,8 +415,10 @@
                         }
                         check = true;
                         Holder[cardIndex].Anchor = (AnchorStyles.Bottom | AnchorStyles.Right);
-                        Holder[cardIndex].Image = backImage;
-                        //Holder[i].Image = Deck[i];
+
+                        //Holder[cardIndex].Image = backImage;
+                        Holder[cardIndex].Image = Deck[cardIndex];
+
                         Holder[cardIndex].Location = new Point(horizontal, vertical);
                         horizontal += Holder[cardIndex].Width;
                         Holder[cardIndex].Visible = true;
@@ -443,8 +454,10 @@
                     if (Holder[cardIndex] != null)
                     {
                         Holder[cardIndex].Anchor = AnchorStyles.None;
-                        Holder[cardIndex].Image = backImage;
-                        //Holder[i].Image = Deck[i];
+
+                        //Holder[cardIndex].Image = backImage;
+                        Holder[cardIndex].Image = Deck[cardIndex];
+
                         Holder[cardIndex].Location = new Point(horizontal, vertical);
                         horizontal += 110;
                     }
@@ -585,15 +598,18 @@
                     //MessageBox.Show("Player's Turn");
                     progressBarTimer.Visible = true;
                     progressBarTimer.Value = 1000;
+
                     t = 60;
                     up = 10000000;
+
                     timer.Start();
                     buttonRaise.Enabled = true;
                     buttonCall.Enabled = true;
-                    buttonRaise.Enabled = true;
-                    buttonRaise.Enabled = true;
                     buttonFold.Enabled = true;
+                    //buttonRaise.Enabled = true;
+                    //buttonRaise.Enabled = true;
                     turnCount++;
+
                     FixCall(labelPlayerStatus, ref this.playerCall, ref playerRaise, 2);
                 }
             }
@@ -1010,47 +1026,49 @@
                 }
             }
         }
+
+
         #region Flush
         private void rFlush(ref double PokerHandMultiplier, ref double Power, int[] cardsOnTable, int index)
         {
             //if (PokerHandMultiplier >= -1)
             //{
-            var cardsOfClubs = cardsOnTable.Where(o => o % 4 == 0).ToArray();
-            var cardsOfDiamonds = cardsOnTable.Where(o => o % 4 == 1).ToArray();
-            var cardsOfHearts = cardsOnTable.Where(o => o % 4 == 2).ToArray();
-            var cardsOfSpades = cardsOnTable.Where(o => o % 4 == 3).ToArray();
+            var cardsOfClubs = cardsOnTable.Where(o => o % 4 == (int)CardSuit.clubs).ToArray();
+            var cardsOfDiamonds = cardsOnTable.Where(o => o % 4 == (int)CardSuit.diamonds).ToArray();
+            var cardsOfHearts = cardsOnTable.Where(o => o % 4 == (int)CardSuit.hearts).ToArray();
+            var cardsOfSpades = cardsOnTable.Where(o => o % 4 == (int)CardSuit.spades).ToArray();
 
             if (cardsOfClubs.Length > 2)
             {
-                this.CheckForFlush(PokerHandMultiplier, Power, index, cardsOfClubs);
+                this.CheckForFlush(PokerHandMultiplier, Power, index, cardsOfClubs, (int)CardSuit.clubs);
             }
 
             if (cardsOfDiamonds.Length > 2)
             {
-                this.CheckForFlush(PokerHandMultiplier, Power, index, cardsOfDiamonds);
+                this.CheckForFlush(PokerHandMultiplier, Power, index, cardsOfDiamonds, (int)CardSuit.diamonds);
             }
 
             if (cardsOfHearts.Length > 2)
             {
-                this.CheckForFlush(PokerHandMultiplier, Power, index, cardsOfHearts);
+                this.CheckForFlush(PokerHandMultiplier, Power, index, cardsOfHearts, (int)CardSuit.hearts);
             }
             if (cardsOfSpades.Length > 2)
             {
-                this.CheckForFlush(PokerHandMultiplier, Power, index, cardsOfSpades);
+                this.CheckForFlush(PokerHandMultiplier, Power, index, cardsOfSpades, (int)CardSuit.spades);
             }
             //}
         }
-        private void CheckForFlush(double PokerHandMultiplier, double Power, int index, int[] cardsOfSuit)
+        private void CheckForFlush(double PokerHandMultiplier, double Power, int index, int[] cardsOfSuit, int suitNumber)
         {
             PokerHandMultiplier = 5;
 
-            if (this.dealtCards[index] % 4 == 0 && this.dealtCards[index] % 4 == this.dealtCards[index + 1] % 4)
+            if (this.GetCardSuit(index) == suitNumber && this.GetCardSuit(index + 1) == this.GetCardSuit(index + 1))
             {
-                if (this.dealtCards[index] / 4 > cardsOfSuit.Max() / 4)
+                if (this.GetCardIndex(index) > cardsOfSuit.Max() / 4)
                 {
                     this.SetWinningCard(PokerHandMultiplier, index);
                 }
-                else if (this.dealtCards[index + 1] / 4 > cardsOfSuit.Max() / 4)
+                else if (this.GetCardIndex(index + 1) > cardsOfSuit.Max() / 4)
                 {
                     this.SetWinningCard(PokerHandMultiplier, index + 1);
                 }
@@ -1062,10 +1080,10 @@
 
             if (cardsOfSuit.Length == 4) //different cards in hand
             {
-                if (this.dealtCards[index] % 4 == 0 &&
-                    this.dealtCards[index] % 4 != this.dealtCards[index + 1] % 4)
+                if (this.GetCardSuit(index) == suitNumber &&
+                    this.GetCardSuit(index) != this.GetCardSuit(index + 1))
                 {
-                    if (this.dealtCards[index] / 4 > cardsOfSuit.Max() / 4)
+                    if (this.GetCardIndex(index) > cardsOfSuit.Max() / 4)
                     {
                         this.SetWinningCard(PokerHandMultiplier, index);
                     }
@@ -1075,9 +1093,9 @@
                     }
                 }
 
-                if (this.dealtCards[index + 1] % 4 == 0 && this.dealtCards[index + 1] % 4 != this.dealtCards[index] % 4)
+                if (this.GetCardSuit(index + 1) == suitNumber && this.GetCardSuit(index + 1) != this.GetCardSuit(index))
                 {
-                    if (this.dealtCards[index + 1] / 4 > cardsOfSuit.Max() / 4)
+                    if (this.GetCardIndex(index + 1) > cardsOfSuit.Max() / 4)
                     {
                         this.SetWinningCard(PokerHandMultiplier, index + 1);
                     }
@@ -1090,18 +1108,18 @@
 
             if (cardsOfSuit.Length == 5)
             {
-                if (this.dealtCards[index] % 4 == cardsOfSuit[0] % 4 &&
-                    this.dealtCards[index] / 4 > cardsOfSuit.Min() / 4)
+                if (this.GetCardSuit(index) == cardsOfSuit[0] % 4 &&
+                    this.GetCardIndex(index) > cardsOfSuit.Min() / 4)
                 {
                     this.SetWinningCard(PokerHandMultiplier, index);
                 }
-                else if (this.dealtCards[index + 1] % 4 == cardsOfSuit[0] % 4 &&
-                         this.dealtCards[index + 1] / 4 > cardsOfSuit.Min() / 4)
+                else if (this.GetCardSuit(index + 1) == cardsOfSuit[0] % 4 &&
+                         this.GetCardIndex(index + 1) > cardsOfSuit.Min() / 4)
                 {
                     this.SetWinningCard(PokerHandMultiplier, index + 1);
                 }
-                else if (this.dealtCards[index] / 4 < cardsOfSuit.Min() / 4 &&
-                         this.dealtCards[index + 1] / 4 < cardsOfSuit.Min())
+                else if (this.GetCardIndex(index) < cardsOfSuit.Min() / 4 &&
+                         this.GetCardIndex(index + 1) < cardsOfSuit.Min())
                 {
                     this.SetWinningCardFromSuitMax(PokerHandMultiplier, cardsOfSuit);
                 }
@@ -1111,25 +1129,25 @@
         private void SetWinningCardFromSuitMax(double PokerHandMultiplier, int[] cardsOfSuit)
         {
             var power = cardsOfSuit.Max() + PokerHandMultiplier * 100;
-            this.AddToWinnigCards(PokerHandMultiplier, power);
+            this.FindWinnigCard(PokerHandMultiplier, power);
         }
 
         private void SetWinningCard(double PokerHandMultiplier, int index)
         {
             double power = this.dealtCards[index] + PokerHandMultiplier * 100;
-            this.AddToWinnigCards(PokerHandMultiplier, power);
+            this.FindWinnigCard(PokerHandMultiplier, power);
         }
 
-        private void AddToWinnigCards(double PokerHandMultiplier, double power)
+        private void FindWinnigCard(double PokerHandMultiplier, double power)
         {
-            this.winningCards.Add(new Type() {Power = power, Current = PokerHandMultiplier});
+            this.winningCards.Add(new Type() { Power = power, Current = PokerHandMultiplier });
             this.winningCard = this.winningCards
                 .OrderByDescending(op1 => op1.Current)
                 .ThenByDescending(op1 => op1.Power)
                 .First();
         }
-
         #endregion
+
         private void rStraight(ref double PokerHandMultiplier, ref double Power, int[] Straight)
         {
             if (PokerHandMultiplier >= -1)
@@ -1164,13 +1182,13 @@
                 }
             }
         }
-        private void rThreeOfAKind(ref double PokerHandMultiplier, ref double Power, int[] Straight)
+        private void rThreeOfAKind(ref double PokerHandMultiplier, ref double Power, int[] cardsOnTableWithPlayerCards)
         {
             if (PokerHandMultiplier >= -1)
             {
                 for (int j = 0; j <= 12; j++)
                 {
-                    var fh = Straight.Where(o => o / 4 == j).ToArray();
+                    var fh = cardsOnTableWithPlayerCards.Where(o => o / 4 == j).ToArray();
                     if (fh.Length == 3)
                     {
                         if (fh.Max() / 4 == 0)
@@ -1441,6 +1459,15 @@
                     this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
                 }
             }
+        }
+
+        private int GetCardSuit(int index)
+        {
+            return this.dealtCards[index] % 4;
+        }
+        private int GetCardIndex(int index)
+        {
+            return this.dealtCards[index] / 4;
         }
 
         void Winner(double PokerHandMultiplier, double Power, string playerName, int chips, string lastly)
