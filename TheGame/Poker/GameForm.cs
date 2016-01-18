@@ -22,6 +22,7 @@
 
 
         #endregion
+
         #region Variables
         private int pokerCall = InitialBigBlind;
         private int foldedPlayers = BotCount;
@@ -144,6 +145,7 @@
         //int i;
         int bb = InitialBigBlind, sb = InitialSmallBlind, up = 10000000, turnCount = 0;
         #endregion
+
         public GameForm()
         {
             //bools.Add(PFturn); bools.Add(B1Fturn); bools.Add(bot2GameEnded); bools.Add(bot3GameEnded); bools.Add(bot4GameEnded); bools.Add(bot5GameEnded);
@@ -186,6 +188,8 @@
             buttonSmallBlind.Visible = false;
             textBoxRaise.Text = (bb * 2).ToString();
         }
+
+        //Stani
         async Task Shuffle()
         {
             bools.Add(this.playerGameEnded);
@@ -587,6 +591,8 @@
             buttonFold.Enabled = true;
             //}
         }
+
+        //Veronika
         async Task Turns()
         {
             #region Rotating
@@ -876,6 +882,8 @@
             }
             //}
         }
+
+        //Stani
         private void rStraightFlush(ref double PokerHandMultiplier, ref double Power, int[] cardsOfClubs, int[] cardsOfDiamonds, int[] cardsOfHearts, int[] cardsOfSpades)
         {
             if (PokerHandMultiplier >= -1)
@@ -1026,8 +1034,7 @@
                 }
             }
         }
-
-
+        
         #region Flush
         private void rFlush(ref double PokerHandMultiplier, ref double Power, int[] cardsOnTable, int index)
         {
@@ -1470,6 +1477,7 @@
             return this.dealtCards[index] / 4;
         }
 
+        //Veronika
         void Winner(double PokerHandMultiplier, double Power, string playerName, int chips, string lastly)
         {
             if (lastly == " ")
@@ -2086,6 +2094,7 @@
             Winner(this.bot5HandMultiplier, this.bot5CardPower, "Bot 5", bot5Chips, fixedLast);
         }
 
+        //Plamena
         #region AI logic
         void AI(int c1, int c2, ref int sChips, ref bool sTurn, ref bool sFTurn, Label sStatus, int name, double botPower, double botHandMultiplier)
         {
