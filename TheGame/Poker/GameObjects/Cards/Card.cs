@@ -1,6 +1,10 @@
-﻿using System;
-
-public class Card
+﻿namespace GameObjects.Cards
 {
-    public double CardPower { get; set; }
+    using System;
+
+    public class Card
+    {
+        public double CardPower { get; set; }
+    }
 }
+

@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Drawing;
+    using System.Globalization;
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
@@ -2064,65 +2065,50 @@
 
         //Plamena
         #region AI logic
-        void AI(int c1, int c2, ref int sChips, ref bool sTurn, ref bool sFTurn, Label sStatus, int name, double botPower, double botHandMultiplier)
+        // AI   (     2,      3, ref    bot1Chips, ref this.bot1Turn,ref this.bot1GameEnded, labelBot1Status,       0, this.bot1CardPower, this.bot1HandMultiplier);
+        private void AI(int c1, int c2, ref int botChips, ref bool botTurn, ref bool botGameEnded, Label labelBotStatus, int name, double botPower, double botHandMultiplier)
         {
-            if (!sFTurn)
+           if (!botGameEnded)
             {
-                if (botHandMultiplier == -1)
+                switch (botHandMultiplier.ToString(CultureInfo.CreateSpecificCulture("en-GB")))
                 {
-                    this.AIHighCard(ref sChips, ref sTurn, ref sFTurn, sStatus, botPower);
+                    case "-1":this.AIHighCard(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, botPower); break;
+                    case "0": this.AIPairTable(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, botPower);break;
+                    case "1": this.AIPairHand(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, botPower);break;
+                    case "2": this.AITwoPair(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, botPower);break;
+                    case "3": this.AIThreeOfAKind(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower);break;
+                    case "4": this.AIStraight(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower); break;
+                    case "5":
+                    case "5.5": this.AIFlush(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower); break;
+                    case "6": this.AIFullHouse(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower);
+                        break;
+                    case "7": this.AIFourOfAKind(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower); break;
+                    case "8":
+                    case "9": this.AIStraightFlush(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower);
+                    break;
                 }
-                if (botHandMultiplier == 0)
-                {
-                    this.AIPairTable(ref sChips, ref sTurn, ref sFTurn, sStatus, botPower);
-                }
-                if (botHandMultiplier == 1)
-                {
-                    this.AIPairHand(ref sChips, ref sTurn, ref sFTurn, sStatus, botPower);
-                }
-                if (botHandMultiplier == 2)
-                {
-                    this.AITwoPair(ref sChips, ref sTurn, ref sFTurn, sStatus, botPower);
-                }
-                if (botHandMultiplier == 3)
-                {
-                    this.AIThreeOfAKind(ref sChips, ref sTurn, ref sFTurn, sStatus, name, botPower);
-                }
-                if (botHandMultiplier == 4)
-                {
-                    this.AIStraight(ref sChips, ref sTurn, ref sFTurn, sStatus, name, botPower);
-                }
-                if (botHandMultiplier == 5 || botHandMultiplier == 5.5)
-                {
-                    this.AIFlush(ref sChips, ref sTurn, ref sFTurn, sStatus, name, botPower);
-                }
-                if (botHandMultiplier == 6)
-                {
-                    this.AIFullHouse(ref sChips, ref sTurn, ref sFTurn, sStatus, name, botPower);
-                }
-                if (botHandMultiplier == 7)
-                {
-                    this.AIFourOfAKind(ref sChips, ref sTurn, ref sFTurn, sStatus, name, botPower);
-                }
-                if (botHandMultiplier == 8 || botHandMultiplier == 9)
-                {
-                    this.AIStraightFlush(ref sChips, ref sTurn, ref sFTurn, sStatus, name, botPower);
-                }
-            }
-            if (sFTurn)
+           }
+
+            if (botGameEnded)
             {
                 this.cardHolder[c1].Visible = false;
                 this.cardHolder[c2].Visible = false;
             }
         }
+
+        // this.AIHighCard(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, botPower);
         private void AIHighCard(ref int sChips, ref bool sTurn, ref bool sFTurn, Label sStatus, double botPower)
         {
             this.AIHP(ref sChips, ref sTurn, ref sFTurn, sStatus, botPower, 20, 25);
         }
+
+        // this.AIPairTable(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, botPower);
         private void AIPairTable(ref int sChips, ref bool sTurn, ref bool sFTurn, Label sStatus, double botPower)
         {
             this.AIHP(ref sChips, ref sTurn, ref sFTurn, sStatus, botPower, 16, 25);
         }
+        
+        // this.AIPairHand(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, botPower);
         private void AIPairHand(ref int sChips, ref bool sTurn, ref bool sFTurn, Label sStatus, double botPower)
         {
             Random rPair = new Random();
@@ -2141,6 +2127,8 @@
                 this.AIPH(ref sChips, ref sTurn, ref sFTurn, sStatus, rCall, 9, rRaise);
             }
         }
+
+        // this.AITwoPair(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, botPower);
         private void AITwoPair(ref int sChips, ref bool sTurn, ref bool sFTurn, Label sStatus, double botPower)
         {
             Random rPair = new Random();
@@ -2159,6 +2147,8 @@
                 this.AIPH(ref sChips, ref sTurn, ref sFTurn, sStatus, rCall, 4, rRaise);
             }
         }
+
+        //  this.AIThreeOfAKind(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower);
         private void AIThreeOfAKind(ref int sChips, ref bool sTurn, ref bool sFTurn, Label sStatus, int name, double botPower)
         {
             Random tk = new Random();
@@ -2177,6 +2167,8 @@
                 this.AISmooth(ref sChips, ref sTurn, ref sFTurn, sStatus, name, tCall, tRaise);
             }
         }
+
+        // this.AIStraight(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower); break;
         private void AIStraight(ref int sChips, ref bool sTurn, ref bool sFTurn, Label sStatus, int name, double botPower)
         {
             Random str = new Random();
@@ -2195,6 +2187,8 @@
                 this.AISmooth(ref sChips, ref sTurn, ref sFTurn, sStatus, name, sCall, sRaise);
             }
         }
+
+        //  this.AIFlush(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower); break;
         private void AIFlush(ref int sChips, ref bool sTurn, ref bool sFTurn, Label sStatus, int name, double botPower)
         {
             Random fsh = new Random();
@@ -2202,6 +2196,8 @@
             int fRaise = fsh.Next(3, 7);
             this.AISmooth(ref sChips, ref sTurn, ref sFTurn, sStatus, name, fCall, fRaise);
         }
+
+        // : this.AIFullHouse(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower);
         private void AIFullHouse(ref int sChips, ref bool sTurn, ref bool sFTurn, Label sStatus, int name, double botPower)
         {
             Random flh = new Random();
@@ -2216,6 +2212,8 @@
                 this.AISmooth(ref sChips, ref sTurn, ref sFTurn, sStatus, name, fhCall, fhRaise);
             }
         }
+
+        // this.AIFourOfAKind(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower); break;
         private void AIFourOfAKind(ref int sChips, ref bool sTurn, ref bool sFTurn, Label sStatus, int name, double botPower)
         {
             Random fk = new Random();
@@ -2226,6 +2224,8 @@
                 this.AISmooth(ref sChips, ref sTurn, ref sFTurn, sStatus, name, fkCall, fkRaise);
             }
         }
+
+        // this.AIStraightFlush(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower);
         private void AIStraightFlush(ref int sChips, ref bool sTurn, ref bool sFTurn, Label sStatus, int name, double botPower)
         {
             Random sf = new Random();
@@ -2237,6 +2237,7 @@
             }
         }
 
+        // wika se ot AIHP ili AIPH  this.AIFold(ref sTurn, ref sFTurn, sStatus);
         private void AIFold(ref bool sTurn, ref bool sFTurn, Label sStatus)
         {
             raising = false;
@@ -2244,12 +2245,16 @@
             sTurn = false;
             sFTurn = true;
         }
+
+        // вика се от AIHP, AIPH, AISmooth  this.AICheck(ref sTurn, sStatus);
         private void AICheck(ref bool cTurn, Label cStatus)
         {
             cStatus.Text = "Check";
             cTurn = false;
             raising = false;
         }
+
+        // вика се от  AIHP AIPH, AISmooth this.AICall(ref sChips, ref sTurn, sStatus);
         private void AICall(ref int sChips, ref bool sTurn, Label sStatus)
         {
             raising = false;
@@ -2258,6 +2263,8 @@
             sStatus.Text = "Call " + this.pokerCall;
             textBoxPot.Text = (int.Parse(textBoxPot.Text) + this.pokerCall).ToString();
         }
+
+        // вика се от  AIHP AIPH, AISmooth this.AIRaised(ref sChips, ref sTurn, sStatus);
         private void AIRaised(ref int sChips, ref bool sTurn, Label sStatus)
         {
             sChips -= Convert.ToInt32(this.raise);
@@ -2267,11 +2274,14 @@
             raising = true;
             sTurn = false;
         }
+
+        //вика се от  AIHP AIPH, AISmooth  this.pokerCall <= AIRoundNumber(sChips, n) числото е различно има и математика
         private static double AIRoundNumber(int sChips, int n)
         {
             double a = Math.Round((sChips / n) / 100d, 0) * 100;
             return a;
         }
+
         /// <summary>
         /// ???
         /// </summary>
