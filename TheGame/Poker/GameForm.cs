@@ -721,7 +721,7 @@
                         FixCall(labelBot5Status, ref bot5Call, ref bot5Raise, 2);
                         Rules(10, 11, "Bot 5", ref this.bot5HandMultiplier, ref this.bot5CardPower, bot5GameEnded);
                         MessageBox.Show("Bot 5's Turn");
-                        AI(10, 11, ref bot5Chips, ref this.bot5Turn, ref  bot5GameEnded, labelBot5Status, 4, this.bot5CardPower, this.bot5HandMultiplier);
+                         AI(10, 11, ref bot5Chips, ref this.bot5Turn, ref  bot5GameEnded, labelBot5Status, 4, this.bot5CardPower, this.bot5HandMultiplier);
                         turnCount++;
                         lastBotPlayed = 5;
                         this.bot5Turn = false;
@@ -2066,7 +2066,19 @@
         //Plamena
         #region AI logic
         // AI   (     2,      3, ref    bot1Chips, ref this.bot1Turn,ref this.bot1GameEnded, labelBot1Status,       0, this.bot1CardPower, this.bot1HandMultiplier);
-        private void AI(int c1, int c2, ref int botChips, ref bool botTurn, ref bool botGameEnded, Label labelBotStatus, int name, double botPower, double botHandMultiplier)
+        /* wika se ot Turns : 
+            if (!this.bot1GameEnded) => if (this.bot1Turn):
+            if (!this.bot2GameEnded) => if (this.bot2Turn):
+            if (!this.bot3GameEnded) => if (this.bo3Turn) :
+            if (!this.bot4GameEnded) => if (this.bot4Turn) :
+            if (!bot5GameEnded) =>  if (this.bot5Turn) =>  
+        => AI(2, 3, ref bot1Chips, ref this.bot1Turn, ref this.bot1GameEnded, labelBot1Status, 0, this.bot1CardPower, this.bot1HandMultiplier);
+        => AI(4, 5, ref bot2Chips, ref this.bot2Turn, ref this.bot2GameEnded, labelBot2Status, 1, this.bot2CardPower, this.bot2HandMultiplier);
+        => AI(6, 7, ref bot3Chips, ref this.bot3Turn, ref this.bot3GameEnded, labelBot3Status, 2, this.bot3CardPower, this.bot3HandMultiplier);
+        => AI(8, 9, ref bot4Chips, ref this.bot4Turn, ref this.bot4GameEnded, labelBot4Status, 3, this.bot4CardPower, this.bot4HandMultiplier);
+        => AI(10, 11, ref bot5Chips, ref this.bot5Turn, ref  bot5GameEnded, labelBot5Status, 4, this.bot5CardPower, this.bot5HandMultiplier);
+         note: int name se polzwa samo pri wikaneto na smooth*/
+        private void AI(int positionCard1, int positionCard2, ref int botChips, ref bool botTurn, ref bool botGameEnded, Label labelBotStatus, int name, double botPower, double botHandMultiplier)
         {
            if (!botGameEnded)
             {
@@ -2100,24 +2112,24 @@
 
             if (botGameEnded)
             {
-                this.cardHolder[c1].Visible = false;
-                this.cardHolder[c2].Visible = false;
+                this.cardHolder[positionCard1].Visible = false;
+                this.cardHolder[positionCard2].Visible = false;
             }
         }
 
-        // Wika se ot AI this.AIHighCard(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, botPower);
+        // Wika se ot AI this.AIHighCard(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, botPower); wika HP
         private void AIHighCard(ref int botChips, ref bool sTurn, ref bool sFTurn, Label sStatus, double botPower)
         {
             this.AIHP(ref botChips, ref sTurn, ref sFTurn, sStatus, botPower, 20, 25);
         }
 
-        // wika se ot AI this.AIPairTable(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, botPower);
+        // wika se ot AI this.AIPairTable(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, botPower); wika HP
         private void AIPairTable(ref int botChips, ref bool sTurn, ref bool sFTurn, Label sStatus, double botPower)
         {
             this.AIHP(ref botChips, ref sTurn, ref sFTurn, sStatus, botPower, 16, 25);
         }
         
-        // wika se ot AI this.AIPairHand(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, botPower);
+        // wika se ot AI this.AIPairHand(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, botPower); wika AIPH
         private void AIPairHand(ref int botChips, ref bool sTurn, ref bool sFTurn, Label sStatus, double botPower)
         {
             Random rPair = new Random();
@@ -2137,7 +2149,7 @@
             }
         }
 
-        // wika se ot AI this.AITwoPair(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, botPower);
+        // wika se ot AI this.AITwoPair(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, botPower); wika AIPH
         private void AITwoPair(ref int botChips, ref bool sTurn, ref bool sFTurn, Label sStatus, double botPower)
         {
             Random rPair = new Random();
@@ -2157,7 +2169,7 @@
             }
         }
 
-        // wika se ot AI this.AIThreeOfAKind(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower);
+        // wika se ot AI this.AIThreeOfAKind(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower); wika Smooth
         private void AIThreeOfAKind(ref int botChips, ref bool sTurn, ref bool sFTurn, Label sStatus, int name, double botPower)
         {
             Random tk = new Random();
@@ -2177,7 +2189,7 @@
             }
         }
 
-        // wika se ot AI this.AIStraight(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower); break;
+        // wika se ot AI this.AIStraight(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower); break; wika Smooth
         private void AIStraight(ref int botChips, ref bool sTurn, ref bool sFTurn, Label sStatus, int name, double botPower)
         {
             Random str = new Random();
@@ -2197,7 +2209,7 @@
             }
         }
 
-        // wika se ot AI this.AIFlush(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower); break;
+        // wika se ot AI this.AIFlush(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower); break; wika Smooth
         private void AIFlush(ref int botChips, ref bool sTurn, ref bool sFTurn, Label sStatus, int name, double botPower)
         {
             Random fsh = new Random();
@@ -2206,7 +2218,7 @@
             this.AISmooth(ref botChips, ref sTurn, ref sFTurn, sStatus, name, fCall, fRaise);
         }
 
-        // wika se ot AI : this.AIFullHouse(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower);
+        // wika se ot AI : this.AIFullHouse(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower); wika Smooth
         private void AIFullHouse(ref int botChips, ref bool sTurn, ref bool sFTurn, Label sStatus, int name, double botPower)
         {
             Random flh = new Random();
@@ -2222,7 +2234,7 @@
             }
         }
 
-        // wika se ot AI: this.AIFourOfAKind(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower); break;
+        // wika se ot AI: this.AIFourOfAKind(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower); break; wika Smooth
         private void AIFourOfAKind(ref int botChips, ref bool sTurn, ref bool sFTurn, Label sStatus, int name, double botPower)
         {
             Random fk = new Random();
@@ -2234,7 +2246,7 @@
             }
         }
 
-        // wika se ot AI: this.AIStraightFlush(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower);
+        // wika se ot AI: this.AIStraightFlush(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower); wika Smooth 
         private void AIStraightFlush(ref int botChips, ref bool sTurn, ref bool sFTurn, Label sStatus, int name, double botPower)
         {
             Random sf = new Random();
@@ -2245,8 +2257,8 @@
                 this.AISmooth(ref botChips, ref sTurn, ref sFTurn, sStatus, name, sfCall, sfRaise);
             }
         }
-        
-        /* wika se ot: 
+
+        /* wika se ot: AIHighCard, AIPairTable, 
          randoma e ot 1-3
          ako pokerCall <= 0 bota igrae CHeck
          ako pokerCall > 0 w zawisimost ot randoma ima 3 wyzmovnosti:
@@ -2323,7 +2335,7 @@
             }
         }
 
-        /*wika se ot:
+        /*wika se ot: AIPairHand, AITwoPair
          randoma e ot 1-3
          ako  this.rounds < 2 
             ako pokerCall <= 0 bota igrae CHeck
@@ -2438,7 +2450,7 @@
             }
         }
 
-        /*wika se ot: 
+        /*wika se ot: AIThreeOfAKind, AIStraight, AIFlush, AIFullHouse, AIFourOfAKind, AIStraightFlush
          randoma e ot 1-3, NO NE SE POLZWA!
          ako pokerCall <= 0 bota igrae CHeck
          ako pokerCall > 0 w zawisimost ot matematikata na chipowete move da CALL, RASE
