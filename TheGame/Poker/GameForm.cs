@@ -2072,20 +2072,29 @@
             {
                 switch (botHandMultiplier.ToString(CultureInfo.CreateSpecificCulture("en-GB")))
                 {
-                    case "-1":this.AIHighCard(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, botPower); break;
-                    case "0": this.AIPairTable(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, botPower);break;
-                    case "1": this.AIPairHand(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, botPower);break;
-                    case "2": this.AITwoPair(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, botPower);break;
-                    case "3": this.AIThreeOfAKind(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower);break;
-                    case "4": this.AIStraight(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower); break;
+                    case "-1": 
+                        this.AIHighCard(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, botPower);
+                        break;
+                    case "0": this.AIPairTable(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, botPower); 
+                        break;
+                    case "1": this.AIPairHand(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, botPower);
+                        break;
+                    case "2": this.AITwoPair(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, botPower);
+                        break;
+                    case "3": this.AIThreeOfAKind(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower);
+                        break;
+                    case "4": this.AIStraight(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower); 
+                        break;
                     case "5":
-                    case "5.5": this.AIFlush(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower); break;
+                    case "5.5": this.AIFlush(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower); 
+                        break;
                     case "6": this.AIFullHouse(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower);
                         break;
-                    case "7": this.AIFourOfAKind(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower); break;
+                    case "7": this.AIFourOfAKind(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower); 
+                        break;
                     case "8":
                     case "9": this.AIStraightFlush(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower);
-                    break;
+                        break;
                 }
            }
 
@@ -2096,232 +2105,191 @@
             }
         }
 
-        // this.AIHighCard(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, botPower);
-        private void AIHighCard(ref int sChips, ref bool sTurn, ref bool sFTurn, Label sStatus, double botPower)
+        // Wika se ot AI this.AIHighCard(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, botPower);
+        private void AIHighCard(ref int botChips, ref bool sTurn, ref bool sFTurn, Label sStatus, double botPower)
         {
-            this.AIHP(ref sChips, ref sTurn, ref sFTurn, sStatus, botPower, 20, 25);
+            this.AIHP(ref botChips, ref sTurn, ref sFTurn, sStatus, botPower, 20, 25);
         }
 
-        // this.AIPairTable(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, botPower);
-        private void AIPairTable(ref int sChips, ref bool sTurn, ref bool sFTurn, Label sStatus, double botPower)
+        // wika se ot AI this.AIPairTable(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, botPower);
+        private void AIPairTable(ref int botChips, ref bool sTurn, ref bool sFTurn, Label sStatus, double botPower)
         {
-            this.AIHP(ref sChips, ref sTurn, ref sFTurn, sStatus, botPower, 16, 25);
+            this.AIHP(ref botChips, ref sTurn, ref sFTurn, sStatus, botPower, 16, 25);
         }
         
-        // this.AIPairHand(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, botPower);
-        private void AIPairHand(ref int sChips, ref bool sTurn, ref bool sFTurn, Label sStatus, double botPower)
+        // wika se ot AI this.AIPairHand(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, botPower);
+        private void AIPairHand(ref int botChips, ref bool sTurn, ref bool sFTurn, Label sStatus, double botPower)
         {
             Random rPair = new Random();
             int rCall = rPair.Next(10, 16);
             int rRaise = rPair.Next(10, 13);
             if (botPower <= 199 && botPower >= 140)
             {
-                this.AIPH(ref sChips, ref sTurn, ref sFTurn, sStatus, rCall, 6, rRaise);
+                this.AIPH(ref botChips, ref sTurn, ref sFTurn, sStatus, rCall, 6, rRaise);
             }
             if (botPower <= 139 && botPower >= 128)
             {
-                this.AIPH(ref sChips, ref sTurn, ref sFTurn, sStatus, rCall, 7, rRaise);
+                this.AIPH(ref botChips, ref sTurn, ref sFTurn, sStatus, rCall, 7, rRaise);
             }
             if (botPower < 128 && botPower >= 101)
             {
-                this.AIPH(ref sChips, ref sTurn, ref sFTurn, sStatus, rCall, 9, rRaise);
+                this.AIPH(ref botChips, ref sTurn, ref sFTurn, sStatus, rCall, 9, rRaise);
             }
         }
 
-        // this.AITwoPair(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, botPower);
-        private void AITwoPair(ref int sChips, ref bool sTurn, ref bool sFTurn, Label sStatus, double botPower)
+        // wika se ot AI this.AITwoPair(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, botPower);
+        private void AITwoPair(ref int botChips, ref bool sTurn, ref bool sFTurn, Label sStatus, double botPower)
         {
             Random rPair = new Random();
             int rCall = rPair.Next(6, 11);
             int rRaise = rPair.Next(6, 11);
             if (botPower <= 290 && botPower >= 246)
             {
-                this.AIPH(ref sChips, ref sTurn, ref sFTurn, sStatus, rCall, 3, rRaise);
+                this.AIPH(ref botChips, ref sTurn, ref sFTurn, sStatus, rCall, 3, rRaise);
             }
             if (botPower <= 244 && botPower >= 234)
             {
-                this.AIPH(ref sChips, ref sTurn, ref sFTurn, sStatus, rCall, 4, rRaise);
+                this.AIPH(ref botChips, ref sTurn, ref sFTurn, sStatus, rCall, 4, rRaise);
             }
             if (botPower < 234 && botPower >= 201)
             {
-                this.AIPH(ref sChips, ref sTurn, ref sFTurn, sStatus, rCall, 4, rRaise);
+                this.AIPH(ref botChips, ref sTurn, ref sFTurn, sStatus, rCall, 4, rRaise);
             }
         }
 
-        //  this.AIThreeOfAKind(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower);
-        private void AIThreeOfAKind(ref int sChips, ref bool sTurn, ref bool sFTurn, Label sStatus, int name, double botPower)
+        // wika se ot AI this.AIThreeOfAKind(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower);
+        private void AIThreeOfAKind(ref int botChips, ref bool sTurn, ref bool sFTurn, Label sStatus, int name, double botPower)
         {
             Random tk = new Random();
             int tCall = tk.Next(3, 7);
             int tRaise = tk.Next(4, 8);
             if (botPower <= 390 && botPower >= 330)
             {
-                this.AISmooth(ref sChips, ref sTurn, ref sFTurn, sStatus, name, tCall, tRaise);
+                this.AISmooth(ref botChips, ref sTurn, ref sFTurn, sStatus, name, tCall, tRaise);
             }
             if (botPower <= 327 && botPower >= 321)//10  8
             {
-                this.AISmooth(ref sChips, ref sTurn, ref sFTurn, sStatus, name, tCall, tRaise);
+                this.AISmooth(ref botChips, ref sTurn, ref sFTurn, sStatus, name, tCall, tRaise);
             }
             if (botPower < 321 && botPower >= 303)//7 2
             {
-                this.AISmooth(ref sChips, ref sTurn, ref sFTurn, sStatus, name, tCall, tRaise);
+                this.AISmooth(ref botChips, ref sTurn, ref sFTurn, sStatus, name, tCall, tRaise);
             }
         }
 
-        // this.AIStraight(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower); break;
-        private void AIStraight(ref int sChips, ref bool sTurn, ref bool sFTurn, Label sStatus, int name, double botPower)
+        // wika se ot AI this.AIStraight(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower); break;
+        private void AIStraight(ref int botChips, ref bool sTurn, ref bool sFTurn, Label sStatus, int name, double botPower)
         {
             Random str = new Random();
             int sCall = str.Next(3, 6);
             int sRaise = str.Next(3, 8);
             if (botPower <= 480 && botPower >= 410)
             {
-                this.AISmooth(ref sChips, ref sTurn, ref sFTurn, sStatus, name, sCall, sRaise);
+                this.AISmooth(ref botChips, ref sTurn, ref sFTurn, sStatus, name, sCall, sRaise);
             }
             if (botPower <= 409 && botPower >= 407)//10  8
             {
-                this.AISmooth(ref sChips, ref sTurn, ref sFTurn, sStatus, name, sCall, sRaise);
+                this.AISmooth(ref botChips, ref sTurn, ref sFTurn, sStatus, name, sCall, sRaise);
             }
             if (botPower < 407 && botPower >= 404)
             {
-                this.AISmooth(ref sChips, ref sTurn, ref sFTurn, sStatus, name, sCall, sRaise);
+                this.AISmooth(ref botChips, ref sTurn, ref sFTurn, sStatus, name, sCall, sRaise);
             }
         }
 
-        //  this.AIFlush(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower); break;
-        private void AIFlush(ref int sChips, ref bool sTurn, ref bool sFTurn, Label sStatus, int name, double botPower)
+        // wika se ot AI this.AIFlush(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower); break;
+        private void AIFlush(ref int botChips, ref bool sTurn, ref bool sFTurn, Label sStatus, int name, double botPower)
         {
             Random fsh = new Random();
             int fCall = fsh.Next(2, 6);
             int fRaise = fsh.Next(3, 7);
-            this.AISmooth(ref sChips, ref sTurn, ref sFTurn, sStatus, name, fCall, fRaise);
+            this.AISmooth(ref botChips, ref sTurn, ref sFTurn, sStatus, name, fCall, fRaise);
         }
 
-        // : this.AIFullHouse(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower);
-        private void AIFullHouse(ref int sChips, ref bool sTurn, ref bool sFTurn, Label sStatus, int name, double botPower)
+        // wika se ot AI : this.AIFullHouse(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower);
+        private void AIFullHouse(ref int botChips, ref bool sTurn, ref bool sFTurn, Label sStatus, int name, double botPower)
         {
             Random flh = new Random();
             int fhCall = flh.Next(1, 5);
             int fhRaise = flh.Next(2, 6);
             if (botPower <= 626 && botPower >= 620)
             {
-                this.AISmooth(ref sChips, ref sTurn, ref sFTurn, sStatus, name, fhCall, fhRaise);
+                this.AISmooth(ref botChips, ref sTurn, ref sFTurn, sStatus, name, fhCall, fhRaise);
             }
             if (botPower < 620 && botPower >= 602)
             {
-                this.AISmooth(ref sChips, ref sTurn, ref sFTurn, sStatus, name, fhCall, fhRaise);
+                this.AISmooth(ref botChips, ref sTurn, ref sFTurn, sStatus, name, fhCall, fhRaise);
             }
         }
 
-        // this.AIFourOfAKind(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower); break;
-        private void AIFourOfAKind(ref int sChips, ref bool sTurn, ref bool sFTurn, Label sStatus, int name, double botPower)
+        // wika se ot AI: this.AIFourOfAKind(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower); break;
+        private void AIFourOfAKind(ref int botChips, ref bool sTurn, ref bool sFTurn, Label sStatus, int name, double botPower)
         {
             Random fk = new Random();
             int fkCall = fk.Next(1, 4);
             int fkRaise = fk.Next(2, 5);
             if (botPower <= 752 && botPower >= 704)
             {
-                this.AISmooth(ref sChips, ref sTurn, ref sFTurn, sStatus, name, fkCall, fkRaise);
+                this.AISmooth(ref botChips, ref sTurn, ref sFTurn, sStatus, name, fkCall, fkRaise);
             }
         }
 
-        // this.AIStraightFlush(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower);
-        private void AIStraightFlush(ref int sChips, ref bool sTurn, ref bool sFTurn, Label sStatus, int name, double botPower)
+        // wika se ot AI: this.AIStraightFlush(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, name, botPower);
+        private void AIStraightFlush(ref int botChips, ref bool sTurn, ref bool sFTurn, Label sStatus, int name, double botPower)
         {
             Random sf = new Random();
             int sfCall = sf.Next(1, 3);
             int sfRaise = sf.Next(1, 3);
             if (botPower <= 913 && botPower >= 804)
             {
-                this.AISmooth(ref sChips, ref sTurn, ref sFTurn, sStatus, name, sfCall, sfRaise);
+                this.AISmooth(ref botChips, ref sTurn, ref sFTurn, sStatus, name, sfCall, sfRaise);
             }
         }
-
-        // wika se ot AIHP ili AIPH  this.AIFold(ref sTurn, ref sFTurn, sStatus);
-        private void AIFold(ref bool sTurn, ref bool sFTurn, Label sStatus)
-        {
-            raising = false;
-            sStatus.Text = "Fold";
-            sTurn = false;
-            sFTurn = true;
-        }
-
-        // вика се от AIHP, AIPH, AISmooth  this.AICheck(ref sTurn, sStatus);
-        private void AICheck(ref bool cTurn, Label cStatus)
-        {
-            cStatus.Text = "Check";
-            cTurn = false;
-            raising = false;
-        }
-
-        // вика се от  AIHP AIPH, AISmooth this.AICall(ref sChips, ref sTurn, sStatus);
-        private void AICall(ref int sChips, ref bool sTurn, Label sStatus)
-        {
-            raising = false;
-            sTurn = false;
-            sChips -= this.pokerCall;
-            sStatus.Text = "Call " + this.pokerCall;
-            textBoxPot.Text = (int.Parse(textBoxPot.Text) + this.pokerCall).ToString();
-        }
-
-        // вика се от  AIHP AIPH, AISmooth this.AIRaised(ref sChips, ref sTurn, sStatus);
-        private void AIRaised(ref int sChips, ref bool sTurn, Label sStatus)
-        {
-            sChips -= Convert.ToInt32(this.raise);
-            sStatus.Text = "Raise " + this.raise;
-            textBoxPot.Text = (int.Parse(textBoxPot.Text) + Convert.ToInt32(this.raise)).ToString();
-            this.pokerCall = Convert.ToInt32(this.raise);
-            raising = true;
-            sTurn = false;
-        }
-
-        //вика се от  AIHP AIPH, AISmooth  this.pokerCall <= AIRoundNumber(sChips, n) числото е различно има и математика
-        private static double AIRoundNumber(int sChips, int n)
-        {
-            double a = Math.Round((sChips / n) / 100d, 0) * 100;
-            return a;
-        }
-
-        /// <summary>
-        /// ???
-        /// </summary>
-        /// <param name="sChips"></param>
-        /// <param name="sTurn"></param>
-        /// <param name="sFTurn"></param>
-        /// <param name="sStatus"></param>
-        /// <param name="botPower"></param>
-        /// <param name="n"></param>
-        /// <param name="n1"></param>
-        private void AIHP(ref int sChips, ref bool sTurn, ref bool sFTurn, Label sStatus, double botPower, int n, int n1)
+        
+        /* wika se ot: 
+         randoma e ot 1-3
+         ako pokerCall <= 0 bota igrae CHeck
+         ako pokerCall > 0 w zawisimost ot randoma ima 3 wyzmovnosti:
+         * 1 -> move da igrae Call ili Fold
+         * 2 -> move da igrae Call ili Fold
+         * 3 -> move da wdigne ili da Fold 
+         */
+        private void AIHP(ref int botChips, ref bool bothTurn, ref bool botEndGame, Label sStatus, double botPower, int n, int n1)
         {
             Random rand = new Random();
+            
+            // staro:int rnd = rand.Next(1, 4); t.kato rnd = 4 nikyde ne se polzwa
             int rnd = rand.Next(1, 4);
+            
             if (this.pokerCall <= 0)
             {
-                this.AICheck(ref sTurn, sStatus);
+                // bota igrae CHeck
+                this.AICheck(ref bothTurn, sStatus);
             }
+
             if (this.pokerCall > 0)
             {
                 if (rnd == 1)
                 {
-                    if (this.pokerCall <= AIRoundNumber(sChips, n))
+                    if (this.pokerCall <= AIRoundNumber(botChips, n))
                     {
-                        this.AICall(ref sChips, ref sTurn, sStatus);
+                        this.AICall(ref botChips, ref bothTurn, sStatus);
                     }
                     else
                     {
-                        this.AIFold(ref sTurn, ref sFTurn, sStatus);
+                        this.AIFold(ref bothTurn, ref botEndGame, sStatus);
                     }
                 }
+
                 if (rnd == 2)
                 {
-                    if (this.pokerCall <= AIRoundNumber(sChips, n1))
+                    if (this.pokerCall <= AIRoundNumber(botChips, n1))
                     {
-                        this.AICall(ref sChips, ref sTurn, sStatus);
+                        this.AICall(ref botChips, ref bothTurn, sStatus);
                     }
                     else
                     {
-                        this.AIFold(ref sTurn, ref sFTurn, sStatus);
+                        this.AIFold(ref bothTurn, ref botEndGame, sStatus);
                     }
                 }
             }
@@ -2329,126 +2297,158 @@
             {
                 if (this.raise == 0)
                 {
+                    //smqta s kolko da wdigne bota
                     this.raise = this.pokerCall * 2;
-                    this.AIRaised(ref sChips, ref sTurn, sStatus);
+                    
+                    //cbota igrae Raise
+                    this.AIRaised(ref botChips, ref bothTurn, sStatus);
                 }
                 else
                 {
-                    if (this.raise <= AIRoundNumber(sChips, n))
+                    if (this.raise <= AIRoundNumber(botChips, n))
                     {
                         this.raise = this.pokerCall * 2;
-                        this.AIRaised(ref sChips, ref sTurn, sStatus);
+                        this.AIRaised(ref botChips, ref bothTurn, sStatus);
                     }
                     else
                     {
-                        this.AIFold(ref sTurn, ref sFTurn, sStatus);
+                        this.AIFold(ref bothTurn, ref botEndGame, sStatus);
                     }
                 }
             }
-            if (sChips <= 0)
+
+            if (botChips <= 0)
             {
-                sFTurn = true;
+                botEndGame = true;
             }
         }
-        private void AIPH(ref int sChips, ref bool sTurn, ref bool sFTurn, Label sStatus, int n, int n1, int r)
+
+        /*wika se ot:
+         randoma e ot 1-3
+         ako  this.rounds < 2 
+            ako pokerCall <= 0 bota igrae CHeck
+            ako pokerCall > 0 w zawisimost ot matematikata na chipowete move da FOLD, CALL, RASE
+         ako this.rounds >= 2
+                ako pokerCall <= 0 bota igrae Raise
+                ako pokerCall > 0 w zawisimost ot matematikata na chipowete i rnd, move da FOLD, CALL, RASE
+             ako botChips <= 0 => setwa botEndGame = true;
+         */
+        private void AIPH(ref int botChips, ref bool sTurn, ref bool botEndGame, Label sStatus, int n, int n1, int r)
         {
             Random rand = new Random();
             int rnd = rand.Next(1, 3);
-            if (rounds < 2)
+            if (this.rounds < 2)
             {
                 if (this.pokerCall <= 0)
                 {
                     this.AICheck(ref sTurn, sStatus);
                 }
+
                 if (this.pokerCall > 0)
                 {
-                    if (this.pokerCall >= AIRoundNumber(sChips, n1))
+                    if (this.pokerCall >= AIRoundNumber(botChips, n1))
                     {
-                        this.AIFold(ref sTurn, ref sFTurn, sStatus);
+                        this.AIFold(ref sTurn, ref botEndGame, sStatus);
                     }
-                    if (this.raise > AIRoundNumber(sChips, n))
+
+                    if (this.raise > AIRoundNumber(botChips, n))
                     {
-                        this.AIFold(ref sTurn, ref sFTurn, sStatus);
+                        this.AIFold(ref sTurn, ref botEndGame, sStatus);
                     }
-                    if (!sFTurn)
+
+                    if (!botEndGame)
                     {
-                        if (this.pokerCall >= AIRoundNumber(sChips, n) && this.pokerCall <= AIRoundNumber(sChips, n1))
+                        if (this.pokerCall >= AIRoundNumber(botChips, n) && this.pokerCall <= AIRoundNumber(botChips, n1))
                         {
-                            this.AICall(ref sChips, ref sTurn, sStatus);
+                            this.AICall(ref botChips, ref sTurn, sStatus);
                         }
-                        if (this.raise <= AIRoundNumber(sChips, n) && this.raise >= (AIRoundNumber(sChips, n)) / 2)
+
+                        if (this.raise <= AIRoundNumber(botChips, n) && this.raise >= (AIRoundNumber(botChips, n)) / 2)
                         {
-                            this.AICall(ref sChips, ref sTurn, sStatus);
+                            this.AICall(ref botChips, ref sTurn, sStatus);
                         }
-                        if (this.raise <= (AIRoundNumber(sChips, n)) / 2)
+
+                        if (this.raise <= (AIRoundNumber(botChips, n)) / 2)
                         {
                             if (this.raise > 0)
                             {
-                                this.raise = AIRoundNumber(sChips, n);
-                                this.AIRaised(ref sChips, ref sTurn, sStatus);
+                                this.raise = AIRoundNumber(botChips, n);
+                                this.AIRaised(ref botChips, ref sTurn, sStatus);
                             }
                             else
                             {
                                 this.raise = this.pokerCall * 2;
-                                this.AIRaised(ref sChips, ref sTurn, sStatus);
+                                this.AIRaised(ref botChips, ref sTurn, sStatus);
                             }
                         }
-
                     }
                 }
             }
-            if (rounds >= 2)
+
+            /*
+             
+             */
+            if (this.rounds >= 2)
             {
                 if (this.pokerCall > 0)
                 {
-                    if (this.pokerCall >= AIRoundNumber(sChips, n1 - rnd))
+                    if (this.pokerCall >= AIRoundNumber(botChips, n1 - rnd))
                     {
-                        this.AIFold(ref sTurn, ref sFTurn, sStatus);
+                        this.AIFold(ref sTurn, ref botEndGame, sStatus);
                     }
-                    if (this.raise > AIRoundNumber(sChips, n - rnd))
+                    if (this.raise > AIRoundNumber(botChips, n - rnd))
                     {
-                        this.AIFold(ref sTurn, ref sFTurn, sStatus);
+                        this.AIFold(ref sTurn, ref botEndGame, sStatus);
                     }
-                    if (!sFTurn)
+                    if (!botEndGame)
                     {
-                        if (this.pokerCall >= AIRoundNumber(sChips, n - rnd) && this.pokerCall <= AIRoundNumber(sChips, n1 - rnd))
+                        if (this.pokerCall >= AIRoundNumber(botChips, n - rnd) && this.pokerCall <= AIRoundNumber(botChips, n1 - rnd))
                         {
-                            this.AICall(ref sChips, ref sTurn, sStatus);
+                            this.AICall(ref botChips, ref sTurn, sStatus);
                         }
-                        if (this.raise <= AIRoundNumber(sChips, n - rnd) && this.raise >= (AIRoundNumber(sChips, n - rnd)) / 2)
+                        if (this.raise <= AIRoundNumber(botChips, n - rnd) && this.raise >= (AIRoundNumber(botChips, n - rnd)) / 2)
                         {
-                            this.AICall(ref sChips, ref sTurn, sStatus);
+                            this.AICall(ref botChips, ref sTurn, sStatus);
                         }
-                        if (this.raise <= (AIRoundNumber(sChips, n - rnd)) / 2)
+                        if (this.raise <= (AIRoundNumber(botChips, n - rnd)) / 2)
                         {
                             if (this.raise > 0)
                             {
-                                this.raise = AIRoundNumber(sChips, n - rnd);
-                                this.AIRaised(ref sChips, ref sTurn, sStatus);
+                                this.raise = AIRoundNumber(botChips, n - rnd);
+                                this.AIRaised(ref botChips, ref sTurn, sStatus);
                             }
                             else
                             {
                                 this.raise = this.pokerCall * 2;
-                                this.AIRaised(ref sChips, ref sTurn, sStatus);
+                                this.AIRaised(ref botChips, ref sTurn, sStatus);
                             }
                         }
                     }
                 }
                 if (this.pokerCall <= 0)
                 {
-                    this.raise = AIRoundNumber(sChips, r - rnd);
-                    this.AIRaised(ref sChips, ref sTurn, sStatus);
+                    this.raise = AIRoundNumber(botChips, r - rnd);
+                    this.AIRaised(ref botChips, ref sTurn, sStatus);
                 }
             }
-            if (sChips <= 0)
+
+            if (botChips <= 0)
             {
-                sFTurn = true;
+                botEndGame = true;
             }
         }
-        void AISmooth(ref int botChips, ref bool botTurn, ref bool botFTurn, Label botStatus, int name, int n, int r)
+
+        /*wika se ot: 
+         randoma e ot 1-3, NO NE SE POLZWA!
+         ako pokerCall <= 0 bota igrae CHeck
+         ako pokerCall > 0 w zawisimost ot matematikata na chipowete move da CALL, RASE
+         ako botChips <= 0 => setwa botEndGame = true;
+         */
+        private void AISmooth(ref int botChips, ref bool botTurn, ref bool botEndGame, Label botStatus, int name, int n, int r)
         {
-            Random rand = new Random();
-            int rnd = rand.Next(1, 3);
+          // star kod - > zakomentiran t.kato ne se polzwa: 
+          // Random rand = new Random();
+          // int rnd = rand.Next(1, 3);
             if (this.pokerCall <= 0)
             {
                 this.AICheck(ref botTurn, botStatus);
@@ -2493,9 +2493,69 @@
             }
             if (botChips <= 0)
             {
-                botFTurn = true;
+                botEndGame = true;
             }
         }
+      
+
+
+
+
+        // wika se ot AIHP ili AIPH  this.AIFold(ref bothTurn, ref botEndGame, sStatus);
+        private void AIFold(ref bool sTurn, ref bool sFTurn, Label sStatus)
+        {
+            raising = false;
+            sStatus.Text = "Fold";
+            sTurn = false;
+            sFTurn = true;
+        }
+
+        // вика се от AIHP, AIPH, AISmooth  this.AICheck(ref bothTurn, sStatus);
+        /// <summary>
+        /// the bot plays CHECK. 
+        /// The method sets bot's statusLable on Check; botTurn on False and both raising on False;
+        /// </summary>
+        /// <param name="cTurn">
+        /// podawa se poreferenciq t.kato nqma obekt kojto da dyrvi stojnostite.
+        /// </param>
+        /// <param name="cStatus">
+        /// podawa se poreferenciq t.kato nqma obekt kojto da dyrvi stojnostite.
+        /// </param>
+        private void AICheck(ref bool cTurn, Label cStatus)
+        {
+            cStatus.Text = "Check";
+            cTurn = false;
+            raising = false;
+        }
+
+        // вика се от  AIHP AIPH, AISmooth this.AICall(ref botChips, ref bothTurn, sStatus);
+        private void AICall(ref int botChips, ref bool sTurn, Label sStatus)
+        {
+            this.raising = false;
+            sTurn = false;
+            botChips -= this.pokerCall;
+            sStatus.Text = "Call " + this.pokerCall;
+            this.textBoxPot.Text = (int.Parse(textBoxPot.Text) + this.pokerCall).ToString();
+        }
+
+        // вика се от  AIHP AIPH, AISmooth this.AIRaised(ref botChips, ref bothTurn, sStatus);
+        private void AIRaised(ref int botChips, ref bool sTurn, Label sStatus)
+        {
+            botChips -= Convert.ToInt32(this.raise);
+            sStatus.Text = "Raise " + this.raise;
+            textBoxPot.Text = (int.Parse(textBoxPot.Text) + Convert.ToInt32(this.raise)).ToString();
+            this.pokerCall = Convert.ToInt32(this.raise);
+            raising = true;
+            sTurn = false;
+        }
+
+        //вика се от  AIHP AIPH, AISmooth  this.pokerCall <= AIRoundNumber(botChips, n) числото е различно има и математика
+        private static double AIRoundNumber(int botChips, int n)
+        {
+            double a = Math.Round((botChips / n) / 100d, 0) * 100;
+            return a;
+        }
+
         #endregion
 
         #region UI
