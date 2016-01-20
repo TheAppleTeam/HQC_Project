@@ -6,6 +6,7 @@
     using System.Globalization;
     using System.IO;
     using System.Linq;
+    using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
     using System.Windows.Forms;
     using Poker.GameObjects.Cards;
@@ -28,16 +29,15 @@
 
         #region Variables
 
-        private IPlayer[] players = new IPlayer[]
-        {
-            new Gamer(),
-            new Bot("Bot 1"), 
-            new Bot("Bot 2"),
-            new Bot("Bot 3"), 
-            new Bot("Bot 4"), 
-            new Bot("Bot 5"), 
-        };
-        
+        private IPlayer gamer = new Gamer();
+        private IPlayer bot1= new Bot("Bot 1");
+        private IPlayer bot2 = new Bot("Bot 2");
+        private IPlayer bot3 = new Bot("Bot 3");
+        private IPlayer bot4 = new Bot("Bot 4");
+        private IPlayer bot5 = new Bot("Bot 5");
+
+        private IPlayer[] players = new IPlayer[6];
+
         private int pokerCall = InitialBigBlind;
         private int foldedPlayers = BotCount;
 
@@ -110,6 +110,13 @@
 
         public GameForm()
         {
+            this.players[0] = this.gamer;
+            this.players[1] = this.bot1;
+            this.players[2] = this.bot2;
+            this.players[3] = this.bot3;
+            this.players[4] = this.bot4;
+            this.players[5] = this.bot5;
+
             //bools.Add(PFturn); bools.Add(B1Fturn); bools.Add(players[2].GameEnded); bools.Add(players[3].GameEnded); bools.Add(players[4].GameEnded); bools.Add(players[5].GameEnded);
             this.pokerCall = InitialBigBlind;
             MaximizeBox = false;
@@ -503,8 +510,19 @@
         /// <param name="anchorPointVerticalLocation"></param>
         private void FillInCardHolder(int cardIndex, int anchorPointHorizontalLocation, int anchorPointVerticalLocation)
         {
+            Bitmap backImage = new Bitmap("Assets\\Back\\Back.png");
+
             this.cardHolder[cardIndex].Tag = this.dealtCardsNumbers[cardIndex];
             this.cardHolder[cardIndex].Image = this.DeckImages[cardIndex];
+            //if (cardIndex < 2 )
+            //{
+            //    this.cardHolder[cardIndex].Image = this.DeckImages[cardIndex];
+            //}
+            //else
+            //{
+            //    this.cardHolder[cardIndex].Image = backImage;
+            //}
+            
             this.cardHolder[cardIndex].Anchor = (AnchorStyles.Bottom);
             if (cardIndex % 2 == 1 && cardIndex < 12)
             {
@@ -582,6 +600,7 @@
                 }
                 if (this.players[1].GameEnded && !this.players[1].Folded)
                 {
+                    //TODO _ActivePlayers rename
                     bools.RemoveAt(1);
                     bools.Insert(1, null);
                     maxPlayersLeftCount--;
@@ -725,10 +744,10 @@
             //{
             //}
 
-            //if (!foldedTurn || firstCard == 0 && secondCard == 1 && labelPlayerStatus.Text.Contains("Fold") == false)
-            //{
-            #region Variables
-            bool done = false;
+            if (!foldedTurn || firstCard == 0 && secondCard == 1 && labelPlayerStatus.Text.Contains("Fold") == false)
+            {
+                #region Variables
+                bool done = false;
             bool vf = false;
             int[] cardsOnTable = new int[5];
             int[] cardsOnTableWithPlayerCards = new int[7];
@@ -803,7 +822,7 @@
                 #endregion
                 //}
             }
-            //}
+            }
         }
 
         //Stani
@@ -1556,7 +1575,7 @@
         }
         async Task CheckRaise(int currentTurn, int raiseTurn)
         {
-            if (raising)
+            if (this.raising)
             {
                 turnCount = 0;
                 raising = false;
@@ -1597,12 +1616,19 @@
                     if (this.cardHolder[j].Image != this.DeckImages[j])
                     {
                         this.cardHolder[j].Image = this.DeckImages[j];
-                        this.players[0].Call = 0; players[0].Raise = 0;
-                        this.players[1].Call = 0; players[1].Raise = 0;
-                        this.players[2].Call = 0; players[2].Raise = 0;
-                        players[3].Call = 0; players[3].Raise = 0;
-                        players[4].Call = 0; players[4].Raise = 0;
-                        players[5].Call = 0; players[5].Raise = 0;
+                        this.players[0].Call = 0;
+                        players[0].Raise = 0;
+                        this.players[1].Call = 0;
+                        players[1].Raise = 0;
+                        this.players[2].Call = 0;
+
+                        players[2].Raise = 0;
+                        players[3].Call = 0;
+                        players[3].Raise = 0;
+                        players[4].Call = 0;
+                        players[4].Raise = 0;
+                        players[5].Call = 0;
+                        players[5].Raise = 0;
                     }
                 }
             }
@@ -1760,7 +1786,7 @@
         }
         void FixCall(Label status, int cCall, int cRaise, int options)
         {
-            if (rounds != 4)
+            if (this.rounds != 4)
             {
                 if (options == 1)
                 {
@@ -1924,6 +1950,7 @@
                 }
                 await Finish(1);
             }
+            //TODO find what is intsadded
             intsadded = false;
             #endregion
 
@@ -1951,7 +1978,8 @@
 
             this.pokerCall = bb; this.raise = 0;
             foldedPlayers = 5;
-            type = 0; rounds = 0;
+            type = 0;
+            rounds = 0;
             this.players[1].CardPower = 0;
             this.players[2].CardPower = 0;
             this.players[3].CardPower = 0;
@@ -1973,7 +2001,8 @@
             this.players[0].GameEnded = false; players[0].Turn = true; restart = false; raising = false;
             this.players[0].Call = 0; this.players[1].Call = 0; this.players[2].Call = 0; players[3].Call = 0; players[4].Call = 0; players[5].Call = 0; players[0].Raise = 0; players[1].Raise = 0; players[2].Raise = 0; players[3].Raise = 0; players[4].Raise = 0; players[5].Raise = 0;
             height = 0; width = 0; winnersCount = 0; Flop = 1; Turn = 2; River = 3; End = 4; maxPlayersLeftCount = 6;
-            lastBotPlayed = 123; raisedTurn = 1;
+            lastBotPlayed = 123;
+            raisedTurn = 1;
             bools.Clear();
             CheckWinners.Clear();
             ints.Clear();
