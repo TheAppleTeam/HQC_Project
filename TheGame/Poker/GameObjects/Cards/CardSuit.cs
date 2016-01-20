@@ -1,4 +1,4 @@
-﻿namespace GameObjects.Cards
+﻿namespace Poker.GameObjects.Cards
 {
     public enum CardSuit
     {

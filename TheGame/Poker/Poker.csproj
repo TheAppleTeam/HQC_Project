@@ -59,6 +59,9 @@
     <Compile Include="GameObjects\Cards\Card.cs" />
     <Compile Include="GameObjects\Cards\CardSuit.cs" />
     <Compile Include="GameObjects\Player\AbstractPlayer.cs" />
+    <Compile Include="GameObjects\Player\Bot.cs" />
+    <Compile Include="GameObjects\Player\Gamer.cs" />
+    <Compile Include="GameObjects\Player\IPlayer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProgressBars.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

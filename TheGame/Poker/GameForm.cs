@@ -8,7 +8,8 @@
     using System.Linq;
     using System.Threading.Tasks;
     using System.Windows.Forms;
-    using GameObjects.Cards;
+    using Poker.GameObjects.Cards;
+    using Poker.GameObjects.Player;
 
     public partial class GameForm : Form
     {
@@ -26,14 +27,25 @@
         #endregion
 
         #region Variables
+
+        private IPlayer[] players = new IPlayer[]
+        {
+            new Gamer(),
+            new Bot("Bot 1"), 
+            new Bot("Bot 2"),
+            new Bot("Bot 3"), 
+            new Bot("Bot 4"), 
+            new Bot("Bot 5"), 
+        };
+        
         private int pokerCall = InitialBigBlind;
         private int foldedPlayers = BotCount;
-        private int playerChips = InitialChips;
-        private int bot1Chips = InitialChips;
-        private int bot2Chips = InitialChips;
-        private int bot3Chips = InitialChips;
-        private int bot4Chips = InitialChips;
-        private int bot5Chips = InitialChips;
+        //private int playerChips = InitialChips;
+        //private int bot1Chips = InitialChips;
+        //private int bot2Chips = InitialChips;
+        //private int bot3Chips = InitialChips;
+        //private int bot4Chips = InitialChips;
+        //private int bot5Chips = InitialChips;
 
         private readonly Panel playerCardsPanel = new Panel();
         private readonly Panel bot1CardsPanel = new Panel();
@@ -120,7 +132,10 @@
 
         List<string> CheckWinners = new List<string>();
         List<int> ints = new List<int>();
-        bool playerGameEnded = false, Pturn = true, restart = false, raising = false;
+        private bool playerGameEnded = false;
+        private bool Pturn = true;
+        private bool restart = false;
+        bool raising = false;
         Poker.Type winningCard;
 
 
@@ -166,12 +181,12 @@
             textBoxBot3Chips.Enabled = false;
             textBoxBot4Chips.Enabled = false;
             textBoxBot5Chips.Enabled = false;
-            textBoxPlayerChips.Text = "Chips : " + this.playerChips.ToString();
-            textBoxBot1Chips.Text = "Chips : " + bot1Chips.ToString();
-            textBoxBot2Chips.Text = "Chips : " + bot2Chips.ToString();
-            textBoxBot3Chips.Text = "Chips : " + bot3Chips.ToString();
-            textBoxBot4Chips.Text = "Chips : " + bot4Chips.ToString();
-            textBoxBot5Chips.Text = "Chips : " + bot5Chips.ToString();
+            textBoxPlayerChips.Text = "Chips : " + this.players[0].Chips.ToString();
+            textBoxBot1Chips.Text = "Chips : " + this.players[1].Chips.ToString();
+            textBoxBot2Chips.Text = "Chips : " + this.players[2].Chips.ToString();
+            textBoxBot3Chips.Text = "Chips : " + this.players[3].Chips.ToString();
+            textBoxBot4Chips.Text = "Chips : " + this.players[4].Chips.ToString();
+            textBoxBot5Chips.Text = "Chips : " + this.players[5].Chips.ToString();
             timer.Interval = (1 * 1 * 1000);
             timer.Tick += timer_Tick;
             Updates.Interval = (1 * 1 * 100);
@@ -320,7 +335,7 @@
         /// <param name="cardIndex">Index of the cards that are dealt</param>
         private void CheckToEnableBots(int cardIndex)
         {
-            if (this.bot1Chips <= 0)
+            if (this.players[1].Chips <= 0)
             {
                 this.bot1GameEnded = true;
                 this.HideBotCards(1);
@@ -331,7 +346,7 @@
                 this.DisplayBotCards(1, cardIndex);
             }
 
-            if (this.bot2Chips <= 0)
+            if (this.players[2].Chips <= 0)
             {
                 this.bot2GameEnded = true;
                 this.HideBotCards(2);
@@ -342,7 +357,7 @@
                 this.DisplayBotCards(2, cardIndex);
             }
 
-            if (this.bot3Chips <= 0)
+            if (this.players[3].Chips <= 0)
             {
                 this.bot3GameEnded = true;
                 this.HideBotCards(3);
@@ -352,7 +367,7 @@
                 this.DisplayBotCards(3, cardIndex);
             }
 
-            if (this.bot4Chips <= 0)
+            if (this.players[4].Chips <= 0)
             {
                 this.bot4GameEnded = true;
                 this.HideBotCards(4);
@@ -362,7 +377,7 @@
                 this.DisplayBotCards(4, cardIndex);
             }
 
-            if (this.bot5Chips <= 0)
+            if (this.players[5].Chips <= 0)
             {
                 this.bot5GameEnded = true;
                 this.HideBotCards(5);
@@ -436,7 +451,7 @@
 
             if (cardIndex >= 2 && cardIndex < 4)
             {
-                if (this.bot1Chips > 0)
+                if (this.players[1].Chips > 0)
                 {
                     anchorPointHorizontalPosition = 15;
                     anchorPointVerticalPosition = 420;
@@ -447,7 +462,7 @@
 
             if (cardIndex >= 4 && cardIndex < 6)
             {
-                if (this.bot2Chips > 0)
+                if (this.players[2].Chips > 0)
                 {
                     anchorPointHorizontalPosition = 75;
                     anchorPointVerticalPosition = 65;
@@ -458,7 +473,7 @@
 
             if (cardIndex >= 6 && cardIndex < 8)
             {
-                if (this.bot3Chips > 0)
+                if (this.players[3].Chips > 0)
                 {
                     anchorPointHorizontalPosition = 590;
                     anchorPointVerticalPosition = 25;
@@ -469,7 +484,7 @@
 
             if (cardIndex >= 8 && cardIndex < 10)
             {
-                if (this.bot4Chips > 0)
+                if (this.players[4].Chips > 0)
                 {
                     anchorPointHorizontalPosition = 1115;
                     anchorPointVerticalPosition = 65;
@@ -480,7 +495,7 @@
 
             if (cardIndex >= 10 && cardIndex < 12)
             {
-                if (this.bot5Chips > 0)
+                if (this.players[5].Chips > 0)
                 {
                     anchorPointHorizontalPosition = 1160;
                     anchorPointVerticalPosition = 420;
@@ -613,7 +628,7 @@
                         FixCall(labelBot1Status, ref this.bot1Call, ref bot1Raise, 2);
                         Rules(2, 3, "Bot 1", ref this.bot1HandMultiplier, ref this.bot1CardPower, this.bot1GameEnded);
                         MessageBox.Show("Bot 1's Turn");
-                        AI(2, 3, ref bot1Chips, ref this.bot1Turn, ref this.bot1GameEnded, labelBot1Status, 0, this.bot1CardPower, this.bot1HandMultiplier);
+                        AI(2, 3, this.players[1].Chips, ref this.bot1Turn, ref this.bot1GameEnded, labelBot1Status, 0, this.bot1CardPower, this.bot1HandMultiplier);
                         turnCount++;
                         lastBotPlayed = 1;
                         this.bot1Turn = false;
@@ -640,7 +655,7 @@
                         FixCall(labelBot2Status, ref this.bot2Call, ref bot2Raise, 2);
                         Rules(4, 5, "Bot 2", ref this.bot2HandMultiplier, ref this.bot2CardPower, this.bot2GameEnded);
                         MessageBox.Show("Bot 2's Turn");
-                        AI(4, 5, ref bot2Chips, ref this.bot2Turn, ref this.bot2GameEnded, labelBot2Status, 1, this.bot2CardPower, this.bot2HandMultiplier);
+                        AI(4, 5, this.players[2].Chips, ref this.bot2Turn, ref this.bot2GameEnded, labelBot2Status, 1, this.bot2CardPower, this.bot2HandMultiplier);
                         turnCount++;
                         lastBotPlayed = 2;
                         this.bot2Turn = false;
@@ -667,7 +682,7 @@
                         FixCall(labelBot3Status, ref bot3Call, ref bot3Raise, 2);
                         Rules(6, 7, "Bot 3", ref this.bot3HandMultiplier, ref this.bot3CardPower, this.bot3GameEnded);
                         MessageBox.Show("Bot 3's Turn");
-                        AI(6, 7, ref bot3Chips, ref this.bot3Turn, ref this.bot3GameEnded, labelBot3Status, 2, this.bot3CardPower, this.bot3HandMultiplier);
+                        AI(6, 7, this.players[3].Chips, ref this.bot3Turn, ref this.bot3GameEnded, labelBot3Status, 2, this.bot3CardPower, this.bot3HandMultiplier);
                         turnCount++;
                         lastBotPlayed = 3;
                         this.bot3Turn = false;
@@ -694,7 +709,7 @@
                         FixCall(labelBot4Status, ref bot4Call, ref bot4Raise, 2);
                         Rules(8, 9, "Bot 4", ref this.bot4HandMultiplier, ref this.bot4CardPower, this.bot4GameEnded);
                         MessageBox.Show("Bot 4's Turn");
-                        AI(8, 9, ref bot4Chips, ref this.bot4Turn, ref this.bot4GameEnded, labelBot4Status, 3, this.bot4CardPower, this.bot4HandMultiplier);
+                        AI(8, 9, this.players[4].Chips, ref this.bot4Turn, ref this.bot4GameEnded, labelBot4Status, 3, this.bot4CardPower, this.bot4HandMultiplier);
                         turnCount++;
                         lastBotPlayed = 4;
                         this.bot4Turn = false;
@@ -721,7 +736,7 @@
                         FixCall(labelBot5Status, ref bot5Call, ref bot5Raise, 2);
                         Rules(10, 11, "Bot 5", ref this.bot5HandMultiplier, ref this.bot5CardPower, bot5GameEnded);
                         MessageBox.Show("Bot 5's Turn");
-                         AI(10, 11, ref bot5Chips, ref this.bot5Turn, ref  bot5GameEnded, labelBot5Status, 4, this.bot5CardPower, this.bot5HandMultiplier);
+                        AI(10, 11, this.players[5].Chips, ref this.bot5Turn, ref  bot5GameEnded, labelBot5Status, 4, this.bot5CardPower, this.bot5HandMultiplier);
                         turnCount++;
                         lastBotPlayed = 5;
                         this.bot5Turn = false;
@@ -1515,39 +1530,39 @@
                 {
                     if (CheckWinners.Contains("Player"))
                     {
-                        this.playerChips += int.Parse(textBoxPot.Text) / winnersCount;
-                        textBoxPlayerChips.Text = this.playerChips.ToString();
+                        this.players[0].Chips += int.Parse(textBoxPot.Text) / winnersCount;
+                        textBoxPlayerChips.Text = this.players[0].Chips.ToString();
                         //pPanel.Visible = true;
 
                     }
                     if (CheckWinners.Contains("Bot 1"))
                     {
-                        bot1Chips += int.Parse(textBoxPot.Text) / winnersCount;
-                        textBoxBot1Chips.Text = bot1Chips.ToString();
+                        this.players[1].Chips += int.Parse(textBoxPot.Text) / winnersCount;
+                        textBoxBot1Chips.Text = this.players[1].Chips.ToString();
                         //b1Panel.Visible = true;
                     }
                     if (CheckWinners.Contains("Bot 2"))
                     {
-                        bot2Chips += int.Parse(textBoxPot.Text) / winnersCount;
-                        textBoxBot2Chips.Text = bot2Chips.ToString();
+                        this.players[2].Chips += int.Parse(textBoxPot.Text) / winnersCount;
+                        textBoxBot2Chips.Text = this.players[2].Chips.ToString();
                         //b2Panel.Visible = true;
                     }
                     if (CheckWinners.Contains("Bot 3"))
                     {
-                        bot3Chips += int.Parse(textBoxPot.Text) / winnersCount;
-                        textBoxBot3Chips.Text = bot3Chips.ToString();
+                        this.players[3].Chips += int.Parse(textBoxPot.Text) / winnersCount;
+                        textBoxBot3Chips.Text = this.players[3].Chips.ToString();
                         //b3Panel.Visible = true;
                     }
                     if (CheckWinners.Contains("Bot 4"))
                     {
-                        bot4Chips += int.Parse(textBoxPot.Text) / winnersCount;
-                        textBoxBot4Chips.Text = bot4Chips.ToString();
+                        this.players[4].Chips += int.Parse(textBoxPot.Text) / winnersCount;
+                        textBoxBot4Chips.Text = this.players[4].Chips.ToString();
                         //b4Panel.Visible = true;
                     }
                     if (CheckWinners.Contains("Bot 5"))
                     {
-                        bot5Chips += int.Parse(textBoxPot.Text) / winnersCount;
-                        textBoxBot5Chips.Text = bot5Chips.ToString();
+                        this.players[5].Chips += int.Parse(textBoxPot.Text) / winnersCount;
+                        textBoxBot5Chips.Text = this.players[5].Chips.ToString();
                         //b5Panel.Visible = true;
                     }
                     //await Finish(1);
@@ -1556,38 +1571,38 @@
                 {
                     if (CheckWinners.Contains("Player"))
                     {
-                        this.playerChips += int.Parse(textBoxPot.Text);
+                        this.players[0].Chips += int.Parse(textBoxPot.Text);
                         //await Finish(1);
                         //pPanel.Visible = true;
                     }
                     if (CheckWinners.Contains("Bot 1"))
                     {
-                        bot1Chips += int.Parse(textBoxPot.Text);
+                        this.players[1].Chips += int.Parse(textBoxPot.Text);
                         //await Finish(1);
                         //b1Panel.Visible = true;
                     }
                     if (CheckWinners.Contains("Bot 2"))
                     {
-                        bot2Chips += int.Parse(textBoxPot.Text);
+                        this.players[2].Chips += int.Parse(textBoxPot.Text);
                         //await Finish(1);
                         //b2Panel.Visible = true;
 
                     }
                     if (CheckWinners.Contains("Bot 3"))
                     {
-                        bot3Chips += int.Parse(textBoxPot.Text);
+                        this.players[3].Chips += int.Parse(textBoxPot.Text);
                         //await Finish(1);
                         //b3Panel.Visible = true;
                     }
                     if (CheckWinners.Contains("Bot 4"))
                     {
-                        bot4Chips += int.Parse(textBoxPot.Text);
+                        this.players[4].Chips += int.Parse(textBoxPot.Text);
                         //await Finish(1);
                         //b4Panel.Visible = true;
                     }
                     if (CheckWinners.Contains("Bot 5"))
                     {
-                        bot5Chips += int.Parse(textBoxPot.Text);
+                        this.players[5].Chips += int.Parse(textBoxPot.Text);
                         //await Finish(1);
                         //b5Panel.Visible = true;
                     }
@@ -1711,12 +1726,12 @@
                     fixedLast = "Bot 5";
                     Rules(10, 11, "Bot 5", ref this.bot5HandMultiplier, ref this.bot5CardPower, this.bot5GameEnded);
                 }
-                Winner(this.playerHandMultiplier, this.playerCardPower, "Player", this.playerChips, fixedLast);
-                Winner(this.bot1HandMultiplier, this.bot1CardPower, "Bot 1", bot1Chips, fixedLast);
-                Winner(this.bot2HandMultiplier, this.bot2CardPower, "Bot 2", bot2Chips, fixedLast);
-                Winner(this.bot3HandMultiplier, this.bot3CardPower, "Bot 3", bot3Chips, fixedLast);
-                Winner(this.bot4HandMultiplier, this.bot4CardPower, "Bot 4", bot4Chips, fixedLast);
-                Winner(this.bot5HandMultiplier, this.bot5CardPower, "Bot 5", bot5Chips, fixedLast);
+                Winner(this.playerHandMultiplier, this.playerCardPower, "Player", this.players[0].Chips, fixedLast);
+                Winner(this.bot1HandMultiplier, this.bot1CardPower, "Bot 1", this.players[1].Chips, fixedLast);
+                Winner(this.bot2HandMultiplier, this.bot2CardPower, "Bot 2", this.players[2].Chips, fixedLast);
+                Winner(this.bot3HandMultiplier, this.bot3CardPower, "Bot 3", this.players[3].Chips, fixedLast);
+                Winner(this.bot4HandMultiplier, this.bot4CardPower, "Bot 4", this.players[4].Chips, fixedLast);
+                Winner(this.bot5HandMultiplier, this.bot5CardPower, "Bot 5", this.players[5].Chips, fixedLast);
                 restart = true;
                 Pturn = true;
                 this.playerGameEnded = false;
@@ -1725,18 +1740,18 @@
                 this.bot3GameEnded = false;
                 this.bot4GameEnded = false;
                 this.bot5GameEnded = false;
-                if (this.playerChips <= 0)
+                if (this.players[0].Chips <= 0)
                 {
                     AddChips f2 = new AddChips();
                     f2.ShowDialog();
                     if (f2.a != 0)
                     {
-                        this.playerChips = f2.a;
-                        bot1Chips += f2.a;
-                        bot2Chips += f2.a;
-                        bot3Chips += f2.a;
-                        bot4Chips += f2.a;
-                        bot5Chips += f2.a;
+                        this.players[0].Chips = f2.a;
+                        this.players[1].Chips += f2.a;
+                        this.players[2].Chips += f2.a;
+                        this.players[3].Chips += f2.a;
+                        this.players[4].Chips += f2.a;
+                        this.players[5].Chips += f2.a;
                         this.playerGameEnded = false;
                         Pturn = true;
                         buttonRaise.Enabled = true;
@@ -1823,61 +1838,61 @@
         async Task AllIn()
         {
             #region All in
-            if (this.playerChips <= 0 && !intsadded)
+            if (this.players[0].Chips <= 0 && !intsadded)
             {
                 if (labelPlayerStatus.Text.Contains("Raise"))
                 {
-                    ints.Add(this.playerChips);
+                    ints.Add(this.players[0].Chips);
                     intsadded = true;
                 }
                 if (labelPlayerStatus.Text.Contains("Call"))
                 {
-                    ints.Add(this.playerChips);
+                    ints.Add(this.players[0].Chips);
                     intsadded = true;
                 }
             }
             intsadded = false;
-            if (bot1Chips <= 0 && !this.bot1GameEnded)
+            if (this.players[1].Chips <= 0 && !this.bot1GameEnded)
             {
                 if (!intsadded)
                 {
-                    ints.Add(bot1Chips);
+                    ints.Add(this.players[1].Chips);
                     intsadded = true;
                 }
                 intsadded = false;
             }
-            if (bot2Chips <= 0 && !this.bot2GameEnded)
+            if (this.players[2].Chips <= 0 && !this.bot2GameEnded)
             {
                 if (!intsadded)
                 {
-                    ints.Add(bot2Chips);
+                    ints.Add(this.players[2].Chips);
                     intsadded = true;
                 }
                 intsadded = false;
             }
-            if (bot3Chips <= 0 && !this.bot3GameEnded)
+            if (this.players[3].Chips <= 0 && !this.bot3GameEnded)
             {
                 if (!intsadded)
                 {
-                    ints.Add(bot3Chips);
+                    ints.Add(this.players[3].Chips);
                     intsadded = true;
                 }
                 intsadded = false;
             }
-            if (bot4Chips <= 0 && !this.bot4GameEnded)
+            if (this.players[4].Chips <= 0 && !this.bot4GameEnded)
             {
                 if (!intsadded)
                 {
-                    ints.Add(bot4Chips);
+                    ints.Add(this.players[4].Chips);
                     intsadded = true;
                 }
                 intsadded = false;
             }
-            if (bot5Chips <= 0 && !this.bot5GameEnded)
+            if (this.players[5].Chips <= 0 && !this.bot5GameEnded)
             {
                 if (!intsadded)
                 {
-                    ints.Add(bot5Chips);
+                    ints.Add(this.players[5].Chips);
                     intsadded = true;
                 }
             }
@@ -1899,43 +1914,43 @@
                 int index = bools.IndexOf(false);
                 if (index == 0)
                 {
-                    this.playerChips += int.Parse(textBoxPot.Text);
-                    textBoxPlayerChips.Text = this.playerChips.ToString();
+                    this.players[0].Chips += int.Parse(textBoxPot.Text);
+                    textBoxPlayerChips.Text = this.players[0].Chips.ToString();
                     this.playerCardsPanel.Visible = true;
                     MessageBox.Show("Player Wins");
                 }
                 if (index == 1)
                 {
-                    bot1Chips += int.Parse(textBoxPot.Text);
-                    textBoxPlayerChips.Text = bot1Chips.ToString();
+                    this.players[1].Chips += int.Parse(textBoxPot.Text);
+                    textBoxPlayerChips.Text = this.players[1].Chips.ToString();
                     this.bot1CardsPanel.Visible = true;
                     MessageBox.Show("Bot 1 Wins");
                 }
                 if (index == 2)
                 {
-                    bot2Chips += int.Parse(textBoxPot.Text);
-                    textBoxPlayerChips.Text = bot2Chips.ToString();
+                    this.players[2].Chips += int.Parse(textBoxPot.Text);
+                    textBoxPlayerChips.Text = this.players[2].Chips.ToString();
                     this.bot2CardsPanel.Visible = true;
                     MessageBox.Show("Bot 2 Wins");
                 }
                 if (index == 3)
                 {
-                    bot3Chips += int.Parse(textBoxPot.Text);
-                    textBoxPlayerChips.Text = bot3Chips.ToString();
+                    this.players[3].Chips += int.Parse(textBoxPot.Text);
+                    textBoxPlayerChips.Text = this.players[3].Chips.ToString();
                     this.bot3CardsPanel.Visible = true;
                     MessageBox.Show("Bot 3 Wins");
                 }
                 if (index == 4)
                 {
-                    bot4Chips += int.Parse(textBoxPot.Text);
-                    textBoxPlayerChips.Text = bot4Chips.ToString();
+                    this.players[4].Chips += int.Parse(textBoxPot.Text);
+                    textBoxPlayerChips.Text = this.players[4].Chips.ToString();
                     this.bot4CardsPanel.Visible = true;
                     MessageBox.Show("Bot 4 Wins");
                 }
                 if (index == 5)
                 {
-                    bot5Chips += int.Parse(textBoxPot.Text);
-                    textBoxPlayerChips.Text = bot5Chips.ToString();
+                    this.players[5].Chips += int.Parse(textBoxPot.Text);
+                    textBoxPlayerChips.Text = this.players[5].Chips.ToString();
                     this.bot5CardsPanel.Visible = true;
                     MessageBox.Show("Bot 5 Wins");
                 }
@@ -1989,18 +2004,18 @@
             labelBot3Status.Text = "";
             labelBot4Status.Text = "";
             labelBot5Status.Text = "";
-            if (this.playerChips <= 0)
+            if (this.players[0].Chips <= 0)
             {
                 AddChips f2 = new AddChips();
                 f2.ShowDialog();
                 if (f2.a != 0)
                 {
-                    this.playerChips = f2.a;
-                    bot1Chips += f2.a;
-                    bot2Chips += f2.a;
-                    bot3Chips += f2.a;
-                    bot4Chips += f2.a;
-                    bot5Chips += f2.a;
+                    this.players[0].Chips = f2.a;
+                    this.players[1].Chips += f2.a;
+                    this.players[2].Chips += f2.a;
+                    this.players[3].Chips += f2.a;
+                    this.players[4].Chips += f2.a;
+                    this.players[5].Chips += f2.a;
                     this.playerGameEnded = false;
                     Pturn = true;
                     buttonRaise.Enabled = true;
@@ -2055,15 +2070,15 @@
                 fixedLast = "Bot 5";
                 Rules(10, 11, "Bot 5", ref this.bot5HandMultiplier, ref this.bot5CardPower, bot5GameEnded);
             }
-            Winner(this.playerHandMultiplier, this.playerCardPower, "Player", this.playerChips, fixedLast);
-            Winner(this.bot1HandMultiplier, this.bot1CardPower, "Bot 1", bot1Chips, fixedLast);
-            Winner(this.bot2HandMultiplier, this.bot2CardPower, "Bot 2", bot2Chips, fixedLast);
-            Winner(this.bot3HandMultiplier, this.bot3CardPower, "Bot 3", bot3Chips, fixedLast);
-            Winner(this.bot4HandMultiplier, this.bot4CardPower, "Bot 4", bot4Chips, fixedLast);
-            Winner(this.bot5HandMultiplier, this.bot5CardPower, "Bot 5", bot5Chips, fixedLast);
+            Winner(this.playerHandMultiplier, this.playerCardPower, "Player", this.players[0].Chips, fixedLast);
+            Winner(this.bot1HandMultiplier, this.bot1CardPower, "Bot 1", this.players[1].Chips, fixedLast);
+            Winner(this.bot2HandMultiplier, this.bot2CardPower, "Bot 2", this.players[2].Chips, fixedLast);
+            Winner(this.bot3HandMultiplier, this.bot3CardPower, "Bot 3", this.players[3].Chips, fixedLast);
+            Winner(this.bot4HandMultiplier, this.bot4CardPower, "Bot 4", this.players[4].Chips, fixedLast);
+            Winner(this.bot5HandMultiplier, this.bot5CardPower, "Bot 5", this.players[5].Chips, fixedLast);
         }
 
-        //Plamena
+        // Plamena
         #region AI logic
         // AI   (     2,      3, ref    bot1Chips, ref this.bot1Turn,ref this.bot1GameEnded, labelBot1Status,       0, this.bot1CardPower, this.bot1HandMultiplier);
         /* wika se ot Turns : 
@@ -2078,7 +2093,7 @@
         => AI(8, 9, ref bot4Chips, ref this.bot4Turn, ref this.bot4GameEnded, labelBot4Status, 3, this.bot4CardPower, this.bot4HandMultiplier);
         => AI(10, 11, ref bot5Chips, ref this.bot5Turn, ref  bot5GameEnded, labelBot5Status, 4, this.bot5CardPower, this.bot5HandMultiplier);
          note: int name se polzwa samo pri wikaneto na smooth*/
-        private void AI(int positionCard1, int positionCard2, ref int botChips, ref bool botTurn, ref bool botGameEnded, Label labelBotStatus, int name, double botPower, double botHandMultiplier)
+        private void AI(int positionCard1, int positionCard2, int botChips, ref bool botTurn, ref bool botGameEnded, Label labelBotStatus, int name, double botPower, double botHandMultiplier)
         {
            if (!botGameEnded)
             {
@@ -2133,8 +2148,11 @@
         private void AIPairHand(ref int botChips, ref bool sTurn, ref bool sFTurn, Label sStatus, double botPower)
         {
             Random rPair = new Random();
+            
             int rCall = rPair.Next(10, 16);
+            
             int rRaise = rPair.Next(10, 13);
+
             if (botPower <= 199 && botPower >= 140)
             {
                 this.AIPH(ref botChips, ref sTurn, ref sFTurn, sStatus, rCall, 6, rRaise);
@@ -2586,37 +2604,37 @@
         }
         private void Update_Tick(object sender, object e)
         {
-            if (this.playerChips <= 0)
+            if (this.players[0].Chips <= 0)
             {
                 textBoxPlayerChips.Text = "Chips : 0";
             }
-            if (bot1Chips <= 0)
+            if (this.players[1].Chips <= 0)
             {
                 textBoxBot1Chips.Text = "Chips : 0";
             }
-            if (bot2Chips <= 0)
+            if (this.players[2].Chips <= 0)
             {
                 textBoxBot2Chips.Text = "Chips : 0";
             }
-            if (bot3Chips <= 0)
+            if (this.players[3].Chips <= 0)
             {
                 textBoxBot3Chips.Text = "Chips : 0";
             }
-            if (bot4Chips <= 0)
+            if (this.players[4].Chips <= 0)
             {
                 textBoxBot4Chips.Text = "Chips : 0";
             }
-            if (bot5Chips <= 0)
+            if (this.players[5].Chips <= 0)
             {
                 textBoxBot5Chips.Text = "Chips : 0";
             }
-            textBoxPlayerChips.Text = "Chips : " + this.playerChips.ToString();
-            textBoxBot1Chips.Text = "Chips : " + bot1Chips.ToString();
-            textBoxBot2Chips.Text = "Chips : " + bot2Chips.ToString();
-            textBoxBot3Chips.Text = "Chips : " + bot3Chips.ToString();
-            textBoxBot4Chips.Text = "Chips : " + bot4Chips.ToString();
-            textBoxBot5Chips.Text = "Chips : " + bot5Chips.ToString();
-            if (this.playerChips <= 0)
+            textBoxPlayerChips.Text = "Chips : " + this.players[0].Chips.ToString();
+            textBoxBot1Chips.Text = "Chips : " + this.players[1].Chips.ToString();
+            textBoxBot2Chips.Text = "Chips : " + this.players[2].Chips.ToString();
+            textBoxBot3Chips.Text = "Chips : " + this.players[3].Chips.ToString();
+            textBoxBot4Chips.Text = "Chips : " + this.players[4].Chips.ToString();
+            textBoxBot5Chips.Text = "Chips : " + this.players[5].Chips.ToString();
+            if (this.players[0].Chips <= 0)
             {
                 Pturn = false;
                 this.playerGameEnded = true;
@@ -2629,7 +2647,7 @@
             {
                 up--;
             }
-            if (this.playerChips >= this.pokerCall)
+            if (this.players[0].Chips >= this.pokerCall)
             {
                 buttonCall.Text = "Call " + this.pokerCall.ToString();
             }
@@ -2648,7 +2666,7 @@
                 buttonCall.Text = "Call";
                 buttonCall.Enabled = false;
             }
-            if (this.playerChips <= 0)
+            if (this.players[0].Chips <= 0)
             {
                 buttonRaise.Enabled = false;
             }
@@ -2656,7 +2674,7 @@
 
             if (textBoxRaise.Text != "" && int.TryParse(textBoxRaise.Text, out parsedValue))
             {
-                if (this.playerChips <= int.Parse(textBoxRaise.Text))
+                if (this.players[0].Chips <= int.Parse(textBoxRaise.Text))
                 {
                     buttonRaise.Text = "All in";
                 }
@@ -2665,7 +2683,7 @@
                     buttonRaise.Text = "Raise";
                 }
             }
-            if (this.playerChips < this.pokerCall)
+            if (this.players[0].Chips < this.pokerCall)
             {
                 buttonRaise.Enabled = false;
             }
@@ -2693,10 +2711,10 @@
         {
             Rules(0, 1, "Player", ref this.playerHandMultiplier, ref this.playerCardPower, this.playerGameEnded);
 
-            if (this.playerChips >= this.pokerCall)
+            if (this.players[0].Chips >= this.pokerCall)
             {
-                this.playerChips -= this.pokerCall;
-                textBoxPlayerChips.Text = "Chips : " + this.playerChips.ToString();
+                this.players[0].Chips -= this.pokerCall;
+                textBoxPlayerChips.Text = "Chips : " + this.players[0].Chips.ToString();
 
                 if (textBoxPot.Text != "")
                 {
@@ -2711,15 +2729,15 @@
                 labelPlayerStatus.Text = "Call " + this.pokerCall;
                 this.playerCall = this.pokerCall;
             }
-            else if (this.playerChips <= this.pokerCall && this.pokerCall > 0)
+            else if (this.players[0].Chips <= this.pokerCall && this.pokerCall > 0)
             {
-                textBoxPot.Text = (int.Parse(textBoxPot.Text) + this.playerChips).ToString();
-                labelPlayerStatus.Text = "All in " + this.playerChips;
-                this.playerChips = 0;
-                textBoxPlayerChips.Text = "Chips : " + this.playerChips.ToString();
+                textBoxPot.Text = (int.Parse(textBoxPot.Text) + this.players[0].Chips).ToString();
+                labelPlayerStatus.Text = "All in " + this.players[0].Chips;
+                this.players[0].Chips = 0;
+                textBoxPlayerChips.Text = "Chips : " + this.players[0].Chips.ToString();
                 Pturn = false;
                 buttonFold.Enabled = false;
-                this.playerCall = this.playerChips;
+                this.playerCall = this.players[0].Chips;
             }
             await Turns();
         }
@@ -2729,7 +2747,7 @@
             int parsedValue;
             if (textBoxRaise.Text != "" && int.TryParse(textBoxRaise.Text, out parsedValue))
             {
-                if (this.playerChips > this.pokerCall)
+                if (this.players[0].Chips > this.pokerCall)
                 {
                     if (this.raise * 2 > int.Parse(textBoxRaise.Text))
                     {
@@ -2739,25 +2757,25 @@
                     }
                     else
                     {
-                        if (this.playerChips >= int.Parse(textBoxRaise.Text))
+                        if (this.players[0].Chips >= int.Parse(textBoxRaise.Text))
                         {
                             this.pokerCall = int.Parse(textBoxRaise.Text);
                             this.raise = int.Parse(textBoxRaise.Text);
                             labelPlayerStatus.Text = "Raise " + this.pokerCall.ToString();
                             textBoxPot.Text = (int.Parse(textBoxPot.Text) + this.pokerCall).ToString();
                             buttonCall.Text = "Call";
-                            this.playerChips -= int.Parse(textBoxRaise.Text);
+                            this.players[0].Chips -= int.Parse(textBoxRaise.Text);
                             raising = true;
                             lastBotPlayed = 0;
                             playerRaise = Convert.ToInt32(this.raise);
                         }
                         else
                         {
-                            this.pokerCall = this.playerChips;
-                            this.raise = this.playerChips;
-                            textBoxPot.Text = (int.Parse(textBoxPot.Text) + this.playerChips).ToString();
+                            this.pokerCall = this.players[0].Chips;
+                            this.raise = this.players[0].Chips;
+                            textBoxPot.Text = (int.Parse(textBoxPot.Text) + this.players[0].Chips).ToString();
                             labelPlayerStatus.Text = "Raise " + this.pokerCall.ToString();
-                            this.playerChips = 0;
+                            this.players[0].Chips = 0;
                             raising = true;
                             lastBotPlayed = 0;
                             playerRaise = Convert.ToInt32(this.raise);
@@ -2778,14 +2796,14 @@
             if (textBoxAddChips.Text == "") { }
             else
             {
-                this.playerChips += int.Parse(textBoxAddChips.Text);
-                bot1Chips += int.Parse(textBoxAddChips.Text);
-                bot2Chips += int.Parse(textBoxAddChips.Text);
-                bot3Chips += int.Parse(textBoxAddChips.Text);
-                bot4Chips += int.Parse(textBoxAddChips.Text);
-                bot5Chips += int.Parse(textBoxAddChips.Text);
+                this.players[0].Chips += int.Parse(textBoxAddChips.Text);
+                this.players[1].Chips += int.Parse(textBoxAddChips.Text);
+                this.players[2].Chips += int.Parse(textBoxAddChips.Text);
+                this.players[3].Chips += int.Parse(textBoxAddChips.Text);
+                this.players[4].Chips += int.Parse(textBoxAddChips.Text);
+                this.players[5].Chips += int.Parse(textBoxAddChips.Text);
             }
-            textBoxPlayerChips.Text = "Chips : " + this.playerChips.ToString();
+            textBoxPlayerChips.Text = "Chips : " + this.players[0].Chips.ToString();
         }
         private void ButtonChooseBlind_Click(object sender, EventArgs e)
         {
