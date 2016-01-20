@@ -29,12 +29,12 @@
 
         #region Variables
 
-        private IPlayer gamer = new Gamer();
-        private IPlayer bot1= new Bot("Bot 1");
-        private IPlayer bot2 = new Bot("Bot 2");
-        private IPlayer bot3 = new Bot("Bot 3");
-        private IPlayer bot4 = new Bot("Bot 4");
-        private IPlayer bot5 = new Bot("Bot 5");
+        private IPlayer gamer;
+        private IPlayer bot1;
+        private IPlayer bot2;
+        private IPlayer bot3;
+        private IPlayer bot4;
+        private IPlayer bot5;
 
         private IPlayer[] players = new IPlayer[6];
 
@@ -110,6 +110,15 @@
 
         public GameForm()
         {
+            InitializeComponent();
+
+            this.gamer = new Gamer(this.labelPlayerStatus);
+            this.bot1 = new Bot("Bot 1",this.labelBot1Status);
+            this.bot2 = new Bot("Bot 2", this.labelBot2Status);
+            this.bot3 = new Bot("Bot 3", this.labelBot3Status);
+            this.bot4 = new Bot("Bot 4", this.labelBot4Status);
+            this.bot5 = new Bot("Bot 5", this.labelBot5Status);
+
             this.players[0] = this.gamer;
             this.players[1] = this.bot1;
             this.players[2] = this.bot2;
@@ -122,7 +131,6 @@
             MaximizeBox = false;
             MinimizeBox = false;
             Updates.Start();
-            InitializeComponent();
             width = this.Width;
             height = this.Height;
             this.SetupPokerTable();
@@ -510,6 +518,7 @@
         /// <param name="anchorPointVerticalLocation"></param>
         private void FillInCardHolder(int cardIndex, int anchorPointHorizontalLocation, int anchorPointVerticalLocation)
         {
+            //TODO note:open all cards
             Bitmap backImage = new Bitmap("Assets\\Back\\Back.png");
 
             this.cardHolder[cardIndex].Tag = this.dealtCardsNumbers[cardIndex];
@@ -541,23 +550,7 @@
             {
                 if (players[0].Turn)
                 {
-                    FixCall(labelPlayerStatus,  this.players[0].Call,  this.players[0].Raise, 1);
-                    //MessageBox.Show("Player's Turn");
-                    progressBarTimer.Visible = true;
-                    progressBarTimer.Value = 1000;
-
-                    t = 60;
-                    up = 10000000;
-
-                    timer.Start();
-                    buttonRaise.Enabled = true;
-                    buttonCall.Enabled = true;
-                    buttonFold.Enabled = true;
-                    //buttonRaise.Enabled = true;
-                    //buttonRaise.Enabled = true;
-                    turnCount++;
-
-                    FixCall(labelPlayerStatus, this.players[0].Call, this.players[0].Raise, 2);
+                    this.CallAllPlayerActionsOnTurn(this.players[0]);
                 }
             }
 
@@ -568,10 +561,7 @@
                 {
                     if (buttonCall.Text.Contains("All in") == false || buttonRaise.Text.Contains("All in") == false)
                     {
-                        bools.RemoveAt(0);
-                        bools.Insert(0, null);
-                        maxPlayersLeftCount--;
-                        this.players[0].Folded = true;
+                        RemovePlayerFromTheGame(0);
                     }
                 }
                 await CheckRaise(0, 0);
@@ -583,149 +573,41 @@
                 buttonFold.Enabled = false;
                 timer.Stop();
                 this.players[1].Turn = true;
-                if (!this.players[1].GameEnded)
+
+                
+                for (int i = 1; i < this.players.Length; i++)
                 {
-                    if (this.players[1].Turn)
+                    if (!this.players[i].GameEnded)
                     {
-                        FixCall(labelBot1Status, this.players[1].Call, this.players[1].Raise, 1);
-                        FixCall(labelBot1Status, this.players[1].Call, this.players[1].Raise, 2);
-                        Rules(2, 3, "Bot 1",  this.players[1].PokerHandMultiplier, this.players[1].CardPower, this.players[1].GameEnded);
-                        MessageBox.Show("Bot 1's Turn");
-                        AI(2, 3, this.players[1].Chips, this.players[1].Turn,  this.players[1].GameEnded, labelBot1Status, 0, this.players[1].CardPower, this.players[1].PokerHandMultiplier);
-                        turnCount++;
-                        lastBotPlayed = 1;
-                        this.players[1].Turn = false;
-                        this.players[2].Turn = true;
+                        if (this.players[i].Turn)
+                        {
+                            this.CallAllBotActionsOnTheirTurn(this.players[i]);
+                        }
+                    }
+                    if (this.players[i].GameEnded && !this.players[i].Folded)
+                    {
+                        //TODO _ActivePlayers rename
+                        this.RemovePlayerFromTheGame(i);
+                    }
+                    if (this.players[i].GameEnded || !this.players[i].Turn)
+                    {
+                        await CheckRaise(i, i);
+                        if (i + 1 == this.players.Length)
+                        {
+                            this.players[0].Turn = true;
+                        }
+                        else
+                        {
+                            this.players[i + 1].Turn = true;
+                        }
                     }
                 }
-                if (this.players[1].GameEnded && !this.players[1].Folded)
-                {
-                    //TODO _ActivePlayers rename
-                    bools.RemoveAt(1);
-                    bools.Insert(1, null);
-                    maxPlayersLeftCount--;
-                    this.players[1].Folded = true;
-                }
-                if (this.players[1].GameEnded || !this.players[1].Turn)
-                {
-                    await CheckRaise(1, 1);
-                    this.players[2].Turn = true;
-                }
-                if (!this.players[2].GameEnded)
-                {
-                    if (this.players[2].Turn)
-                    {
-                        FixCall(labelBot2Status, this.players[2].Call,this.players[2].Raise, 1);
-                        FixCall(labelBot2Status, this.players[2].Call, this.players[2].Raise, 2);
-                        Rules(4, 5, "Bot 2", this.players[2].PokerHandMultiplier, this.players[2].CardPower, this.players[2].GameEnded);
-                        MessageBox.Show("Bot 2's Turn");
-                        AI(4, 5, this.players[2].Chips,  this.players[2].Turn,  this.players[2].GameEnded, labelBot2Status, 1, this.players[2].CardPower, this.players[2].PokerHandMultiplier);
-                        turnCount++;
-                        lastBotPlayed = 2;
-                        this.players[2].Turn = false;
-                        this.players[3].Turn = true;
-                    }
-                }
-                if (this.players[2].GameEnded && !this.players[2].Folded)
-                {
-                    bools.RemoveAt(2);
-                    bools.Insert(2, null);
-                    maxPlayersLeftCount--;
-                    this.players[2].Folded = true;
-                }
-                if (this.players[2].GameEnded || !this.players[2].Turn)
-                {
-                    await CheckRaise(2, 2);
-                    this.players[3].Turn = true;
-                }
-                if (!this.players[3].GameEnded)
-                {
-                    if (this.players[3].Turn)
-                    {
-                        FixCall(labelBot3Status, this.players[3].Call, this.players[3].Raise, 1);
-                        FixCall(labelBot3Status, this.players[3].Call, this.players[3].Raise, 2);
-                        Rules(6, 7, "Bot 3", this.players[3].PokerHandMultiplier, this.players[3].CardPower, this.players[3].GameEnded);
-                        MessageBox.Show("Bot 3's Turn");
-                        AI(6, 7, this.players[3].Chips,  this.players[3].Turn,  this.players[3].GameEnded, labelBot3Status, 2, this.players[3].CardPower, this.players[3].PokerHandMultiplier);
-                        turnCount++;
-                        lastBotPlayed = 3;
-                        this.players[3].Turn = false;
-                        this.players[4].Turn = true;
-                    }
-                }
-                if (this.players[3].GameEnded && !this.players[3].Folded)
-                {
-                    bools.RemoveAt(3);
-                    bools.Insert(3, null);
-                    maxPlayersLeftCount--;
-                    this.players[3].Folded = true;
-                }
-                if (this.players[3].GameEnded || !this.players[3].Turn)
-                {
-                    await CheckRaise(3, 3);
-                    this.players[4].Turn = true;
-                }
-                if (!this.players[4].GameEnded)
-                {
-                    if (this.players[4].Turn)
-                    {
-                        FixCall(labelBot4Status, this.players[4].Call, this.players[4].Raise, 1);
-                        FixCall(labelBot4Status, this.players[4].Call, this.players[4].Raise, 2);
-                        Rules(8, 9, "Bot 4", this.players[4].PokerHandMultiplier,  this.players[4].CardPower, this.players[4].GameEnded);
-                        MessageBox.Show("Bot 4's Turn");
-                        AI(8, 9, this.players[4].Chips,  this.players[4].Turn,  this.players[4].GameEnded, labelBot4Status, 3, this.players[4].CardPower, this.players[4].PokerHandMultiplier);
-                        turnCount++;
-                        lastBotPlayed = 4;
-                        this.players[4].Turn = false;
-                        this.players[5].Turn = true;
-                    }
-                }
-                if (this.players[4].GameEnded && !this.players[4].Folded)
-                {
-                    bools.RemoveAt(4);
-                    bools.Insert(4, null);
-                    maxPlayersLeftCount--;
-                    this.players[4].Folded = true;
-                }
-                if (players[4].GameEnded || !this.players[4].Turn)
-                {
-                    await CheckRaise(4, 4);
-                    this.players[5].Turn = true;
-                }
-                if (!players[5].GameEnded)
-                {
-                    if (this.players[5].Turn)
-                    {
-                        FixCall(labelBot5Status, this.players[5].Call, this.players[5].Raise, 1);
-                        FixCall(labelBot5Status, this.players[5].Call, this.players[5].Raise, 2);
-                        Rules(10, 11, "Bot 5", this.players[5].PokerHandMultiplier, this.players[5].CardPower, players[5].GameEnded);
-                        MessageBox.Show("Bot 5's Turn");
-                        AI(10, 11, this.players[5].Chips, this.players[5].Turn,  this.players[5].GameEnded, labelBot5Status, 4, this.players[5].CardPower, this.players[5].PokerHandMultiplier);
-                        turnCount++;
-                        lastBotPlayed = 5;
-                        this.players[5].Turn = false;
-                    }
-                }
-                if (players[5].GameEnded && !this.players[5].Folded)
-                {
-                    bools.RemoveAt(5);
-                    bools.Insert(5, null);
-                    maxPlayersLeftCount--;
-                    this.players[5].Folded = true;
-                }
-                if (players[5].GameEnded || !this.players[5].Turn)
-                {
-                    await CheckRaise(5, 5);
-                    players[0].Turn = true;
-                }
+                
                 if (this.players[0].GameEnded && !this.players[0].Folded)
                 {
                     if (buttonCall.Text.Contains("All in") == false || buttonRaise.Text.Contains("All in") == false)
                     {
-                        bools.RemoveAt(0);
-                        bools.Insert(0, null);
-                        maxPlayersLeftCount--;
-                        this.players[0].Folded = true;
+                        RemovePlayerFromTheGame(0);
                     }
                 }
             #endregion
@@ -735,6 +617,93 @@
                     await Turns();
                 }
                 restart = false;
+            }
+        }
+
+        private void RemovePlayerFromTheGame(int playerIndex)
+        {
+            this.bools.RemoveAt(playerIndex);
+            this.bools.Insert(playerIndex, null);
+            this.maxPlayersLeftCount--;
+            this.players[playerIndex].Folded = true;
+        }
+
+        private void CallAllPlayerActionsOnTurn(IPlayer player)
+        {
+            this.FixCall(player, 1);
+            //MessageBox.Show("Player's Turn");
+            this.progressBarTimer.Visible = true;
+            this.progressBarTimer.Value = 1000;
+
+            this.t = 60;
+            this.up = 10000000;
+
+            this.timer.Start();
+            this.buttonRaise.Enabled = true;
+            this.buttonCall.Enabled = true;
+            this.buttonFold.Enabled = true;
+            //buttonRaise.Enabled = true;
+            //buttonRaise.Enabled = true;
+            this.turnCount++;
+
+            this.FixCall(player, 2);
+        }
+        /// <summary>
+        /// Calls all actions that must be called if it is bot turn
+        /// </summary>
+        private void CallAllBotActionsOnTheirTurn(IPlayer player)
+        {
+            var botNumber = player.Name.Split(' ')[1]
+                .Trim();
+            ///Bot 1 -> 0 ,Bot 2 ->1 etc.. 
+            /// used in this.Ai(...)
+            var botPresentetAsNumber = int.Parse(botNumber) - 1;
+
+            var firstCardNumeration = 0;
+            var secondCardNumeration = 0;
+
+            switch (botNumber)
+            {
+                case "1":
+                    firstCardNumeration = 2;secondCardNumeration =3;
+                    break;
+                case "2":
+                    firstCardNumeration = 4; secondCardNumeration = 5;
+                    break;
+                case "3":
+                    firstCardNumeration = 6; secondCardNumeration = 7;
+                    break;
+                case "4":
+                    firstCardNumeration = 8; secondCardNumeration = 9;
+                    break;
+                case "5":
+                    firstCardNumeration = 10; secondCardNumeration = 11;
+                    break;
+            }
+
+            this.FixCall(player, 1);
+            this.FixCall(player, 2);
+
+            this.Rules(firstCardNumeration, secondCardNumeration, player.Name, player.PokerHandMultiplier, player.CardPower, player.GameEnded);
+
+            MessageBox.Show("Bot  " + botNumber + @"'s Turn");
+            this.AI(4, 5, player.Chips, player.Turn, player.GameEnded, player.Label, botPresentetAsNumber, player.CardPower,
+                player.PokerHandMultiplier);
+
+            this.turnCount++;
+            this.lastBotPlayed = int.Parse(botNumber);
+            player.Turn = false;
+            //TODO must be implemented
+
+            var nextBotIndex = int.Parse(botNumber)+1;
+            if (nextBotIndex<=5)
+            {
+                this.players[nextBotIndex].Turn = true;
+            }
+            else
+            {
+                nextBotIndex = 0;
+                this.players[nextBotIndex].Turn = true;
             }
         }
 
@@ -1784,39 +1753,39 @@
                 await Turns();
             }
         }
-        void FixCall(Label status, int cCall, int cRaise, int options)
+        void FixCall(IPlayer player, int options)
         {
             if (this.rounds != 4)
             {
                 if (options == 1)
                 {
-                    if (status.Text.Contains("Raise"))
+                    if (player.Label.Text.Contains("Raise"))
                     {
-                        var changeRaise = status.Text.Substring(6);
-                        cRaise = int.Parse(changeRaise);
+                        var changeRaise = player.Label.Text.Substring(6);
+                        player.Raise = int.Parse(changeRaise);
                     }
-                    if (status.Text.Contains("Call"))
+                    if (player.Label.Text.Contains("Call"))
                     {
-                        var changeCall = status.Text.Substring(5);
-                        cCall = int.Parse(changeCall);
+                        var changeCall = player.Label.Text.Substring(5);
+                        player.Call = int.Parse(changeCall);
                     }
-                    if (status.Text.Contains("Check"))
+                    if (player.Label.Text.Contains("Check"))
                     {
-                        cRaise = 0;
-                        cCall = 0;
+                        player.Raise = 0;
+                        player.Call = 0;
                     }
                 }
                 if (options == 2)
                 {
-                    if (cRaise != this.raise && cRaise <= this.raise)
+                    if (player.Raise != this.raise && player.Raise <= this.raise)
                     {
-                        this.pokerCall = Convert.ToInt32(this.raise) - cRaise;
+                        this.pokerCall = Convert.ToInt32(this.raise) - player.Raise;
                     }
-                    if (cCall != this.pokerCall || cCall <= this.pokerCall)
+                    if (player.Call != this.pokerCall || player.Call <= this.pokerCall)
                     {
-                        this.pokerCall = this.pokerCall - cCall;
+                        this.pokerCall = this.pokerCall - player.Call;
                     }
-                    if (cRaise == this.raise && this.raise > 0)
+                    if (player.Raise == this.raise && this.raise > 0)
                     {
                         this.pokerCall = 0;
                         buttonCall.Enabled = false;
@@ -2703,7 +2672,10 @@
         }
         private async void ButtonFold_Click(object sender, EventArgs e)
         {
-            //TODO To be implemented button click for fold
+            this.gamer.Label.Text = "Fold";
+            this.gamer.Turn = false;
+            this.gamer.GameEnded = true;
+            await Turns();
         }
         private async void ButtonCheck_Click(object sender, EventArgs e)
         {

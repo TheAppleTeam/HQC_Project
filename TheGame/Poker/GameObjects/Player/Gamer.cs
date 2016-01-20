@@ -1,8 +1,10 @@
 ﻿namespace Poker.GameObjects.Player
 {
+    using System.Windows.Forms;
+
     public class Gamer : AbstractPlayer
     {
-        public Gamer() : base("player")
+        public Gamer(Label label) : base("player",label)
         {
             this.Turn = true;
         }
