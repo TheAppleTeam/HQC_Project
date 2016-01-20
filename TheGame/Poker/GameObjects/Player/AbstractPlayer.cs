@@ -1,10 +1,11 @@
 ﻿namespace Poker.GameObjects.Player
 {
+    using System.Drawing.Text;
     using System.Windows.Forms;
 
     public abstract class AbstractPlayer : IPlayer
     {
-        protected readonly Panel CardsPanel;
+        protected  Panel cardsPanel;
         private const int InitialChips = 10000;
 
         protected AbstractPlayer( string name)
@@ -18,7 +19,15 @@
             this.PokerHandMultiplier = -1;
             this.Name = name;
 
+        }
 
+        public Panel CardsPanel
+        {
+            get { return this.cardsPanel; }
+            private set
+            {
+                this.cardsPanel=value;
+            }
         }
 
         public string Name { get; set; }

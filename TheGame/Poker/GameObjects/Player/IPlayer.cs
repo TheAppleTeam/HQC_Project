@@ -1,5 +1,7 @@
 ﻿namespace Poker.GameObjects.Player
 {
+    using System.Windows.Forms;
+
     public interface IPlayer
     {
         string Name { get; set; }
@@ -21,5 +23,7 @@
         int Call { get; set; }
 
         int Raise { get; set; }
+
+        Panel CardsPanel { get;  }
     }
 }
