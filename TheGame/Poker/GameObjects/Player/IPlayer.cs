@@ -25,5 +25,7 @@
         int Raise { get; set; }
 
         Panel CardsPanel { get;  }
+
+        Label Label { get; set; }
     }
 }

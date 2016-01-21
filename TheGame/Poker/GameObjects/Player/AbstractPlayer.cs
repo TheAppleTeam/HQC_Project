@@ -8,7 +8,7 @@
         protected  Panel cardsPanel;
         private const int InitialChips = 10000;
 
-        protected AbstractPlayer( string name)
+        protected AbstractPlayer( string name,Label label)
         {
             this.CardsPanel = new Panel();
             this.GameEnded = false;
@@ -18,6 +18,7 @@
             this.Raise = 0;
             this.PokerHandMultiplier = -1;
             this.Name = name;
+            this.Label = label;
 
         }
 
@@ -50,6 +51,8 @@
         public int Call { get; set; }
 
         public int Raise { get; set; }
+
+        public Label Label { get; set; }
 
 
     }
