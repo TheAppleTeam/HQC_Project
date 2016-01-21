@@ -7,4 +7,3 @@
         public double CardPower { get; set; }
     }
 }
-

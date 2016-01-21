@@ -6,15 +6,15 @@
     using System.Globalization;
     using System.IO;
     using System.Linq;
-    using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
     using System.Windows.Forms;
-    using Poker.GameObjects.Cards;
-    using Poker.GameObjects.Player;
+    using GameObjects.Cards;
+    using GameObjects.Player;
 
     public partial class GameForm : Form
     {
         #region Constants
+
         private const int InitialBigBlind = 500;
         private const int InitialSmallBlind = 250;
         private const int BotCount = 5;
@@ -25,6 +25,7 @@
         private const int DealingCardsDelay = 200;
         private const int CardPanelWidth = 180;
         private const int CardPanelHeight = 150;
+
         #endregion
 
         #region Variables
@@ -46,7 +47,7 @@
 
         private double raise;
 
-        // is set TRUE when bot's chips (bot{num}Chips) goes <=0 
+        //// is set TRUE when bot's chips (bot{num}Chips) goes <=0 
 
         private bool intsadded;
         private bool changed;
@@ -55,40 +56,40 @@
         private int width;
 
         private int winnersCount = 0;
-        //used in CheckRaise method :   if (rounds == Flop); in Finish method is seted again on 1;
+        ////used in CheckRaise method :   if (rounds == Flop); in Finish method is seted again on 1;
         private int Flop = 1;
-        //used in CheckRaise method :  if (rounds == Turn); in Finish method is seted again on 2;
+        ////used in CheckRaise method :  if (rounds == Turn); in Finish method is seted again on 2;
         private int Turn = 2;
         private int River = 3;
-        // used in CheckRaise method :  (rounds == River); in Finish method is seted again on 3;
+        //// used in CheckRaise method :  (rounds == River); in Finish method is seted again on 3;
         private int End = 4;
-        // used in CheckRaise method :   if (rounds == End && maxPlayersLeftCount == 6);
-        //used in AllIn method->  #region FiveOrLessLeft: if (abc < 6 && abc > 1 && rounds >= End) 
-        //in Finish method is seted again on 4;
+        //// used in CheckRaise method :   if (rounds == End && maxPlayersLeftCount == 6);
+        ////used in AllIn method->  #region FiveOrLessLeft: if (abc < 6 && abc > 1 && rounds >= End) 
+        ////in Finish method is seted again on 4;
         private int maxPlayersLeftCount = 6;
-        //used in Turns method -> region Rotating : in every positive check is game ending  maxPlayersLeftCount--;
-        // used in CheckRaise method :   if (rounds == End && maxPlayersLeftCount == 6); and  if (turnCount >= maxPlayersLeftCount - 1 || !changed && turnCount == maxPlayersLeftCount);
-        //used in AllIn method : if (ints.ToArray().Length == maxPlayersLeftCount)
-        //in Finish method is seted again on 6;
+        ////used in Turns method -> region Rotating : in every positive check is game ending  maxPlayersLeftCount--;
+        //// used in CheckRaise method :   if (rounds == End && maxPlayersLeftCount == 6); and  if (turnCount >= maxPlayersLeftCount - 1 || !changed && turnCount == maxPlayersLeftCount);
+        ////used in AllIn method : if (ints.ToArray().Length == maxPlayersLeftCount)
+        ////in Finish method is seted again on 6;
         private int lastBotPlayed = 123;
-        int raisedTurn = 1;
+        private int raisedTurn = 1;
 
-        List<bool?> playersNotGameEnded = new List<bool?>();
+        private List<bool?> playersNotGameEnded = new List<bool?>();
 
-        //Output from method Rules
-        List<WinningHand> winningCards = new List<WinningHand>();
-        Poker.WinningHand winningCard;
+        ////Output from method Rules
+        private List<WinningHand> winningCards = new List<WinningHand>();
+        private WinningHand winningCard;
 
-        List<string> CheckWinners = new List<string>();
+        private List<string> CheckWinners = new List<string>();
 
-        List<int> playersWithoutChips = new List<int>();
+        private List<int> playersWithoutChips = new List<int>();
         private bool restart = false;
-        bool raising = false;
+        private bool raising = false;
 
         private bool skipInitialPlayerCall = false;
         private bool skipInitialBotCall = false;
 
-        string[] ImageURIArray = Directory.GetFiles("Assets\\Cards", "*.png", SearchOption.TopDirectoryOnly);
+        private string[] ImageURIArray = Directory.GetFiles("Assets\\Cards", "*.png", SearchOption.TopDirectoryOnly);
         /*string[] ImgLocation ={
                    "Assets\\Cards\\33.png","Assets\\Cards\\22.png",
                     "Assets\\Cards\\29.png","Assets\\Cards\\21.png",
@@ -100,28 +101,29 @@
                     "Assets\\Cards\\12.png",
                     "Assets\\Cards\\8.png","Assets\\Cards\\18.png",
                     "Assets\\Cards\\15.png","Assets\\Cards\\27.png"};*/
-        int[] dealtCardsNumbers = new int[17];
-        Image[] DeckImages = new Image[52];
-        PictureBox[] cardHolder = new PictureBox[52];
-        Timer timer = new Timer();
-        Timer Updates = new Timer();
+        private int[] dealtCardsNumbers = new int[17];
+        private Image[] DeckImages = new Image[52];
+        private PictureBox[] cardHolder = new PictureBox[52];
+        private Timer timer = new Timer();
+        private Timer Updates = new Timer();
 
         private int t = 60;
         //int i;
-        int bb = InitialBigBlind,
-            sb = InitialSmallBlind,
-            up = 10000000,
-            turnCount = 0;
+        private int bb = InitialBigBlind,
+                    sb = InitialSmallBlind,
+                    up = 10000000,
+                    turnCount = 0;
+
         #endregion
 
         public GameForm()
         {
             this.pokerCall = InitialBigBlind;
-            MaximizeBox = false;
-            MinimizeBox = false;
-            Updates.Start();
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+            this.Updates.Start();
 
-            InitializeComponent();
+            this.InitializeComponent();
 
             this.gamer = new Gamer(this.labelPlayerStatus);
             this.bot1 = new Bot("Bot 1", this.labelBot1Status);
@@ -137,51 +139,52 @@
             this.players[4] = this.bot4;
             this.players[5] = this.bot5;
 
-            //bools.Add(PFturn); bools.Add(B1Fturn); bools.Add(players[2].GameEnded); bools.Add(players[3].GameEnded); bools.Add(players[4].GameEnded); bools.Add(players[5].GameEnded);
+            ////bools.Add(PFturn); bools.Add(B1Fturn); bools.Add(players[2].GameEnded); bools.Add(players[3].GameEnded); bools.Add(players[4].GameEnded); bools.Add(players[5].GameEnded);
 
-            width = this.Width;
-            height = this.Height;
+            this.width = this.Width;
+            this.height = this.Height;
             this.SetupPokerTable();
-            textBoxPot.Enabled = false;
-            textBoxPlayerChips.Enabled = false;
-            textBoxBot1Chips.Enabled = false;
-            textBoxBot2Chips.Enabled = false;
-            textBoxBot3Chips.Enabled = false;
-            textBoxBot4Chips.Enabled = false;
-            textBoxBot5Chips.Enabled = false;
-            textBoxPlayerChips.Text = "Chips : " + this.players[0].Chips.ToString();
-            textBoxBot1Chips.Text = "Chips : " + this.players[1].Chips.ToString();
-            textBoxBot2Chips.Text = "Chips : " + this.players[2].Chips.ToString();
-            textBoxBot3Chips.Text = "Chips : " + this.players[3].Chips.ToString();
-            textBoxBot4Chips.Text = "Chips : " + this.players[4].Chips.ToString();
-            textBoxBot5Chips.Text = "Chips : " + this.players[5].Chips.ToString();
-            timer.Interval = (1 * 1 * 1000);
-            timer.Tick += timer_Tick;
-            Updates.Interval = (1 * 1 * 100);
-            Updates.Tick += Update_Tick;
-            textBoxBigBlind.Visible = true;
-            textBoxSmallBlind.Visible = true;
-            buttonBigBlind.Visible = true;
-            buttonSmallBlind.Visible = true;
-            textBoxBigBlind.Visible = true;
-            textBoxSmallBlind.Visible = true;
-            buttonBigBlind.Visible = true;
-            buttonSmallBlind.Visible = true;
-            textBoxBigBlind.Visible = false;
-            textBoxSmallBlind.Visible = false;
-            buttonBigBlind.Visible = false;
-            buttonSmallBlind.Visible = false;
-            textBoxRaise.Text = (bb * 2).ToString();
+            this.textBoxPot.Enabled = false;
+            this.textBoxPlayerChips.Enabled = false;
+            this.textBoxBot1Chips.Enabled = false;
+            this.textBoxBot2Chips.Enabled = false;
+            this.textBoxBot3Chips.Enabled = false;
+            this.textBoxBot4Chips.Enabled = false;
+            this.textBoxBot5Chips.Enabled = false;
+            this.textBoxPlayerChips.Text = "Chips : " + this.players[0].Chips.ToString();
+            this.textBoxBot1Chips.Text = "Chips : " + this.players[1].Chips.ToString();
+            this.textBoxBot2Chips.Text = "Chips : " + this.players[2].Chips.ToString();
+            this.textBoxBot3Chips.Text = "Chips : " + this.players[3].Chips.ToString();
+            this.textBoxBot4Chips.Text = "Chips : " + this.players[4].Chips.ToString();
+            this.textBoxBot5Chips.Text = "Chips : " + this.players[5].Chips.ToString();
+            this.timer.Interval = (1 * 1 * 1000);
+            this.timer.Tick += this.timer_Tick;
+            this.Updates.Interval = (1 * 1 * 100);
+            this.Updates.Tick += this.Update_Tick;
+            this.textBoxBigBlind.Visible = true;
+            this.textBoxSmallBlind.Visible = true;
+            this.buttonBigBlind.Visible = true;
+            this.buttonSmallBlind.Visible = true;
+            this.textBoxBigBlind.Visible = true;
+            this.textBoxSmallBlind.Visible = true;
+            this.buttonBigBlind.Visible = true;
+            this.buttonSmallBlind.Visible = true;
+            this.textBoxBigBlind.Visible = false;
+            this.textBoxSmallBlind.Visible = false;
+            this.buttonBigBlind.Visible = false;
+            this.buttonSmallBlind.Visible = false;
+            this.textBoxRaise.Text = (this.bb * 2).ToString();
         }
 
         //Stani
 
         #region Refactored Shuffle to SetupPokerTable
+
         /// <summary>
         /// Setups a poker table with all the players holders, cards on the table and buttons
         /// </summary>
         /// <returns></returns>
-        async Task SetupPokerTable()
+        private async Task SetupPokerTable()
         {
             this.playersNotGameEnded.Add(this.players[0].GameEnded);
             this.playersNotGameEnded.Add(this.players[1].GameEnded);
@@ -280,8 +283,9 @@
         {
             if (this.foldedPlayers == 5)
             {
-                var dialogResult = MessageBox.Show("Would You Like To Play Again ?", "You Won , Congratulations ! ",
-                    MessageBoxButtons.YesNo);
+                var dialogResult = MessageBox.Show("Would You Like To Play Again ?",
+                                                   "You Won , Congratulations ! ",
+                                                   MessageBoxButtons.YesNo);
                 if (dialogResult == DialogResult.Yes)
                 {
                     Application.Restart();
@@ -417,7 +421,8 @@
                 this.FillInCardsControls(cardIndex, anchorPointHorizontalPosition, anchorPointVerticalPosition);
             }
 
-            if (cardIndex >= 2 && cardIndex < 4)
+            if (cardIndex >= 2 &&
+                cardIndex < 4)
             {
                 if (this.players[1].Chips > 0)
                 {
@@ -428,7 +433,8 @@
                 }
             }
 
-            if (cardIndex >= 4 && cardIndex < 6)
+            if (cardIndex >= 4 &&
+                cardIndex < 6)
             {
                 if (this.players[2].Chips > 0)
                 {
@@ -439,7 +445,8 @@
                 }
             }
 
-            if (cardIndex >= 6 && cardIndex < 8)
+            if (cardIndex >= 6 &&
+                cardIndex < 8)
             {
                 if (this.players[3].Chips > 0)
                 {
@@ -450,7 +457,8 @@
                 }
             }
 
-            if (cardIndex >= 8 && cardIndex < 10)
+            if (cardIndex >= 8 &&
+                cardIndex < 10)
             {
                 if (this.players[4].Chips > 0)
                 {
@@ -461,7 +469,8 @@
                 }
             }
 
-            if (cardIndex >= 10 && cardIndex < 12)
+            if (cardIndex >= 10 &&
+                cardIndex < 12)
             {
                 if (this.players[5].Chips > 0)
                 {
@@ -487,9 +496,12 @@
         /// <param name="cardIndex">Index of the cards that are dealt</param>
         /// <param name="anchorPointHorizontalLocation">Horizontal location of the anchor of the image to desplay</param>
         /// <param name="anchorPointVerticalLocation">Horizontal location of the anchor of the image to desplay</param>
-        private void FillInCardsControls(int cardIndex, int anchorPointHorizontalLocation, int anchorPointVerticalLocation)
+        private void FillInCardsControls(int cardIndex,
+                                         int anchorPointHorizontalLocation,
+                                         int anchorPointVerticalLocation)
         {
-            if (cardIndex >= 2 && cardIndex < 12)
+            if (cardIndex >= 2 &&
+                cardIndex < 12)
             {
                 this.foldedPlayers--;
             }
@@ -509,7 +521,7 @@
             if (cardIndex % 2 == 0)
             {
                 playerCardsPanel.Location = new Point(this.cardHolder[cardIndex].Left - 10,
-                    this.cardHolder[cardIndex].Top - 10);
+                                                      this.cardHolder[cardIndex].Top - 10);
                 playerCardsPanel.BackColor = Color.DarkBlue;
                 playerCardsPanel.Height = CardPanelHeight;
                 playerCardsPanel.Width = CardPanelWidth;
@@ -541,48 +553,53 @@
             //}
 
             this.cardHolder[cardIndex].Anchor = (AnchorStyles.Bottom);
-            if (cardIndex % 2 == 1 && cardIndex < 12)
+            if (cardIndex % 2 == 1 &&
+                cardIndex < 12)
             {
                 anchorPointHorizontalLocation += CardWidth;
             }
 
             this.cardHolder[cardIndex].Location = new Point(anchorPointHorizontalLocation, anchorPointVerticalLocation);
         }
+
         #endregion
 
         //Veronika
-        async Task Turns()
+        private async Task Turns()
         {
             #region Rotating
+
             if (!this.players[0].GameEnded)
             {
-                if (players[0].Turn)
+                if (this.players[0].Turn)
                 {
                     var text = this.players[0].Label.Text;
                     this.CallAllPlayerActionsOnTurn(this.players[0]);
                 }
             }
 
-            if (this.players[0].GameEnded || !players[0].Turn)
+            if (this.players[0].GameEnded ||
+                !this.players[0].Turn)
             {
-                await AllIn();
-                if (this.players[0].GameEnded && !this.players[0].Folded)
+                await this.AllIn();
+                if (this.players[0].GameEnded &&
+                    !this.players[0].Folded)
                 {
-                    if (buttonCall.Text.Contains("All in") == false || buttonRaise.Text.Contains("All in") == false)
+                    if (this.buttonCall.Text.Contains("All in") == false ||
+                        this.buttonRaise.Text.Contains("All in") == false)
                     {
-                        RemovePlayerFromTheGame(0);
+                        this.RemovePlayerFromTheGame(0);
                     }
                 }
-                await CheckRaise(0, 0);
-                progressBarTimer.Visible = false;
-                buttonRaise.Enabled = false;
-                buttonCall.Enabled = false;
-                buttonRaise.Enabled = false;
-                buttonRaise.Enabled = false;
-                buttonFold.Enabled = false;
-                timer.Stop();
+                await this.CheckRaise(0, 0);
+                this.progressBarTimer.Visible = false;
+                this.buttonRaise.Enabled = false;
+                this.buttonCall.Enabled = false;
+                this.buttonRaise.Enabled = false;
+                this.buttonRaise.Enabled = false;
+                this.buttonFold.Enabled = false;
+                this.timer.Stop();
                 this.players[1].Turn = true;
-
 
                 for (int i = 1; i < this.players.Length; i++)
                 {
@@ -595,14 +612,16 @@
                             this.CallAllBotActionsOnTheirTurn(this.players[i]);
                         }
                     }
-                    if (this.players[i].GameEnded && !this.players[i].Folded)
+                    if (this.players[i].GameEnded &&
+                        !this.players[i].Folded)
                     {
                         //TODO _ActivePlayers rename
                         this.RemovePlayerFromTheGame(i);
                     }
-                    if (this.players[i].GameEnded || !this.players[i].Turn)
+                    if (this.players[i].GameEnded ||
+                        !this.players[i].Turn)
                     {
-                        await CheckRaise(i, i);
+                        await this.CheckRaise(i, i);
                         if (i + 1 == this.players.Length)
                         {
                             this.players[0].Turn = true;
@@ -614,20 +633,24 @@
                     }
                 }
 
-                if (this.players[0].GameEnded && !this.players[0].Folded)
+                if (this.players[0].GameEnded &&
+                    !this.players[0].Folded)
                 {
-                    if (buttonCall.Text.Contains("All in") == false || buttonRaise.Text.Contains("All in") == false)
+                    if (this.buttonCall.Text.Contains("All in") == false ||
+                        this.buttonRaise.Text.Contains("All in") == false)
                     {
-                        RemovePlayerFromTheGame(0);
+                        this.RemovePlayerFromTheGame(0);
                     }
                 }
+
             #endregion
-                await AllIn();
-                if (!restart)
+
+                await this.AllIn();
+                if (!this.restart)
                 {
-                    await Turns();
+                    await this.Turns();
                 }
-                restart = false;
+                this.restart = false;
             }
         }
 
@@ -659,6 +682,7 @@
 
             this.FixCall(player, 2);
         }
+
         /// <summary>
         /// Calls all actions that must be called if it is bot turn
         /// </summary>
@@ -676,19 +700,24 @@
             switch (botNumber)
             {
                 case "1":
-                    firstCardNumeration = 2; secondCardNumeration = 3;
+                    firstCardNumeration = 2;
+                    secondCardNumeration = 3;
                     break;
                 case "2":
-                    firstCardNumeration = 4; secondCardNumeration = 5;
+                    firstCardNumeration = 4;
+                    secondCardNumeration = 5;
                     break;
                 case "3":
-                    firstCardNumeration = 6; secondCardNumeration = 7;
+                    firstCardNumeration = 6;
+                    secondCardNumeration = 7;
                     break;
                 case "4":
-                    firstCardNumeration = 8; secondCardNumeration = 9;
+                    firstCardNumeration = 8;
+                    secondCardNumeration = 9;
                     break;
                 case "5":
-                    firstCardNumeration = 10; secondCardNumeration = 11;
+                    firstCardNumeration = 10;
+                    secondCardNumeration = 11;
                     break;
             }
 
@@ -717,15 +746,17 @@
             }
         }
 
-        void Rules(int firstCard, int secondCard, IPlayer player)
+        private void Rules(int firstCard, int secondCard, IPlayer player)
         {
             //if (firstCard == 0 && secondCard == 1)
             //{
             //}
 
-            if (!player.Folded || firstCard == 0 && secondCard == 1 && player.Label.Text.Contains("Fold") == false)
+            if (!player.Folded ||
+                firstCard == 0 && secondCard == 1 && player.Label.Text.Contains("Fold") == false)
             {
                 #region Variables
+
                 bool done = false;
                 bool vf = false;
                 int[] cardsOnTable = new int[5];
@@ -754,6 +785,7 @@
                 Array.Sort(cardsOfDiamonds);
                 Array.Sort(cardsOfHearts);
                 Array.Sort(cardsOfSpades);
+
                 #endregion
 
                 for (int i = 0; i < DealtCards - 1; i++)
@@ -765,46 +797,67 @@
                     //{
 
                     #region High Card PokerHandMultiplier = -1
-                    rHighCard(player.PokerHandMultiplier, player.CardPower, i, player);
+
+                    this.rHighCard(player.PokerHandMultiplier, player.CardPower, i, player);
+
                     #endregion
 
                     //Pair from Hand PokerHandMultiplier = 1
 
-
-                    rPairFromHand(player.PokerHandMultiplier, player.CardPower, i);
+                    this.rPairFromHand(player.PokerHandMultiplier, player.CardPower, i);
 
                     #region Pair or Two Pair from Table PokerHandMultiplier = 2 || 0
-                    rPairTwoPair(player.PokerHandMultiplier, player.CardPower, i, cardsOnTable);
+
+                    this.rPairTwoPair(player.PokerHandMultiplier, player.CardPower, i, cardsOnTable);
+
                     #endregion
 
                     #region Two Pair PokerHandMultiplier = 2
-                    rTwoPair(player.PokerHandMultiplier, player.CardPower, i);
+
+                    this.rTwoPair(player.PokerHandMultiplier, player.CardPower, i);
+
                     #endregion
 
                     #region Three of a kind PokerHandMultiplier = 3
-                    rThreeOfAKind(player.PokerHandMultiplier, player.CardPower, cardsOnTableWithPlayerCards);
+
+                    this.rThreeOfAKind(player.PokerHandMultiplier, player.CardPower, cardsOnTableWithPlayerCards);
+
                     #endregion
 
                     #region Straight PokerHandMultiplier = 4
-                    rStraight(player.PokerHandMultiplier, player.CardPower, cardsOnTableWithPlayerCards);
+
+                    this.rStraight(player.PokerHandMultiplier, player.CardPower, cardsOnTableWithPlayerCards);
+
                     #endregion
 
                     #region Flush PokerHandMultiplier = 5 || 5.5
-                    rFlush(player.PokerHandMultiplier, player.CardPower, cardsOnTable, i);
+
+                    this.rFlush(player.PokerHandMultiplier, player.CardPower, cardsOnTable, i);
+
                     #endregion
 
                     #region Full House PokerHandMultiplier = 6
-                    rFullHouse(player.PokerHandMultiplier, player.CardPower, ref done, cardsOnTableWithPlayerCards);
+
+                    this.rFullHouse(player.PokerHandMultiplier, player.CardPower, ref done, cardsOnTableWithPlayerCards);
+
                     #endregion
 
                     #region Four of a Kind PokerHandMultiplier = 7
-                    rFourOfAKind(player.PokerHandMultiplier, player.CardPower, cardsOnTableWithPlayerCards);
+
+                    this.rFourOfAKind(player.PokerHandMultiplier, player.CardPower, cardsOnTableWithPlayerCards);
+
                     #endregion
 
                     #region Straight Flush PokerHandMultiplier = 8 || 9
-                    rStraightFlush(player.PokerHandMultiplier, player.CardPower, cardsOfClubs, cardsOfDiamonds, cardsOfHearts, cardsOfSpades);
-                    #endregion
 
+                    this.rStraightFlush(player.PokerHandMultiplier,
+                                   player.CardPower,
+                                   cardsOfClubs,
+                                   cardsOfDiamonds,
+                                   cardsOfHearts,
+                                   cardsOfSpades);
+
+                    #endregion
 
                     //}
                 }
@@ -812,7 +865,12 @@
         }
 
         //Stani
-        private void rStraightFlush(double PokerHandMultiplier, double Power, int[] cardsOfClubs, int[] cardsOfDiamonds, int[] cardsOfHearts, int[] cardsOfSpades)
+        private void rStraightFlush(double PokerHandMultiplier,
+                                    double Power,
+                                    int[] cardsOfClubs,
+                                    int[] cardsOfDiamonds,
+                                    int[] cardsOfHearts,
+                                    int[] cardsOfSpades)
         {
             if (PokerHandMultiplier >= -1)
             {
@@ -822,15 +880,33 @@
                     {
                         PokerHandMultiplier = 8;
                         Power = (cardsOfClubs.Max()) / 4 + PokerHandMultiplier * 100;
-                        this.winningCards.Add(new WinningHand() { Power = Power, Current = 8 });
-                        this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
+                        this.winningCards.Add(new WinningHand()
+                        {
+                            Power = Power,
+                            Current = 8
+                        });
+                        this.winningCard =
+                            this.winningCards.OrderByDescending(op1 => op1.Current)
+                                .ThenByDescending(op1 => op1.Power)
+                                .First();
                     }
-                    if (cardsOfClubs[0] == 0 && cardsOfClubs[1] == 9 && cardsOfClubs[2] == 10 && cardsOfClubs[3] == 11 && cardsOfClubs[0] + 12 == cardsOfClubs[4])
+                    if (cardsOfClubs[0] == 0 &&
+                        cardsOfClubs[1] == 9 &&
+                        cardsOfClubs[2] == 10 &&
+                        cardsOfClubs[3] == 11 &&
+                        cardsOfClubs[0] + 12 == cardsOfClubs[4])
                     {
                         PokerHandMultiplier = 9;
                         Power = (cardsOfClubs.Max()) / 4 + PokerHandMultiplier * 100;
-                        this.winningCards.Add(new WinningHand() { Power = Power, Current = 9 });
-                        this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
+                        this.winningCards.Add(new WinningHand()
+                        {
+                            Power = Power,
+                            Current = 9
+                        });
+                        this.winningCard =
+                            this.winningCards.OrderByDescending(op1 => op1.Current)
+                                .ThenByDescending(op1 => op1.Power)
+                                .First();
                     }
                 }
                 if (cardsOfDiamonds.Length >= 5)
@@ -839,15 +915,33 @@
                     {
                         PokerHandMultiplier = 8;
                         Power = (cardsOfDiamonds.Max()) / 4 + PokerHandMultiplier * 100;
-                        this.winningCards.Add(new WinningHand() { Power = Power, Current = 8 });
-                        this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
+                        this.winningCards.Add(new WinningHand()
+                        {
+                            Power = Power,
+                            Current = 8
+                        });
+                        this.winningCard =
+                            this.winningCards.OrderByDescending(op1 => op1.Current)
+                                .ThenByDescending(op1 => op1.Power)
+                                .First();
                     }
-                    if (cardsOfDiamonds[0] == 0 && cardsOfDiamonds[1] == 9 && cardsOfDiamonds[2] == 10 && cardsOfDiamonds[3] == 11 && cardsOfDiamonds[0] + 12 == cardsOfDiamonds[4])
+                    if (cardsOfDiamonds[0] == 0 &&
+                        cardsOfDiamonds[1] == 9 &&
+                        cardsOfDiamonds[2] == 10 &&
+                        cardsOfDiamonds[3] == 11 &&
+                        cardsOfDiamonds[0] + 12 == cardsOfDiamonds[4])
                     {
                         PokerHandMultiplier = 9;
                         Power = (cardsOfDiamonds.Max()) / 4 + PokerHandMultiplier * 100;
-                        this.winningCards.Add(new WinningHand() { Power = Power, Current = 9 });
-                        this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
+                        this.winningCards.Add(new WinningHand()
+                        {
+                            Power = Power,
+                            Current = 9
+                        });
+                        this.winningCard =
+                            this.winningCards.OrderByDescending(op1 => op1.Current)
+                                .ThenByDescending(op1 => op1.Power)
+                                .First();
                     }
                 }
                 if (cardsOfHearts.Length >= 5)
@@ -856,15 +950,33 @@
                     {
                         PokerHandMultiplier = 8;
                         Power = (cardsOfHearts.Max()) / 4 + PokerHandMultiplier * 100;
-                        this.winningCards.Add(new WinningHand() { Power = Power, Current = 8 });
-                        this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
+                        this.winningCards.Add(new WinningHand()
+                        {
+                            Power = Power,
+                            Current = 8
+                        });
+                        this.winningCard =
+                            this.winningCards.OrderByDescending(op1 => op1.Current)
+                                .ThenByDescending(op1 => op1.Power)
+                                .First();
                     }
-                    if (cardsOfHearts[0] == 0 && cardsOfHearts[1] == 9 && cardsOfHearts[2] == 10 && cardsOfHearts[3] == 11 && cardsOfHearts[0] + 12 == cardsOfHearts[4])
+                    if (cardsOfHearts[0] == 0 &&
+                        cardsOfHearts[1] == 9 &&
+                        cardsOfHearts[2] == 10 &&
+                        cardsOfHearts[3] == 11 &&
+                        cardsOfHearts[0] + 12 == cardsOfHearts[4])
                     {
                         PokerHandMultiplier = 9;
                         Power = (cardsOfHearts.Max()) / 4 + PokerHandMultiplier * 100;
-                        this.winningCards.Add(new WinningHand() { Power = Power, Current = 9 });
-                        this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
+                        this.winningCards.Add(new WinningHand()
+                        {
+                            Power = Power,
+                            Current = 9
+                        });
+                        this.winningCard =
+                            this.winningCards.OrderByDescending(op1 => op1.Current)
+                                .ThenByDescending(op1 => op1.Power)
+                                .First();
                     }
                 }
                 if (cardsOfSpades.Length >= 5)
@@ -873,39 +985,76 @@
                     {
                         PokerHandMultiplier = 8;
                         Power = (cardsOfSpades.Max()) / 4 + PokerHandMultiplier * 100;
-                        this.winningCards.Add(new WinningHand() { Power = Power, Current = 8 });
-                        this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
+                        this.winningCards.Add(new WinningHand()
+                        {
+                            Power = Power,
+                            Current = 8
+                        });
+                        this.winningCard =
+                            this.winningCards.OrderByDescending(op1 => op1.Current)
+                                .ThenByDescending(op1 => op1.Power)
+                                .First();
                     }
-                    if (cardsOfSpades[0] == 0 && cardsOfSpades[1] == 9 && cardsOfSpades[2] == 10 && cardsOfSpades[3] == 11 && cardsOfSpades[0] + 12 == cardsOfSpades[4])
+                    if (cardsOfSpades[0] == 0 &&
+                        cardsOfSpades[1] == 9 &&
+                        cardsOfSpades[2] == 10 &&
+                        cardsOfSpades[3] == 11 &&
+                        cardsOfSpades[0] + 12 == cardsOfSpades[4])
                     {
                         PokerHandMultiplier = 9;
                         Power = (cardsOfSpades.Max()) / 4 + PokerHandMultiplier * 100;
-                        this.winningCards.Add(new WinningHand() { Power = Power, Current = 9 });
-                        this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
+                        this.winningCards.Add(new WinningHand()
+                        {
+                            Power = Power,
+                            Current = 9
+                        });
+                        this.winningCard =
+                            this.winningCards.OrderByDescending(op1 => op1.Current)
+                                .ThenByDescending(op1 => op1.Power)
+                                .First();
                     }
                 }
             }
         }
+
         private void rFourOfAKind(double PokerHandMultiplier, double Power, int[] Straight)
         {
             if (PokerHandMultiplier >= -1)
             {
                 for (int j = 0; j <= 3; j++)
                 {
-                    if (Straight[j] / 4 == Straight[j + 1] / 4 && Straight[j] / 4 == Straight[j + 2] / 4 &&
+                    if (Straight[j] / 4 == Straight[j + 1] / 4 &&
+                        Straight[j] / 4 == Straight[j + 2] / 4 &&
                         Straight[j] / 4 == Straight[j + 3] / 4)
                     {
                         PokerHandMultiplier = 7;
                         Power = (Straight[j] / 4) * 4 + PokerHandMultiplier * 100;
-                        this.winningCards.Add(new WinningHand() { Power = Power, Current = 7 });
-                        this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
+                        this.winningCards.Add(new WinningHand()
+                        {
+                            Power = Power,
+                            Current = 7
+                        });
+                        this.winningCard =
+                            this.winningCards.OrderByDescending(op1 => op1.Current)
+                                .ThenByDescending(op1 => op1.Power)
+                                .First();
                     }
-                    if (Straight[j] / 4 == 0 && Straight[j + 1] / 4 == 0 && Straight[j + 2] / 4 == 0 && Straight[j + 3] / 4 == 0)
+                    if (Straight[j] / 4 == 0 &&
+                        Straight[j + 1] / 4 == 0 &&
+                        Straight[j + 2] / 4 == 0 &&
+                        Straight[j + 3] / 4 == 0)
                     {
                         PokerHandMultiplier = 7;
                         Power = 13 * 4 + PokerHandMultiplier * 100;
-                        this.winningCards.Add(new WinningHand() { Power = Power, Current = 7 });
-                        this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
+                        this.winningCards.Add(new WinningHand()
+                        {
+                            Power = Power,
+                            Current = 7
+                        });
+                        this.winningCard =
+                            this.winningCards.OrderByDescending(op1 => op1.Current)
+                                .ThenByDescending(op1 => op1.Power)
+                                .First();
                     }
                 }
             }
@@ -927,16 +1076,30 @@
                             {
                                 PokerHandMultiplier = 6;
                                 Power = 13 * 2 + PokerHandMultiplier * 100;
-                                this.winningCards.Add(new WinningHand() { Power = Power, Current = 6 });
-                                this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
+                                this.winningCards.Add(new WinningHand()
+                                {
+                                    Power = Power,
+                                    Current = 6
+                                });
+                                this.winningCard =
+                                    this.winningCards.OrderByDescending(op1 => op1.Current)
+                                        .ThenByDescending(op1 => op1.Power)
+                                        .First();
                                 break;
                             }
                             if (fh.Max() / 4 > 0)
                             {
                                 PokerHandMultiplier = 6;
                                 Power = fh.Max() / 4 * 2 + PokerHandMultiplier * 100;
-                                this.winningCards.Add(new WinningHand() { Power = Power, Current = 6 });
-                                this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
+                                this.winningCards.Add(new WinningHand()
+                                {
+                                    Power = Power,
+                                    Current = 6
+                                });
+                                this.winningCard =
+                                    this.winningCards.OrderByDescending(op1 => op1.Current)
+                                        .ThenByDescending(op1 => op1.Power)
+                                        .First();
                                 break;
                             }
                         }
@@ -965,6 +1128,7 @@
         }
 
         #region Flush
+
         private void rFlush(double PokerHandMultiplier, double Power, int[] cardsOnTable, int index)
         {
             //if (PokerHandMultiplier >= -1)
@@ -994,11 +1158,17 @@
             }
             //}
         }
-        private void CheckForFlush(double PokerHandMultiplier, double Power, int index, int[] cardsOfSuit, int suitNumber)
+
+        private void CheckForFlush(double PokerHandMultiplier,
+                                   double Power,
+                                   int index,
+                                   int[] cardsOfSuit,
+                                   int suitNumber)
         {
             PokerHandMultiplier = 5;
 
-            if (this.GetCardSuit(index) == suitNumber && this.GetCardSuit(index + 1) == this.GetCardSuit(index + 1))
+            if (this.GetCardSuit(index) == suitNumber &&
+                this.GetCardSuit(index + 1) == this.GetCardSuit(index + 1))
             {
                 if (this.GetCardIndex(index) > cardsOfSuit.Max() / 4)
                 {
@@ -1029,7 +1199,8 @@
                     }
                 }
 
-                if (this.GetCardSuit(index + 1) == suitNumber && this.GetCardSuit(index + 1) != this.GetCardSuit(index))
+                if (this.GetCardSuit(index + 1) == suitNumber &&
+                    this.GetCardSuit(index + 1) != this.GetCardSuit(index))
                 {
                     if (this.GetCardIndex(index + 1) > cardsOfSuit.Max() / 4)
                     {
@@ -1073,6 +1244,7 @@
             double power = this.dealtCardsNumbers[index] + PokerHandMultiplier * 100;
             this.FindWinnigCard(PokerHandMultiplier, power);
         }
+
         #endregion
 
         private void rStraight(double PokerHandMultiplier, double Power, int[] Straight)
@@ -1088,27 +1260,53 @@
                         {
                             PokerHandMultiplier = 4;
                             Power = op.Max() + PokerHandMultiplier * 100;
-                            this.winningCards.Add(new WinningHand() { Power = Power, Current = 4 });
-                            this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
+                            this.winningCards.Add(new WinningHand()
+                            {
+                                Power = Power,
+                                Current = 4
+                            });
+                            this.winningCard =
+                                this.winningCards.OrderByDescending(op1 => op1.Current)
+                                    .ThenByDescending(op1 => op1.Power)
+                                    .First();
                         }
                         else
                         {
                             PokerHandMultiplier = 4;
                             Power = op[j + 4] + PokerHandMultiplier * 100;
-                            this.winningCards.Add(new WinningHand() { Power = Power, Current = 4 });
-                            this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
+                            this.winningCards.Add(new WinningHand()
+                            {
+                                Power = Power,
+                                Current = 4
+                            });
+                            this.winningCard =
+                                this.winningCards.OrderByDescending(op1 => op1.Current)
+                                    .ThenByDescending(op1 => op1.Power)
+                                    .First();
                         }
                     }
-                    if (op[j] == 0 && op[j + 1] == 9 && op[j + 2] == 10 && op[j + 3] == 11 && op[j + 4] == 12)
+                    if (op[j] == 0 &&
+                        op[j + 1] == 9 &&
+                        op[j + 2] == 10 &&
+                        op[j + 3] == 11 &&
+                        op[j + 4] == 12)
                     {
                         PokerHandMultiplier = 4;
                         Power = 13 + PokerHandMultiplier * 100;
-                        this.winningCards.Add(new WinningHand() { Power = Power, Current = 4 });
-                        this.winningCard = this.winningCards.OrderByDescending(op1 => op1.Current).ThenByDescending(op1 => op1.Power).First();
+                        this.winningCards.Add(new WinningHand()
+                        {
+                            Power = Power,
+                            Current = 4
+                        });
+                        this.winningCard =
+                            this.winningCards.OrderByDescending(op1 => op1.Current)
+                                .ThenByDescending(op1 => op1.Power)
+                                .First();
                     }
                 }
             }
         }
+
         private void rThreeOfAKind(double PokerHandMultiplier, double Power, int[] cardsOnTableWithPlayerCards)
         {
             if (PokerHandMultiplier >= -1)
@@ -1122,20 +1320,35 @@
                         {
                             PokerHandMultiplier = 3;
                             Power = 13 * 3 + PokerHandMultiplier * 100;
-                            this.winningCards.Add(new WinningHand() { Power = Power, Current = 3 });
-                            this.winningCard = this.winningCards.OrderByDescending(op => op.Current).ThenByDescending(op => op.Power).First();
+                            this.winningCards.Add(new WinningHand()
+                            {
+                                Power = Power,
+                                Current = 3
+                            });
+                            this.winningCard =
+                                this.winningCards.OrderByDescending(op => op.Current)
+                                    .ThenByDescending(op => op.Power)
+                                    .First();
                         }
                         else
                         {
                             PokerHandMultiplier = 3;
                             Power = fh[0] / 4 + fh[1] / 4 + fh[2] / 4 + PokerHandMultiplier * 100;
-                            this.winningCards.Add(new WinningHand() { Power = Power, Current = 3 });
-                            this.winningCard = this.winningCards.OrderByDescending(op => op.Current).ThenByDescending(op => op.Power).First();
+                            this.winningCards.Add(new WinningHand()
+                            {
+                                Power = Power,
+                                Current = 3
+                            });
+                            this.winningCard =
+                                this.winningCards.OrderByDescending(op => op.Current)
+                                    .ThenByDescending(op => op.Power)
+                                    .First();
                         }
                     }
                 }
             }
         }
+
         private void rTwoPair(double PokerHandMultiplier, double Power, int index)
         {
             if (PokerHandMultiplier >= -1)
@@ -1154,31 +1367,57 @@
                             }
                             if (tc - k >= 12)
                             {
-                                if (this.dealtCardsNumbers[index] / 4 == this.dealtCardsNumbers[tc] / 4 && this.dealtCardsNumbers[index + 1] / 4 == this.dealtCardsNumbers[tc - k] / 4 ||
-                                    this.dealtCardsNumbers[index + 1] / 4 == this.dealtCardsNumbers[tc] / 4 && this.dealtCardsNumbers[index] / 4 == this.dealtCardsNumbers[tc - k] / 4)
+                                if (this.dealtCardsNumbers[index] / 4 == this.dealtCardsNumbers[tc] / 4 &&
+                                    this.dealtCardsNumbers[index + 1] / 4 == this.dealtCardsNumbers[tc - k] / 4 ||
+                                    this.dealtCardsNumbers[index + 1] / 4 == this.dealtCardsNumbers[tc] / 4 &&
+                                    this.dealtCardsNumbers[index] / 4 == this.dealtCardsNumbers[tc - k] / 4)
                                 {
                                     if (!msgbox)
                                     {
                                         if (this.dealtCardsNumbers[index] / 4 == 0)
                                         {
                                             PokerHandMultiplier = 2;
-                                            Power = 13 * 4 + (this.dealtCardsNumbers[index + 1] / 4) * 2 + PokerHandMultiplier * 100;
-                                            this.winningCards.Add(new WinningHand() { Power = Power, Current = 2 });
-                                            this.winningCard = this.winningCards.OrderByDescending(op => op.Current).ThenByDescending(op => op.Power).First();
+                                            Power = 13 * 4 + (this.dealtCardsNumbers[index + 1] / 4) * 2 +
+                                                    PokerHandMultiplier * 100;
+                                            this.winningCards.Add(new WinningHand()
+                                            {
+                                                Power = Power,
+                                                Current = 2
+                                            });
+                                            this.winningCard =
+                                                this.winningCards.OrderByDescending(op => op.Current)
+                                                    .ThenByDescending(op => op.Power)
+                                                    .First();
                                         }
                                         if (this.dealtCardsNumbers[index + 1] / 4 == 0)
                                         {
                                             PokerHandMultiplier = 2;
                                             Power = 13 * 4 + (this.dealtCardsNumbers[index] / 4) * 2 + PokerHandMultiplier * 100;
-                                            this.winningCards.Add(new WinningHand() { Power = Power, Current = 2 });
-                                            this.winningCard = this.winningCards.OrderByDescending(op => op.Current).ThenByDescending(op => op.Power).First();
+                                            this.winningCards.Add(new WinningHand()
+                                            {
+                                                Power = Power,
+                                                Current = 2
+                                            });
+                                            this.winningCard =
+                                                this.winningCards.OrderByDescending(op => op.Current)
+                                                    .ThenByDescending(op => op.Power)
+                                                    .First();
                                         }
-                                        if (this.dealtCardsNumbers[index + 1] / 4 != 0 && this.dealtCardsNumbers[index] / 4 != 0)
+                                        if (this.dealtCardsNumbers[index + 1] / 4 != 0 &&
+                                            this.dealtCardsNumbers[index] / 4 != 0)
                                         {
                                             PokerHandMultiplier = 2;
-                                            Power = (this.dealtCardsNumbers[index] / 4) * 2 + (this.dealtCardsNumbers[index + 1] / 4) * 2 + PokerHandMultiplier * 100;
-                                            this.winningCards.Add(new WinningHand() { Power = Power, Current = 2 });
-                                            this.winningCard = this.winningCards.OrderByDescending(op => op.Current).ThenByDescending(op => op.Power).First();
+                                            Power = (this.dealtCardsNumbers[index] / 4) * 2 +
+                                                    (this.dealtCardsNumbers[index + 1] / 4) * 2 + PokerHandMultiplier * 100;
+                                            this.winningCards.Add(new WinningHand()
+                                            {
+                                                Power = Power,
+                                                Current = 2
+                                            });
+                                            this.winningCard =
+                                                this.winningCards.OrderByDescending(op => op.Current)
+                                                    .ThenByDescending(op => op.Power)
+                                                    .First();
                                         }
                                     }
                                     msgbox = true;
@@ -1189,6 +1428,7 @@
                 }
             }
         }
+
         private void rPairTwoPair(double PokerHandMultiplier, double Power, int index, int[] cardsOnTable)
         {
             if (PokerHandMultiplier >= -1)
@@ -1208,7 +1448,9 @@
                         {
                             if (this.dealtCardsNumbers[tc] / 4 == this.dealtCardsNumbers[tc - k] / 4)
                             {
-                                if (this.dealtCardsNumbers[tc] / 4 != this.dealtCardsNumbers[index] / 4 && this.dealtCardsNumbers[tc] / 4 != this.dealtCardsNumbers[index + 1] / 4 && PokerHandMultiplier == 1)
+                                if (this.dealtCardsNumbers[tc] / 4 != this.dealtCardsNumbers[index] / 4 &&
+                                    this.dealtCardsNumbers[tc] / 4 != this.dealtCardsNumbers[index + 1] / 4 &&
+                                    PokerHandMultiplier == 1)
                                 {
                                     if (!msgbox)
                                     {
@@ -1216,29 +1458,60 @@
                                         {
                                             PokerHandMultiplier = 2;
                                             Power = (this.dealtCardsNumbers[index] / 4) * 2 + 13 * 4 + PokerHandMultiplier * 100;
-                                            this.winningCards.Add(new WinningHand() { Power = Power, Current = 2 });
-                                            this.winningCard = this.winningCards.OrderByDescending(op => op.Current).ThenByDescending(op => op.Power).First();
+                                            this.winningCards.Add(new WinningHand()
+                                            {
+                                                Power = Power,
+                                                Current = 2
+                                            });
+                                            this.winningCard =
+                                                this.winningCards.OrderByDescending(op => op.Current)
+                                                    .ThenByDescending(op => op.Power)
+                                                    .First();
                                         }
                                         if (this.dealtCardsNumbers[index] / 4 == 0)
                                         {
                                             PokerHandMultiplier = 2;
-                                            Power = (this.dealtCardsNumbers[index + 1] / 4) * 2 + 13 * 4 + PokerHandMultiplier * 100;
-                                            this.winningCards.Add(new WinningHand() { Power = Power, Current = 2 });
-                                            this.winningCard = this.winningCards.OrderByDescending(op => op.Current).ThenByDescending(op => op.Power).First();
+                                            Power = (this.dealtCardsNumbers[index + 1] / 4) * 2 + 13 * 4 +
+                                                    PokerHandMultiplier * 100;
+                                            this.winningCards.Add(new WinningHand()
+                                            {
+                                                Power = Power,
+                                                Current = 2
+                                            });
+                                            this.winningCard =
+                                                this.winningCards.OrderByDescending(op => op.Current)
+                                                    .ThenByDescending(op => op.Power)
+                                                    .First();
                                         }
                                         if (this.dealtCardsNumbers[index + 1] / 4 != 0)
                                         {
                                             PokerHandMultiplier = 2;
-                                            Power = (this.dealtCardsNumbers[tc] / 4) * 2 + (this.dealtCardsNumbers[index + 1] / 4) * 2 + PokerHandMultiplier * 100;
-                                            this.winningCards.Add(new WinningHand() { Power = Power, Current = 2 });
-                                            this.winningCard = this.winningCards.OrderByDescending(op => op.Current).ThenByDescending(op => op.Power).First();
+                                            Power = (this.dealtCardsNumbers[tc] / 4) * 2 +
+                                                    (this.dealtCardsNumbers[index + 1] / 4) * 2 + PokerHandMultiplier * 100;
+                                            this.winningCards.Add(new WinningHand()
+                                            {
+                                                Power = Power,
+                                                Current = 2
+                                            });
+                                            this.winningCard =
+                                                this.winningCards.OrderByDescending(op => op.Current)
+                                                    .ThenByDescending(op => op.Power)
+                                                    .First();
                                         }
                                         if (this.dealtCardsNumbers[index] / 4 != 0)
                                         {
                                             PokerHandMultiplier = 2;
-                                            Power = (this.dealtCardsNumbers[tc] / 4) * 2 + (this.dealtCardsNumbers[index] / 4) * 2 + PokerHandMultiplier * 100;
-                                            this.winningCards.Add(new WinningHand() { Power = Power, Current = 2 });
-                                            this.winningCard = this.winningCards.OrderByDescending(op => op.Current).ThenByDescending(op => op.Power).First();
+                                            Power = (this.dealtCardsNumbers[tc] / 4) * 2 +
+                                                    (this.dealtCardsNumbers[index] / 4) * 2 + PokerHandMultiplier * 100;
+                                            this.winningCards.Add(new WinningHand()
+                                            {
+                                                Power = Power,
+                                                Current = 2
+                                            });
+                                            this.winningCard =
+                                                this.winningCards.OrderByDescending(op => op.Current)
+                                                    .ThenByDescending(op => op.Power)
+                                                    .First();
                                         }
                                     }
                                     msgbox = true;
@@ -1253,15 +1526,30 @@
                                             {
                                                 PokerHandMultiplier = 0;
                                                 Power = 13 + this.dealtCardsNumbers[index] / 4 + PokerHandMultiplier * 100;
-                                                this.winningCards.Add(new WinningHand() { Power = Power, Current = 1 });
-                                                this.winningCard = this.winningCards.OrderByDescending(op => op.Current).ThenByDescending(op => op.Power).First();
+                                                this.winningCards.Add(new WinningHand()
+                                                {
+                                                    Power = Power,
+                                                    Current = 1
+                                                });
+                                                this.winningCard =
+                                                    this.winningCards.OrderByDescending(op => op.Current)
+                                                        .ThenByDescending(op => op.Power)
+                                                        .First();
                                             }
                                             else
                                             {
                                                 PokerHandMultiplier = 0;
-                                                Power = this.dealtCardsNumbers[tc] / 4 + this.dealtCardsNumbers[index] / 4 + PokerHandMultiplier * 100;
-                                                this.winningCards.Add(new WinningHand() { Power = Power, Current = 1 });
-                                                this.winningCard = this.winningCards.OrderByDescending(op => op.Current).ThenByDescending(op => op.Power).First();
+                                                Power = this.dealtCardsNumbers[tc] / 4 + this.dealtCardsNumbers[index] / 4 +
+                                                        PokerHandMultiplier * 100;
+                                                this.winningCards.Add(new WinningHand()
+                                                {
+                                                    Power = Power,
+                                                    Current = 1
+                                                });
+                                                this.winningCard =
+                                                    this.winningCards.OrderByDescending(op => op.Current)
+                                                        .ThenByDescending(op => op.Power)
+                                                        .First();
                                             }
                                         }
                                         else
@@ -1270,15 +1558,30 @@
                                             {
                                                 PokerHandMultiplier = 0;
                                                 Power = 13 + this.dealtCardsNumbers[index + 1] + PokerHandMultiplier * 100;
-                                                this.winningCards.Add(new WinningHand() { Power = Power, Current = 1 });
-                                                this.winningCard = this.winningCards.OrderByDescending(op => op.Current).ThenByDescending(op => op.Power).First();
+                                                this.winningCards.Add(new WinningHand()
+                                                {
+                                                    Power = Power,
+                                                    Current = 1
+                                                });
+                                                this.winningCard =
+                                                    this.winningCards.OrderByDescending(op => op.Current)
+                                                        .ThenByDescending(op => op.Power)
+                                                        .First();
                                             }
                                             else
                                             {
                                                 PokerHandMultiplier = 0;
-                                                Power = this.dealtCardsNumbers[tc] / 4 + this.dealtCardsNumbers[index + 1] / 4 + PokerHandMultiplier * 100;
-                                                this.winningCards.Add(new WinningHand() { Power = Power, Current = 1 });
-                                                this.winningCard = this.winningCards.OrderByDescending(op => op.Current).ThenByDescending(op => op.Power).First();
+                                                Power = this.dealtCardsNumbers[tc] / 4 +
+                                                        this.dealtCardsNumbers[index + 1] / 4 + PokerHandMultiplier * 100;
+                                                this.winningCards.Add(new WinningHand()
+                                                {
+                                                    Power = Power,
+                                                    Current = 1
+                                                });
+                                                this.winningCard =
+                                                    this.winningCards.OrderByDescending(op => op.Current)
+                                                        .ThenByDescending(op => op.Power)
+                                                        .First();
                                             }
                                         }
                                     }
@@ -1385,8 +1688,6 @@
                 player.CardPower = power;
                 player.PokerHandMultiplier = PokerHandMultiplier;
 
-
-
                 //this.FindWinnigCard(PokerHandMultiplier, power);
             }
             else
@@ -1409,7 +1710,6 @@
                 double power = 13 + secondCardSuit;
                 this.FindWinnigCard(PokerHandMultiplier, power);
             }
-
         }
 
         private int GetCardSuit(int index)
@@ -1424,15 +1724,19 @@
 
         private void FindWinnigCard(double PokerHandMultiplier, double power)
         {
-            this.winningCards.Add(new WinningHand() { Power = power, Current = PokerHandMultiplier });
+            this.winningCards.Add(new WinningHand()
+            {
+                Power = power,
+                Current = PokerHandMultiplier
+            });
             this.winningCard = this.winningCards
-                .OrderByDescending(op1 => op1.Current)
-                .ThenByDescending(op1 => op1.Power)
-                .First();
+                                   .OrderByDescending(op1 => op1.Current)
+                                   .ThenByDescending(op1 => op1.Power)
+                                   .First();
         }
 
         //Veronika
-        void Winner(double PokerHandMultiplier, double Power, string playerName, int chips, string lastly)
+        private void Winner(double PokerHandMultiplier, double Power, string playerName, int chips, string lastly)
         {
             if (lastly == " ")
             {
@@ -1443,22 +1747,24 @@
             {
                 //await Task.Delay(5);
                 if (this.cardHolder[j].Visible)
+                {
                     this.cardHolder[j].Image = this.DeckImages[j];
+                }
             }
 
             if (PokerHandMultiplier == this.winningCard.Current)
             {
                 if (Power == this.winningCard.Power)
                 {
-
-                    winnersCount++;
-                    CheckWinners.Add(playerName);
+                    this.winnersCount++;
+                    this.CheckWinners.Add(playerName);
 
                     if (PokerHandMultiplier == -1)
                     {
                         MessageBox.Show(playerName + " High Card ");
                     }
-                    if (PokerHandMultiplier == 1 || PokerHandMultiplier == 0)
+                    if (PokerHandMultiplier == 1 ||
+                        PokerHandMultiplier == 0)
                     {
                         MessageBox.Show(playerName + " Pair ");
                     }
@@ -1474,7 +1780,8 @@
                     {
                         MessageBox.Show(playerName + " Straight ");
                     }
-                    if (PokerHandMultiplier == 5 || PokerHandMultiplier == 5.5)
+                    if (PokerHandMultiplier == 5 ||
+                        PokerHandMultiplier == 5.5)
                     {
                         MessageBox.Show(playerName + " Flush ");
                     }
@@ -1497,133 +1804,148 @@
                 }
             }
 
-            if (playerName == lastly)//lastfixed
+            if (playerName == lastly) //lastfixed
             {
-                if (winnersCount > 1)
+                if (this.winnersCount > 1)
                 {
-                    if (CheckWinners.Contains("Player"))
+                    if (this.CheckWinners.Contains("Player"))
                     {
-                        this.players[0].Chips += int.Parse(textBoxPot.Text) / winnersCount;
-                        textBoxPlayerChips.Text = this.players[0].Chips.ToString();
+                        this.players[0].Chips += int.Parse(this.textBoxPot.Text) /this.winnersCount;
+                        this.textBoxPlayerChips.Text = this.players[0].Chips.ToString();
                         //pPanel.Visible = true;
                     }
 
-                    if (CheckWinners.Contains("Bot 1"))
+                    if (this.CheckWinners.Contains("Bot 1"))
                     {
-                        this.players[1].Chips += int.Parse(textBoxPot.Text) / winnersCount;
-                        textBoxBot1Chips.Text = this.players[1].Chips.ToString();
+                        this.players[1].Chips += int.Parse(this.textBoxPot.Text) /this.winnersCount;
+                        this.textBoxBot1Chips.Text = this.players[1].Chips.ToString();
                         //b1Panel.Visible = true;
                     }
 
-                    if (CheckWinners.Contains("Bot 2"))
+                    if (this.CheckWinners.Contains("Bot 2"))
                     {
-                        this.players[2].Chips += int.Parse(textBoxPot.Text) / winnersCount;
-                        textBoxBot2Chips.Text = this.players[2].Chips.ToString();
+                        this.players[2].Chips += int.Parse(this.textBoxPot.Text) /this.winnersCount;
+                        this.textBoxBot2Chips.Text = this.players[2].Chips.ToString();
                         //b2Panel.Visible = true;
                     }
 
-                    if (CheckWinners.Contains("Bot 3"))
+                    if (this.CheckWinners.Contains("Bot 3"))
                     {
-                        this.players[3].Chips += int.Parse(textBoxPot.Text) / winnersCount;
-                        textBoxBot3Chips.Text = this.players[3].Chips.ToString();
+                        this.players[3].Chips += int.Parse(this.textBoxPot.Text) /this.winnersCount;
+                        this.textBoxBot3Chips.Text = this.players[3].Chips.ToString();
                         //b3Panel.Visible = true;
                     }
 
-                    if (CheckWinners.Contains("Bot 4"))
+                    if (this.CheckWinners.Contains("Bot 4"))
                     {
-                        this.players[4].Chips += int.Parse(textBoxPot.Text) / winnersCount;
-                        textBoxBot4Chips.Text = this.players[4].Chips.ToString();
+                        this.players[4].Chips += int.Parse(this.textBoxPot.Text) /this.winnersCount;
+                        this.textBoxBot4Chips.Text = this.players[4].Chips.ToString();
                         //b4Panel.Visible = true;
                     }
 
-                    if (CheckWinners.Contains("Bot 5"))
+                    if (this.CheckWinners.Contains("Bot 5"))
                     {
-                        this.players[5].Chips += int.Parse(textBoxPot.Text) / winnersCount;
-                        textBoxBot5Chips.Text = this.players[5].Chips.ToString();
+                        this.players[5].Chips += int.Parse(this.textBoxPot.Text) /this.winnersCount;
+                        this.textBoxBot5Chips.Text = this.players[5].Chips.ToString();
                         //b5Panel.Visible = true;
                     }
                     //await Finish(1);
                 }
 
-                if (winnersCount == 1)
+                if (this.winnersCount == 1)
                 {
-                    if (CheckWinners.Contains("Player"))
+                    if (this.CheckWinners.Contains("Player"))
                     {
-                        this.players[0].Chips += int.Parse(textBoxPot.Text);
+                        this.players[0].Chips += int.Parse(this.textBoxPot.Text);
                         //await Finish(1);
                         //pPanel.Visible = true;
                     }
-                    if (CheckWinners.Contains("Bot 1"))
+                    if (this.CheckWinners.Contains("Bot 1"))
                     {
-                        this.players[1].Chips += int.Parse(textBoxPot.Text);
+                        this.players[1].Chips += int.Parse(this.textBoxPot.Text);
                         //await Finish(1);
                         //b1Panel.Visible = true;
                     }
-                    if (CheckWinners.Contains("Bot 2"))
+                    if (this.CheckWinners.Contains("Bot 2"))
                     {
-                        this.players[2].Chips += int.Parse(textBoxPot.Text);
+                        this.players[2].Chips += int.Parse(this.textBoxPot.Text);
                         //await Finish(1);
                         //b2Panel.Visible = true;
-
                     }
-                    if (CheckWinners.Contains("Bot 3"))
+                    if (this.CheckWinners.Contains("Bot 3"))
                     {
-                        this.players[3].Chips += int.Parse(textBoxPot.Text);
+                        this.players[3].Chips += int.Parse(this.textBoxPot.Text);
                         //await Finish(1);
                         //b3Panel.Visible = true;
                     }
-                    if (CheckWinners.Contains("Bot 4"))
+                    if (this.CheckWinners.Contains("Bot 4"))
                     {
-                        this.players[4].Chips += int.Parse(textBoxPot.Text);
+                        this.players[4].Chips += int.Parse(this.textBoxPot.Text);
                         //await Finish(1);
                         //b4Panel.Visible = true;
                     }
-                    if (CheckWinners.Contains("Bot 5"))
+                    if (this.CheckWinners.Contains("Bot 5"))
                     {
-                        this.players[5].Chips += int.Parse(textBoxPot.Text);
+                        this.players[5].Chips += int.Parse(this.textBoxPot.Text);
                         //await Finish(1);
                         //b5Panel.Visible = true;
                     }
                 }
             }
         }
-        async Task CheckRaise(int currentTurn, int raiseTurn)
+
+        private async Task CheckRaise(int currentTurn, int raiseTurn)
         {
             if (this.raising)
             {
-                turnCount = 0;
-                raising = false;
-                raisedTurn = currentTurn;
-                changed = true;
+                this.turnCount = 0;
+                this.raising = false;
+                this.raisedTurn = currentTurn;
+                this.changed = true;
             }
             else
             {
-                if (turnCount >= maxPlayersLeftCount - 1 || !changed && turnCount == maxPlayersLeftCount)
+                if (this.turnCount >= this.maxPlayersLeftCount - 1 ||
+                    !this.changed && this.turnCount == this.maxPlayersLeftCount)
                 {
-                    if (currentTurn == raisedTurn - 1 || !changed && turnCount == maxPlayersLeftCount || raisedTurn == 0 && currentTurn == 5)
+                    if (currentTurn == this.raisedTurn - 1 ||
+                        !this.changed && this.turnCount == this.maxPlayersLeftCount ||
+                        this.raisedTurn == 0 && currentTurn == 5)
                     {
-                        changed = false;
-                        turnCount = 0;
+                        this.changed = false;
+                        this.turnCount = 0;
                         this.raise = 0;
                         this.pokerCall = 0;
-                        raisedTurn = 123;
-                        rounds++;
+                        this.raisedTurn = 123;
+                        this.rounds++;
                         if (!this.players[0].GameEnded)
+                        {
                             this.players[0].Label.Text = "";
+                        }
                         if (!this.players[1].GameEnded)
+                        {
                             this.players[1].Label.Text = "";
+                        }
                         if (!this.players[2].GameEnded)
+                        {
                             this.players[2].Label.Text = "";
+                        }
                         if (!this.players[3].GameEnded)
+                        {
                             this.players[3].Label.Text = "";
+                        }
                         if (!this.players[4].GameEnded)
+                        {
                             this.players[4].Label.Text = "";
+                        }
                         if (!this.players[5].GameEnded)
+                        {
                             this.players[5].Label.Text = "";
+                        }
                     }
                 }
             }
-            if (rounds == Flop)
+            if (this.rounds == this.Flop)
             {
                 for (int j = 12; j <= 14; j++)
                 {
@@ -1631,103 +1953,140 @@
                     {
                         this.cardHolder[j].Image = this.DeckImages[j];
                         this.players[0].Call = 0;
-                        players[0].Raise = 0;
+                        this.players[0].Raise = 0;
                         this.players[1].Call = 0;
-                        players[1].Raise = 0;
+                        this.players[1].Raise = 0;
                         this.players[2].Call = 0;
 
-                        players[2].Raise = 0;
-                        players[3].Call = 0;
-                        players[3].Raise = 0;
-                        players[4].Call = 0;
-                        players[4].Raise = 0;
-                        players[5].Call = 0;
-                        players[5].Raise = 0;
+                        this.players[2].Raise = 0;
+                        this.players[3].Call = 0;
+                        this.players[3].Raise = 0;
+                        this.players[4].Call = 0;
+                        this.players[4].Raise = 0;
+                        this.players[5].Call = 0;
+                        this.players[5].Raise = 0;
                     }
                 }
             }
-            if (rounds == Turn)
+            if (this.rounds == this.Turn)
             {
                 for (int j = 14; j <= 15; j++)
                 {
                     if (this.cardHolder[j].Image != this.DeckImages[j])
                     {
                         this.cardHolder[j].Image = this.DeckImages[j];
-                        this.players[0].Call = 0; players[0].Raise = 0;
-                        this.players[1].Call = 0; players[1].Raise = 0;
-                        this.players[2].Call = 0; players[2].Raise = 0;
-                        players[3].Call = 0; players[3].Raise = 0;
-                        players[4].Call = 0; players[4].Raise = 0;
-                        players[5].Call = 0; players[5].Raise = 0;
+                        this.players[0].Call = 0;
+                        this.players[0].Raise = 0;
+                        this.players[1].Call = 0;
+                        this.players[1].Raise = 0;
+                        this.players[2].Call = 0;
+                        this.players[2].Raise = 0;
+                        this.players[3].Call = 0;
+                        this.players[3].Raise = 0;
+                        this.players[4].Call = 0;
+                        this.players[4].Raise = 0;
+                        this.players[5].Call = 0;
+                        this.players[5].Raise = 0;
                     }
                 }
             }
-            if (rounds == River)
+            if (this.rounds == this.River)
             {
                 for (int j = 15; j <= 16; j++)
                 {
                     if (this.cardHolder[j].Image != this.DeckImages[j])
                     {
                         this.cardHolder[j].Image = this.DeckImages[j];
-                        this.players[0].Call = 0; players[0].Raise = 0;
-                        this.players[1].Call = 0; players[1].Raise = 0;
-                        this.players[2].Call = 0; players[2].Raise = 0;
-                        players[3].Call = 0; players[3].Raise = 0;
-                        players[4].Call = 0; players[4].Raise = 0;
-                        players[5].Call = 0; players[5].Raise = 0;
+                        this.players[0].Call = 0;
+                        this.players[0].Raise = 0;
+                        this.players[1].Call = 0;
+                        this.players[1].Raise = 0;
+                        this.players[2].Call = 0;
+                        this.players[2].Raise = 0;
+                        this.players[3].Call = 0;
+                        this.players[3].Raise = 0;
+                        this.players[4].Call = 0;
+                        this.players[4].Raise = 0;
+                        this.players[5].Call = 0;
+                        this.players[5].Raise = 0;
                     }
                 }
             }
 
-            if (rounds == End && maxPlayersLeftCount == 6)
+            if (this.rounds == this.End &&
+                this.maxPlayersLeftCount == 6)
             {
                 string fixedLast = "qwerty";
 
-                if (!gamer.Label.Text.Contains("Fold"))
+                if (!this.gamer.Label.Text.Contains("Fold"))
                 {
                     fixedLast = "Player";
-                    Rules(0, 1, this.gamer);
+                    this.Rules(0, 1, this.gamer);
                 }
 
                 if (!this.bot1.Label.Text.Contains("Fold"))
                 {
                     fixedLast = "Bot 1";
-                    Rules(2, 3, this.bot1);
+                    this.Rules(2, 3, this.bot1);
                 }
 
                 if (!this.bot2.Label.Text.Contains("Fold"))
                 {
                     fixedLast = "Bot 2";
-                    Rules(4, 5, this.bot2);
+                    this.Rules(4, 5, this.bot2);
                 }
 
                 if (!this.bot3.Label.Text.Contains("Fold"))
                 {
                     fixedLast = "Bot 3";
-                    Rules(6, 7, this.bot3);
+                    this.Rules(6, 7, this.bot3);
                 }
 
                 if (!this.bot4.Label.Text.Contains("Fold"))
                 {
                     fixedLast = "Bot 4";
-                    Rules(8, 9, this.bot4);
+                    this.Rules(8, 9, this.bot4);
                 }
 
                 if (!this.bot5.Label.Text.Contains("Fold"))
                 {
                     fixedLast = "Bot 5";
-                    Rules(10, 11, this.bot5);
+                    this.Rules(10, 11, this.bot5);
                 }
 
-                Winner(this.players[0].PokerHandMultiplier, this.players[0].CardPower, this.players[0].Name, this.players[0].Chips, fixedLast);
-                Winner(this.players[1].PokerHandMultiplier, this.players[1].CardPower, this.players[1].Name, this.players[1].Chips, fixedLast);
-                Winner(this.players[2].PokerHandMultiplier, this.players[2].CardPower, this.players[2].Name, this.players[2].Chips, fixedLast);
-                Winner(this.players[3].PokerHandMultiplier, this.players[3].CardPower, this.players[3].Name, this.players[3].Chips, fixedLast);
-                Winner(this.players[4].PokerHandMultiplier, this.players[4].CardPower, this.players[4].Name, this.players[4].Chips, fixedLast);
-                Winner(this.players[5].PokerHandMultiplier, this.players[5].CardPower, this.players[5].Name, this.players[5].Chips, fixedLast);
+                this.Winner(this.players[0].PokerHandMultiplier,
+                       this.players[0].CardPower,
+                       this.players[0].Name,
+                       this.players[0].Chips,
+                       fixedLast);
+                this.Winner(this.players[1].PokerHandMultiplier,
+                       this.players[1].CardPower,
+                       this.players[1].Name,
+                       this.players[1].Chips,
+                       fixedLast);
+                this.Winner(this.players[2].PokerHandMultiplier,
+                       this.players[2].CardPower,
+                       this.players[2].Name,
+                       this.players[2].Chips,
+                       fixedLast);
+                this.Winner(this.players[3].PokerHandMultiplier,
+                       this.players[3].CardPower,
+                       this.players[3].Name,
+                       this.players[3].Chips,
+                       fixedLast);
+                this.Winner(this.players[4].PokerHandMultiplier,
+                       this.players[4].CardPower,
+                       this.players[4].Name,
+                       this.players[4].Chips,
+                       fixedLast);
+                this.Winner(this.players[5].PokerHandMultiplier,
+                       this.players[5].CardPower,
+                       this.players[5].Name,
+                       this.players[5].Chips,
+                       fixedLast);
 
-                restart = true;
-                players[0].Turn = true;
+                this.restart = true;
+                this.players[0].Turn = true;
 
                 this.players[0].GameEnded = false;
                 this.players[1].GameEnded = false;
@@ -1740,20 +2099,20 @@
                 {
                     AddChips f2 = new AddChips();
                     f2.ShowDialog();
-                    if (f2.a != 0)
+                    if (f2.AddedChips != 0)
                     {
-                        this.players[0].Chips = f2.a;
-                        this.players[1].Chips += f2.a;
-                        this.players[2].Chips += f2.a;
-                        this.players[3].Chips += f2.a;
-                        this.players[4].Chips += f2.a;
-                        this.players[5].Chips += f2.a;
+                        this.players[0].Chips = f2.AddedChips;
+                        this.players[1].Chips += f2.AddedChips;
+                        this.players[2].Chips += f2.AddedChips;
+                        this.players[3].Chips += f2.AddedChips;
+                        this.players[4].Chips += f2.AddedChips;
+                        this.players[5].Chips += f2.AddedChips;
                         this.players[0].GameEnded = false;
-                        players[0].Turn = true;
-                        buttonRaise.Enabled = true;
-                        buttonFold.Enabled = true;
-                        buttonCheck.Enabled = true;
-                        buttonRaise.Text = "Raise";
+                        this.players[0].Turn = true;
+                        this.buttonRaise.Enabled = true;
+                        this.buttonFold.Enabled = true;
+                        this.buttonCheck.Enabled = true;
+                        this.buttonRaise.Text = "Raise";
                     }
                 }
 
@@ -1767,26 +2126,26 @@
                 this.players[0].Call = 0;
                 this.players[1].Call = 0;
                 this.players[2].Call = 0;
-                players[3].Call = 0;
-                players[4].Call = 0;
-                players[5].Call = 0;
+                this.players[3].Call = 0;
+                this.players[4].Call = 0;
+                this.players[5].Call = 0;
 
-                players[0].Raise = 0;
-                players[2].Raise = 0;
-                players[1].Raise = 0;
-                players[3].Raise = 0;
-                players[4].Raise = 0;
-                players[5].Raise = 0;
+                this.players[0].Raise = 0;
+                this.players[2].Raise = 0;
+                this.players[1].Raise = 0;
+                this.players[3].Raise = 0;
+                this.players[4].Raise = 0;
+                this.players[5].Raise = 0;
 
-                lastBotPlayed = 0;
-                this.pokerCall = bb;
+                this.lastBotPlayed = 0;
+                this.pokerCall = this.bb;
                 this.raise = 0;
                 this.ImageURIArray = Directory.GetFiles("Assets\\Cards", "*.png", SearchOption.TopDirectoryOnly);
                 this.playersNotGameEnded.Clear();
-                rounds = 0;
+                this.rounds = 0;
                 this.players[0].CardPower = 0;
                 this.players[0].PokerHandMultiplier = -1;
-                type = 0;
+                this.type = 0;
 
                 this.players[1].CardPower = 0;
                 this.players[2].CardPower = 0;
@@ -1801,8 +2160,8 @@
                 this.players[5].PokerHandMultiplier = -1;
 
                 this.playersWithoutChips.Clear();
-                CheckWinners.Clear();
-                winnersCount = 0;
+                this.CheckWinners.Clear();
+                this.winnersCount = 0;
                 this.winningCards.Clear();
                 this.winningCard.Current = 0;
                 this.winningCard.Power = 0;
@@ -1814,15 +2173,15 @@
                     this.cardHolder[os].Visible = false;
                 }
 
-                textBoxPot.Text = "0";
+                this.textBoxPot.Text = "0";
                 this.players[0].Label.Text = "";
 
                 await this.SetupPokerTable();
-                await Turns();
+                await this.Turns();
             }
         }
 
-        void FixCall(IPlayer player, int options)
+        private void FixCall(IPlayer player, int options)
         {
             if (this.rounds != 4)
             {
@@ -1846,153 +2205,166 @@
                 }
                 if (options == 2)
                 {
-                    if (player.Raise != this.raise && player.Raise <= this.raise)
+                    if (player.Raise != this.raise &&
+                        player.Raise <= this.raise)
                     {
                         this.pokerCall = Convert.ToInt32(this.raise) - player.Raise;
                     }
-                    if (player.Call != this.pokerCall || player.Call <= this.pokerCall)
+                    if (player.Call != this.pokerCall ||
+                        player.Call <= this.pokerCall)
                     {
                         this.pokerCall = this.pokerCall - player.Call;
                     }
-                    if (player.Raise == this.raise && this.raise > 0)
+                    if (player.Raise == this.raise &&
+                        this.raise > 0)
                     {
                         this.pokerCall = 0;
-                        buttonCall.Enabled = false;
-                        buttonCall.Text = "Callisfuckedup";
+                        this.buttonCall.Enabled = false;
+                        this.buttonCall.Text = "Callisfuckedup";
                     }
                 }
             }
         }
-        async Task AllIn()
+
+        private async Task AllIn()
         {
             //??????????
+
             #region All in
-            if (this.players[0].Chips <= 0 && !intsadded)
+
+            if (this.players[0].Chips <= 0 &&
+                !this.intsadded)
             {
                 if (this.players[0].Label.Text.Contains("Raise"))
                 {
                     this.playersWithoutChips.Add(this.players[0].Chips);
-                    intsadded = true;
+                    this.intsadded = true;
                 }
 
                 if (this.players[0].Label.Text.Contains("Call"))
                 {
                     this.playersWithoutChips.Add(this.players[0].Chips);
-                    intsadded = true;
+                    this.intsadded = true;
                 }
             }
 
-                intsadded = false;
+            this.intsadded = false;
 
-            if (this.players[1].Chips <= 0 && !this.players[1].GameEnded)
+            if (this.players[1].Chips <= 0 &&
+                !this.players[1].GameEnded)
             {
-                if (!intsadded)
+                if (!this.intsadded)
                 {
                     this.playersWithoutChips.Add(this.players[1].Chips);
-                    intsadded = true;
+                    this.intsadded = true;
                 }
-                intsadded = false;
+                this.intsadded = false;
             }
 
-            if (this.players[2].Chips <= 0 && !this.players[2].GameEnded)
+            if (this.players[2].Chips <= 0 &&
+                !this.players[2].GameEnded)
             {
-                if (!intsadded)
+                if (!this.intsadded)
                 {
                     this.playersWithoutChips.Add(this.players[2].Chips);
-                    intsadded = true;
+                    this.intsadded = true;
                 }
-                intsadded = false;
+                this.intsadded = false;
             }
 
-            if (this.players[3].Chips <= 0 && !this.players[3].GameEnded)
+            if (this.players[3].Chips <= 0 &&
+                !this.players[3].GameEnded)
             {
-                if (!intsadded)
+                if (!this.intsadded)
                 {
                     this.playersWithoutChips.Add(this.players[3].Chips);
-                    intsadded = true;
+                    this.intsadded = true;
                 }
-                intsadded = false;
+                this.intsadded = false;
             }
 
-            if (this.players[4].Chips <= 0 && !this.players[4].GameEnded)
+            if (this.players[4].Chips <= 0 &&
+                !this.players[4].GameEnded)
             {
-                if (!intsadded)
+                if (!this.intsadded)
                 {
                     this.playersWithoutChips.Add(this.players[4].Chips);
-                    intsadded = true;
+                    this.intsadded = true;
                 }
-                intsadded = false;
+                this.intsadded = false;
             }
 
-            if (this.players[5].Chips <= 0 && !this.players[5].GameEnded)
+            if (this.players[5].Chips <= 0 &&
+                !this.players[5].GameEnded)
             {
-                if (!intsadded)
+                if (!this.intsadded)
                 {
                     this.playersWithoutChips.Add(this.players[5].Chips);
-                    intsadded = true;
+                    this.intsadded = true;
                 }
             }
-
 
             if (this.playersWithoutChips.ToArray().Length == this.maxPlayersLeftCount)
             {
-                await Finish(2);
+                await this.Finish(2);
             }
             else
             {
                 this.playersWithoutChips.Clear();
             }
+
             #endregion
 
             int playersNotGameEndedCount = this.playersNotGameEnded.Count(x => x == false);
 
             #region LastManStanding
+
             if (playersNotGameEndedCount == 1)
             {
                 int index = this.playersNotGameEnded.IndexOf(false);
 
                 if (index == 0)
                 {
-                    this.players[0].Chips += int.Parse(textBoxPot.Text);
-                    textBoxPlayerChips.Text = this.players[0].Chips.ToString();
+                    this.players[0].Chips += int.Parse(this.textBoxPot.Text);
+                    this.textBoxPlayerChips.Text = this.players[0].Chips.ToString();
                     this.players[0].CardsPanel.Visible = true;
                     MessageBox.Show("Player Wins");
                 }
 
                 if (index == 1)
                 {
-                    this.players[1].Chips += int.Parse(textBoxPot.Text);
-                    textBoxPlayerChips.Text = this.players[1].Chips.ToString();
+                    this.players[1].Chips += int.Parse(this.textBoxPot.Text);
+                    this.textBoxPlayerChips.Text = this.players[1].Chips.ToString();
                     this.players[1].CardsPanel.Visible = true;
                     MessageBox.Show("Bot 1 Wins");
                 }
 
                 if (index == 2)
                 {
-                    this.players[2].Chips += int.Parse(textBoxPot.Text);
-                    textBoxPlayerChips.Text = this.players[2].Chips.ToString();
+                    this.players[2].Chips += int.Parse(this.textBoxPot.Text);
+                    this.textBoxPlayerChips.Text = this.players[2].Chips.ToString();
                     this.players[2].CardsPanel.Visible = true;
                     MessageBox.Show("Bot 2 Wins");
                 }
                 if (index == 3)
                 {
-                    this.players[3].Chips += int.Parse(textBoxPot.Text);
-                    textBoxPlayerChips.Text = this.players[3].Chips.ToString();
+                    this.players[3].Chips += int.Parse(this.textBoxPot.Text);
+                    this.textBoxPlayerChips.Text = this.players[3].Chips.ToString();
                     this.players[3].CardsPanel.Visible = true;
                     MessageBox.Show("Bot 3 Wins");
                 }
                 if (index == 4)
                 {
-                    this.players[4].Chips += int.Parse(textBoxPot.Text);
-                    textBoxPlayerChips.Text = this.players[4].Chips.ToString();
+                    this.players[4].Chips += int.Parse(this.textBoxPot.Text);
+                    this.textBoxPlayerChips.Text = this.players[4].Chips.ToString();
                     this.players[4].CardsPanel.Visible = true;
                     MessageBox.Show("Bot 4 Wins");
                 }
 
                 if (index == 5)
                 {
-                    this.players[5].Chips += int.Parse(textBoxPot.Text);
-                    textBoxPlayerChips.Text = this.players[5].Chips.ToString();
+                    this.players[5].Chips += int.Parse(this.textBoxPot.Text);
+                    this.textBoxPlayerChips.Text = this.players[5].Chips.ToString();
                     this.players[5].CardsPanel.Visible = true;
                     MessageBox.Show("Bot 5 Wins");
                 }
@@ -2002,28 +2374,31 @@
                     this.cardHolder[j].Visible = false;
                 }
 
-                await Finish(1);
+                await this.Finish(1);
             }
             //TODO find what is intsadded
-            intsadded = false;
+            this.intsadded = false;
+
             #endregion
 
             #region FiveOrLessLeft
-            if (playersNotGameEndedCount < 6 && playersNotGameEndedCount > 1 && rounds >= End)
+
+            if (playersNotGameEndedCount < 6 &&
+                playersNotGameEndedCount > 1 &&
+                this.rounds >= this.End)
             {
-                await Finish(2);
+                await this.Finish(2);
             }
+
             #endregion
-
-
         }
 
-        async Task Finish(int n)
+        private async Task Finish(int n)
         {
             if (n == 2)
             {
                 //Fix can be substitude by Set
-                FixWinners();
+                this.FixWinners();
             }
 
             //Resets all fields
@@ -2034,11 +2409,11 @@
             this.players[4].CardsPanel.Visible = false;
             this.players[5].CardsPanel.Visible = false;
 
-            this.pokerCall = bb;
+            this.pokerCall = this.bb;
             this.raise = 0;
-            foldedPlayers = 5;
-            type = 0;
-            rounds = 0;
+            this.foldedPlayers = 5;
+            this.type = 0;
+            this.rounds = 0;
 
             this.players[1].CardPower = 0;
             this.players[2].CardPower = 0;
@@ -2072,41 +2447,44 @@
             this.players[4].Folded = false;
             this.players[5].Folded = false;
             this.players[0].GameEnded = false;
-            players[0].Turn = true;
-            restart = false;
-            raising = false;
+            this.players[0].Turn = true;
+            this.restart = false;
+            this.raising = false;
             this.players[0].Call = 0;
             this.players[1].Call = 0;
             this.players[2].Call = 0;
 
-            players[3].Call = 0;
-            players[4].Call = 0;
-            players[5].Call = 0;
-            players[0].Raise = 0;
-            players[1].Raise = 0;
-            players[2].Raise = 0;
-            players[3].Raise = 0;
-            players[4].Raise = 0;
-            players[5].Raise = 0;
+            this.players[3].Call = 0;
+            this.players[4].Call = 0;
+            this.players[5].Call = 0;
+            this.players[0].Raise = 0;
+            this.players[1].Raise = 0;
+            this.players[2].Raise = 0;
+            this.players[3].Raise = 0;
+            this.players[4].Raise = 0;
+            this.players[5].Raise = 0;
 
-            height = 0;
-            width = 0;
-            winnersCount = 0;
-            Flop = 1;
-            Turn = 2;
-            River = 3;
-            End = 4;
-            maxPlayersLeftCount = 6;
-            lastBotPlayed = 123;
-            raisedTurn = 1;
+            this.height = 0;
+            this.width = 0;
+            this.winnersCount = 0;
+            this.Flop = 1;
+            this.Turn = 2;
+            this.River = 3;
+            this.End = 4;
+            this.maxPlayersLeftCount = 6;
+            this.lastBotPlayed = 123;
+            this.raisedTurn = 1;
             this.playersNotGameEnded.Clear();
-            CheckWinners.Clear();
+            this.CheckWinners.Clear();
             this.playersWithoutChips.Clear();
             this.winningCards.Clear();
             this.winningCard.Current = 0;
             this.winningCard.Power = 0;
-            textBoxPot.Text = "0";
-            t = 60; up = 10000000; turnCount = 0;
+            this.textBoxPot.Text = "0";
+            this.t = 60;
+            this.up = 10000000;
+            this.turnCount = 0;
+
             this.players[0].Label.Text = "";
             this.players[1].Label.Text = "";
             this.players[2].Label.Text = "";
@@ -2117,20 +2495,20 @@
             {
                 AddChips f2 = new AddChips();
                 f2.ShowDialog();
-                if (f2.a != 0)
+                if (f2.AddedChips != 0)
                 {
-                    this.players[0].Chips = f2.a;
-                    this.players[1].Chips += f2.a;
-                    this.players[2].Chips += f2.a;
-                    this.players[3].Chips += f2.a;
-                    this.players[4].Chips += f2.a;
-                    this.players[5].Chips += f2.a;
+                    this.players[0].Chips = f2.AddedChips;
+                    this.players[1].Chips += f2.AddedChips;
+                    this.players[2].Chips += f2.AddedChips;
+                    this.players[3].Chips += f2.AddedChips;
+                    this.players[4].Chips += f2.AddedChips;
+                    this.players[5].Chips += f2.AddedChips;
                     this.players[0].GameEnded = false;
-                    players[0].Turn = true;
-                    buttonRaise.Enabled = true;
-                    buttonFold.Enabled = true;
-                    buttonCheck.Enabled = true;
-                    buttonRaise.Text = "Raise";
+                    this.players[0].Turn = true;
+                    this.buttonRaise.Enabled = true;
+                    this.buttonFold.Enabled = true;
+                    this.buttonCheck.Enabled = true;
+                    this.buttonRaise.Text = "Raise";
                 }
             }
             this.ImageURIArray = Directory.GetFiles("Assets\\Cards", "*.png", SearchOption.TopDirectoryOnly);
@@ -2145,7 +2523,7 @@
             //await Turns();
         }
 
-        void FixWinners()
+        private void FixWinners()
         {
             this.winningCards.Clear();
             this.winningCard.Current = 0;
@@ -2155,49 +2533,75 @@
             if (!this.players[0].Label.Text.Contains("Fold"))
             {
                 fixedLast = "Player";
-                Rules(0, 1, this.gamer);
+                this.Rules(0, 1, this.gamer);
             }
 
-            if (!labelBot1Status.Text.Contains("Fold"))
+            if (!this.labelBot1Status.Text.Contains("Fold"))
             {
                 fixedLast = "Bot 1";
-                Rules(2, 3, this.bot1);
+                this.Rules(2, 3, this.bot1);
             }
 
-            if (!labelBot2Status.Text.Contains("Fold"))
+            if (!this.labelBot2Status.Text.Contains("Fold"))
             {
                 fixedLast = "Bot 2";
-                Rules(4, 5, this.bot2);
+                this.Rules(4, 5, this.bot2);
             }
 
-            if (!labelBot3Status.Text.Contains("Fold"))
+            if (!this.labelBot3Status.Text.Contains("Fold"))
             {
                 fixedLast = "Bot 3";
-                Rules(6, 7, this.bot3);
+                this.Rules(6, 7, this.bot3);
             }
 
-            if (!labelBot4Status.Text.Contains("Fold"))
+            if (!this.labelBot4Status.Text.Contains("Fold"))
             {
                 fixedLast = "Bot 4";
-                Rules(8, 9, this.bot4);
+                this.Rules(8, 9, this.bot4);
             }
 
-            if (!labelBot5Status.Text.Contains("Fold"))
+            if (!this.labelBot5Status.Text.Contains("Fold"))
             {
                 fixedLast = "Bot 5";
-                Rules(10, 11, this.bot5);
+                this.Rules(10, 11, this.bot5);
             }
 
-            Winner(this.players[0].PokerHandMultiplier, this.players[0].CardPower, "Player", this.players[0].Chips, fixedLast);
-            Winner(this.players[1].PokerHandMultiplier, this.players[1].CardPower, "Bot 1", this.players[1].Chips, fixedLast);
-            Winner(this.players[2].PokerHandMultiplier, this.players[2].CardPower, "Bot 2", this.players[2].Chips, fixedLast);
-            Winner(this.players[3].PokerHandMultiplier, this.players[3].CardPower, "Bot 3", this.players[3].Chips, fixedLast);
-            Winner(this.players[4].PokerHandMultiplier, this.players[4].CardPower, "Bot 4", this.players[4].Chips, fixedLast);
-            Winner(this.players[5].PokerHandMultiplier, this.players[5].CardPower, "Bot 5", this.players[5].Chips, fixedLast);
+            this.Winner(this.players[0].PokerHandMultiplier,
+                   this.players[0].CardPower,
+                   "Player",
+                   this.players[0].Chips,
+                   fixedLast);
+            this.Winner(this.players[1].PokerHandMultiplier,
+                   this.players[1].CardPower,
+                   "Bot 1",
+                   this.players[1].Chips,
+                   fixedLast);
+            this.Winner(this.players[2].PokerHandMultiplier,
+                   this.players[2].CardPower,
+                   "Bot 2",
+                   this.players[2].Chips,
+                   fixedLast);
+            this.Winner(this.players[3].PokerHandMultiplier,
+                   this.players[3].CardPower,
+                   "Bot 3",
+                   this.players[3].Chips,
+                   fixedLast);
+            this.Winner(this.players[4].PokerHandMultiplier,
+                   this.players[4].CardPower,
+                   "Bot 4",
+                   this.players[4].Chips,
+                   fixedLast);
+            this.Winner(this.players[5].PokerHandMultiplier,
+                   this.players[5].CardPower,
+                   "Bot 5",
+                   this.players[5].Chips,
+                   fixedLast);
         }
 
         // Plamena
+
         #region AI logic
+
         // AI   (     2,      3, ref    bot1Chips, ref this.players[1].Turn,ref this.players[1].GameEnded, labelBot1Status,       0, this.bot1CardPower, this.bot1HandMultiplier);
         /* wika se ot Turns : 
             if (!this.players[1].GameEnded) => if (this.players[1].Turn):
@@ -2211,6 +2615,7 @@
         => AI(8, 9, ref bot4Chips, ref this.players[4].Turn, ref this.players[4].GameEnded, labelBot4Status, 3, this.bot4CardPower, this.bot4HandMultiplier);
         => AI(10, 11, ref bot5Chips, ref this.players[5].Turn, ref  players[5].GameEnded, labelBot5Status, 4, this.bot5CardPower, this.bot5HandMultiplier);
          note: int name se polzwa samo pri wikaneto na smooth*/
+
         private void AI(int firstCardNumeration, int secondNumeration, IPlayer player)
         {
             if (!player.GameEnded)
@@ -2220,25 +2625,34 @@
                     case "-1":
                         this.AIHighCard(player);
                         break;
-                    case "0": this.AIPairTable(player);
+                    case "0":
+                        this.AIPairTable(player);
                         break;
-                    case "1": this.AIPairHand(player);
+                    case "1":
+                        this.AIPairHand(player);
                         break;
-                    case "2": this.AITwoPair(player);
+                    case "2":
+                        this.AITwoPair(player);
                         break;
-                    case "3": this.AIThreeOfAKind(player);
+                    case "3":
+                        this.AIThreeOfAKind(player);
                         break;
-                    case "4": this.AIStraight(player);
+                    case "4":
+                        this.AIStraight(player);
                         break;
                     case "5":
-                    case "5.5": this.AIFlush(player);
+                    case "5.5":
+                        this.AIFlush(player);
                         break;
-                    case "6": this.AIFullHouse(player);
+                    case "6":
+                        this.AIFullHouse(player);
                         break;
-                    case "7": this.AIFourOfAKind(player);
+                    case "7":
+                        this.AIFourOfAKind(player);
                         break;
                     case "8":
-                    case "9": this.AIStraightFlush(player);
+                    case "9":
+                        this.AIStraightFlush(player);
                         break;
                 }
             }
@@ -2271,15 +2685,18 @@
 
             int rRaise = rPair.Next(10, 13);
 
-            if (player.CardPower <= 199 && player.CardPower >= 140)
+            if (player.CardPower <= 199 &&
+                player.CardPower >= 140)
             {
                 this.AIPH(player, rCall, 6, rRaise);
             }
-            if (player.CardPower <= 139 && player.CardPower >= 128)
+            if (player.CardPower <= 139 &&
+                player.CardPower >= 128)
             {
                 this.AIPH(player, rCall, 7, rRaise);
             }
-            if (player.CardPower < 128 && player.CardPower >= 101)
+            if (player.CardPower < 128 &&
+                player.CardPower >= 101)
             {
                 this.AIPH(player, rCall, 9, rRaise);
             }
@@ -2291,15 +2708,18 @@
             Random rPair = new Random();
             int rCall = rPair.Next(6, 11);
             int rRaise = rPair.Next(6, 11);
-            if (player.CardPower <= 290 && player.CardPower >= 246)
+            if (player.CardPower <= 290 &&
+                player.CardPower >= 246)
             {
                 this.AIPH(player, rCall, 3, rRaise);
             }
-            if (player.CardPower <= 244 && player.CardPower >= 234)
+            if (player.CardPower <= 244 &&
+                player.CardPower >= 234)
             {
                 this.AIPH(player, rCall, 4, rRaise);
             }
-            if (player.CardPower < 234 && player.CardPower >= 201)
+            if (player.CardPower < 234 &&
+                player.CardPower >= 201)
             {
                 this.AIPH(player, rCall, 4, rRaise);
             }
@@ -2311,15 +2731,18 @@
             Random tk = new Random();
             int tCall = tk.Next(3, 7);
             int tRaise = tk.Next(4, 8);
-            if (player.CardPower <= 390 && player.CardPower >= 330)
+            if (player.CardPower <= 390 &&
+                player.CardPower >= 330)
             {
                 this.AISmooth(player, tCall, tRaise);
             }
-            if (player.CardPower <= 327 && player.CardPower >= 321)//10  8
+            if (player.CardPower <= 327 &&
+                player.CardPower >= 321) //10  8
             {
                 this.AISmooth(player, tCall, tRaise);
             }
-            if (player.CardPower < 321 && player.CardPower >= 303)//7 2
+            if (player.CardPower < 321 &&
+                player.CardPower >= 303) //7 2
             {
                 this.AISmooth(player, tCall, tRaise);
             }
@@ -2331,15 +2754,18 @@
             Random str = new Random();
             int sCall = str.Next(3, 6);
             int sRaise = str.Next(3, 8);
-            if (player.CardPower <= 480 && player.CardPower >= 410)
+            if (player.CardPower <= 480 &&
+                player.CardPower >= 410)
             {
                 this.AISmooth(player, sCall, sRaise);
             }
-            if (player.CardPower <= 409 && player.CardPower >= 407)//10  8
+            if (player.CardPower <= 409 &&
+                player.CardPower >= 407) //10  8
             {
                 this.AISmooth(player, sCall, sRaise);
             }
-            if (player.CardPower < 407 && player.CardPower >= 404)
+            if (player.CardPower < 407 &&
+                player.CardPower >= 404)
             {
                 this.AISmooth(player, sCall, sRaise);
             }
@@ -2360,11 +2786,13 @@
             Random flh = new Random();
             int fhCall = flh.Next(1, 5);
             int fhRaise = flh.Next(2, 6);
-            if (player.CardPower <= 626 && player.CardPower >= 620)
+            if (player.CardPower <= 626 &&
+                player.CardPower >= 620)
             {
                 this.AISmooth(player, fhCall, fhRaise);
             }
-            if (player.CardPower < 620 && player.CardPower >= 602)
+            if (player.CardPower < 620 &&
+                player.CardPower >= 602)
             {
                 this.AISmooth(player, fhCall, fhRaise);
             }
@@ -2376,7 +2804,8 @@
             Random fk = new Random();
             int fkCall = fk.Next(1, 4);
             int fkRaise = fk.Next(2, 5);
-            if (player.CardPower <= 752 && player.CardPower >= 704)
+            if (player.CardPower <= 752 &&
+                player.CardPower >= 704)
             {
                 this.AISmooth(player, fkCall, fkRaise);
             }
@@ -2388,7 +2817,8 @@
             Random sf = new Random();
             int sfCall = sf.Next(1, 3);
             int sfRaise = sf.Next(1, 3);
-            if (player.CardPower <= 913 && player.CardPower >= 804)
+            if (player.CardPower <= 913 &&
+                player.CardPower >= 804)
             {
                 this.AISmooth(player, sfCall, sfRaise);
             }
@@ -2402,6 +2832,7 @@
          * 2 -> move da igrae Call ili Fold
          * 3 -> move da wdigne ili da Fold 
          */
+
         private void AIHP(IPlayer player, int n, int n1)
         {
             Random rand = new Random();
@@ -2481,6 +2912,7 @@
                 ako pokerCall > 0 w zawisimost ot matematikata na chipowete i rnd, move da FOLD, CALL, RASE
              ako botChips <= 0 => setwa botEndGame = true;
          */
+
         private void AIPH(IPlayer player, int n, int n1, int r)
         {
             Random rand = new Random();
@@ -2506,12 +2938,14 @@
 
                     if (!player.GameEnded)
                     {
-                        if (this.pokerCall >= AIRoundNumber(player.Chips, n) && this.pokerCall <= AIRoundNumber(player.Chips, n1))
+                        if (this.pokerCall >= AIRoundNumber(player.Chips, n) &&
+                            this.pokerCall <= AIRoundNumber(player.Chips, n1))
                         {
                             this.AICall(player);
                         }
 
-                        if (this.raise <= AIRoundNumber(player.Chips, n) && this.raise >= (AIRoundNumber(player.Chips, n)) / 2)
+                        if (this.raise <= AIRoundNumber(player.Chips, n) &&
+                            this.raise >= (AIRoundNumber(player.Chips, n)) / 2)
                         {
                             this.AICall(player);
                         }
@@ -2550,11 +2984,13 @@
                     }
                     if (!player.GameEnded)
                     {
-                        if (this.pokerCall >= AIRoundNumber(player.Chips, n - rnd) && this.pokerCall <= AIRoundNumber(player.Chips, n1 - rnd))
+                        if (this.pokerCall >= AIRoundNumber(player.Chips, n - rnd) &&
+                            this.pokerCall <= AIRoundNumber(player.Chips, n1 - rnd))
                         {
                             this.AICall(player);
                         }
-                        if (this.raise <= AIRoundNumber(player.Chips, n - rnd) && this.raise >= (AIRoundNumber(player.Chips, n - rnd)) / 2)
+                        if (this.raise <= AIRoundNumber(player.Chips, n - rnd) &&
+                            this.raise >= (AIRoundNumber(player.Chips, n - rnd)) / 2)
                         {
                             this.AICall(player);
                         }
@@ -2592,6 +3028,7 @@
          ako pokerCall > 0 w zawisimost ot matematikata na chipowete move da CALL, RASE
          ako botChips <= 0 => setwa botEndGame = true;
          */
+
         private void AISmooth(IPlayer player, int n, int r)
         {
             // star kod - > zakomentiran t.kato ne se polzwa: 
@@ -2611,11 +3048,11 @@
                     }
                     else if (player.Chips <= this.pokerCall)
                     {
-                        raising = false;
+                        this.raising = false;
                         player.Turn = false;
                         player.Chips = 0;
                         player.Label.Text = "Call " + player.Chips;
-                        textBoxPot.Text = (int.Parse(textBoxPot.Text) + player.Chips).ToString();
+                        this.textBoxPot.Text = (int.Parse(this.textBoxPot.Text) + player.Chips).ToString();
                     }
                 }
                 else
@@ -2645,11 +3082,10 @@
             }
         }
 
-
         // wika se ot AIHP ili AIPH  this.AIFold(ref bothTurn, ref botEndGame, sStatus);
         private void AIFold(IPlayer player)
         {
-            raising = false;
+            this.raising = false;
             player.Label.Text = "Fold";
             player.Turn = false;
             player.Folded = true;
@@ -2681,7 +3117,7 @@
             player.Turn = false;
             player.Chips -= this.pokerCall;
             player.Label.Text = "Call " + this.pokerCall;
-            this.textBoxPot.Text = (int.Parse(textBoxPot.Text) + this.pokerCall).ToString();
+            this.textBoxPot.Text = (int.Parse(this.textBoxPot.Text) + this.pokerCall).ToString();
         }
 
         // вика се от  AIHP AIPH, AISmooth this.AIRaised(ref botChips, ref bothTurn, sStatus);
@@ -2689,215 +3125,224 @@
         {
             player.Chips -= Convert.ToInt32(this.raise);
             player.Label.Text = "Raise " + this.raise;
-            textBoxPot.Text = (int.Parse(textBoxPot.Text) + Convert.ToInt32(this.raise)).ToString();
+            this.textBoxPot.Text = (int.Parse(this.textBoxPot.Text) + Convert.ToInt32(this.raise)).ToString();
             this.pokerCall = Convert.ToInt32(this.raise);
-            raising = true;
+            this.raising = true;
             player.Turn = false;
         }
 
         //вика се от  AIHP AIPH, AISmooth  this.pokerCall <= AIRoundNumber(botChips, n) числото е различно има и математика
         private static double AIRoundNumber(int botChips, int n)
         {
-            double a = Math.Round((botChips / n) / 100d, 0) * 100; ;
+            double a = Math.Round((botChips / n) / 100d, 0) * 100;
             return a;
         }
 
         #endregion
 
         #region UI
+
         private async void timer_Tick(object sender, object e)
         {
-            if (progressBarTimer.Value <= 0)
+            if (this.progressBarTimer.Value <= 0)
             {
                 this.players[0].GameEnded = true;
-                await Turns();
+                await this.Turns();
             }
-            if (t > 0)
+            if (this.t > 0)
             {
-                t--;
-                progressBarTimer.Value = (t / 6) * 100;
+                this.t--;
+                this.progressBarTimer.Value = (this.t / 6) * 100;
             }
         }
+
         private void Update_Tick(object sender, object e)
         {
             if (this.players[0].Chips <= 0)
             {
-                textBoxPlayerChips.Text = "Chips : 0";
+                this.textBoxPlayerChips.Text = "Chips : 0";
             }
             if (this.players[1].Chips <= 0)
             {
-                textBoxBot1Chips.Text = "Chips : 0";
+                this.textBoxBot1Chips.Text = "Chips : 0";
             }
             if (this.players[2].Chips <= 0)
             {
-                textBoxBot2Chips.Text = "Chips : 0";
+                this.textBoxBot2Chips.Text = "Chips : 0";
             }
             if (this.players[3].Chips <= 0)
             {
-                textBoxBot3Chips.Text = "Chips : 0";
+                this.textBoxBot3Chips.Text = "Chips : 0";
             }
             if (this.players[4].Chips <= 0)
             {
-                textBoxBot4Chips.Text = "Chips : 0";
+                this.textBoxBot4Chips.Text = "Chips : 0";
             }
             if (this.players[5].Chips <= 0)
             {
-                textBoxBot5Chips.Text = "Chips : 0";
+                this.textBoxBot5Chips.Text = "Chips : 0";
             }
-            textBoxPlayerChips.Text = "Chips : " + this.players[0].Chips.ToString();
-            textBoxBot1Chips.Text = "Chips : " + this.players[1].Chips.ToString();
-            textBoxBot2Chips.Text = "Chips : " + this.players[2].Chips.ToString();
-            textBoxBot3Chips.Text = "Chips : " + this.players[3].Chips.ToString();
-            textBoxBot4Chips.Text = "Chips : " + this.players[4].Chips.ToString();
-            textBoxBot5Chips.Text = "Chips : " + this.players[5].Chips.ToString();
+            this.textBoxPlayerChips.Text = "Chips : " + this.players[0].Chips.ToString();
+            this.textBoxBot1Chips.Text = "Chips : " + this.players[1].Chips.ToString();
+            this.textBoxBot2Chips.Text = "Chips : " + this.players[2].Chips.ToString();
+            this.textBoxBot3Chips.Text = "Chips : " + this.players[3].Chips.ToString();
+            this.textBoxBot4Chips.Text = "Chips : " + this.players[4].Chips.ToString();
+            this.textBoxBot5Chips.Text = "Chips : " + this.players[5].Chips.ToString();
             if (this.players[0].Chips <= 0)
             {
-                players[0].Turn = false;
+                this.players[0].Turn = false;
                 this.players[0].GameEnded = true;
-                buttonCall.Enabled = false;
-                buttonRaise.Enabled = false;
-                buttonFold.Enabled = false;
-                buttonCheck.Enabled = false;
+                this.buttonCall.Enabled = false;
+                this.buttonRaise.Enabled = false;
+                this.buttonFold.Enabled = false;
+                this.buttonCheck.Enabled = false;
             }
-            if (up > 0)
+            if (this.up > 0)
             {
-                up--;
+                this.up--;
             }
             if (this.players[0].Chips >= this.pokerCall)
             {
-                buttonCall.Text = "Call " + this.pokerCall.ToString();
+                this.buttonCall.Text = "Call " + this.pokerCall.ToString();
             }
             else
             {
-                buttonCall.Text = "All in";
-                buttonRaise.Enabled = false;
+                this.buttonCall.Text = "All in";
+                this.buttonRaise.Enabled = false;
             }
             if (this.pokerCall > 0)
             {
-                buttonCheck.Enabled = false;
+                this.buttonCheck.Enabled = false;
             }
             if (this.pokerCall <= 0)
             {
-                buttonCheck.Enabled = true;
-                buttonCall.Text = "Call";
-                buttonCall.Enabled = false;
+                this.buttonCheck.Enabled = true;
+                this.buttonCall.Text = "Call";
+                this.buttonCall.Enabled = false;
             }
             if (this.players[0].Chips <= 0)
             {
-                buttonRaise.Enabled = false;
+                this.buttonRaise.Enabled = false;
             }
             int parsedValue;
 
-            if (textBoxRaise.Text != "" && int.TryParse(textBoxRaise.Text, out parsedValue))
+            if (this.textBoxRaise.Text != "" &&
+                int.TryParse(this.textBoxRaise.Text, out parsedValue))
             {
-                if (this.players[0].Chips <= int.Parse(textBoxRaise.Text))
+                if (this.players[0].Chips <= int.Parse(this.textBoxRaise.Text))
                 {
-                    buttonRaise.Text = "All in";
+                    this.buttonRaise.Text = "All in";
                 }
                 else
                 {
-                    buttonRaise.Text = "Raise";
+                    this.buttonRaise.Text = "Raise";
                 }
             }
             if (this.players[0].Chips < this.pokerCall)
             {
-                buttonRaise.Enabled = false;
+                this.buttonRaise.Enabled = false;
             }
         }
+
         private async void ButtonFold_Click(object sender, EventArgs e)
         {
             this.gamer.Label.Text = "Fold";
             this.gamer.Turn = false;
             this.gamer.GameEnded = true;
-            await Turns();
+            await this.Turns();
         }
+
         private async void ButtonCheck_Click(object sender, EventArgs e)
         {
             if (this.pokerCall <= 0)
             {
-                players[0].Turn = false;
+                this.players[0].Turn = false;
                 this.players[0].Label.Text = "Check";
             }
             else
             {
                 //pStatus.Text = "All in " + Chips;
 
-                buttonCheck.Enabled = false;
+                this.buttonCheck.Enabled = false;
             }
-            await Turns();
+            await this.Turns();
         }
+
         private async void ButtonCall_Click(object sender, EventArgs e)
         {
-            Rules(0, 1, this.gamer);
+            this.Rules(0, 1, this.gamer);
 
             if (this.players[0].Chips >= this.pokerCall)
             {
                 this.players[0].Chips -= this.pokerCall;
-                textBoxPlayerChips.Text = "Chips : " + this.players[0].Chips.ToString();
+                this.textBoxPlayerChips.Text = "Chips : " + this.players[0].Chips.ToString();
 
-                if (textBoxPot.Text != "")
+                if (this.textBoxPot.Text != "")
                 {
-                    textBoxPot.Text = (int.Parse(textBoxPot.Text) + this.pokerCall).ToString();
+                    this.textBoxPot.Text = (int.Parse(this.textBoxPot.Text) + this.pokerCall).ToString();
                 }
                 else
                 {
-                    textBoxPot.Text = this.pokerCall.ToString();
+                    this.textBoxPot.Text = this.pokerCall.ToString();
                 }
 
-                players[0].Turn = false;
+                this.players[0].Turn = false;
                 this.players[0].Label.Text = "Call " + this.pokerCall;
                 this.players[0].Call = this.pokerCall;
             }
-            else if (this.players[0].Chips <= this.pokerCall && this.pokerCall > 0)
+            else if (this.players[0].Chips <= this.pokerCall &&
+                     this.pokerCall > 0)
             {
-                textBoxPot.Text = (int.Parse(textBoxPot.Text) + this.players[0].Chips).ToString();
+                this.textBoxPot.Text = (int.Parse(this.textBoxPot.Text) + this.players[0].Chips).ToString();
                 this.players[0].Label.Text = "All in " + this.players[0].Chips;
                 this.players[0].Chips = 0;
-                textBoxPlayerChips.Text = "Chips : " + this.players[0].Chips.ToString();
-                players[0].Turn = false;
-                buttonFold.Enabled = false;
+                this.textBoxPlayerChips.Text = "Chips : " + this.players[0].Chips.ToString();
+                this.players[0].Turn = false;
+                this.buttonFold.Enabled = false;
                 this.players[0].Call = this.players[0].Chips;
             }
-            await Turns();
+            await this.Turns();
         }
+
         private async void ButtonRaise_Click(object sender, EventArgs e)
         {
-            Rules(0, 1, this.gamer);
+            this.Rules(0, 1, this.gamer);
             int parsedValue;
-            if (textBoxRaise.Text != "" && int.TryParse(textBoxRaise.Text, out parsedValue))
+            if (this.textBoxRaise.Text != "" &&
+                int.TryParse(this.textBoxRaise.Text, out parsedValue))
             {
                 if (this.players[0].Chips > this.pokerCall)
                 {
-                    if (this.raise * 2 > int.Parse(textBoxRaise.Text))
+                    if (this.raise * 2 > int.Parse(this.textBoxRaise.Text))
                     {
-                        textBoxRaise.Text = (this.raise * 2).ToString();
+                        this.textBoxRaise.Text = (this.raise * 2).ToString();
                         MessageBox.Show("You must raise atleast twice as the PokerHandMultiplier raise !");
                         return;
                     }
                     else
                     {
-                        if (this.players[0].Chips >= int.Parse(textBoxRaise.Text))
+                        if (this.players[0].Chips >= int.Parse(this.textBoxRaise.Text))
                         {
-                            this.pokerCall = int.Parse(textBoxRaise.Text);
-                            this.raise = int.Parse(textBoxRaise.Text);
+                            this.pokerCall = int.Parse(this.textBoxRaise.Text);
+                            this.raise = int.Parse(this.textBoxRaise.Text);
                             this.players[0].Label.Text = "Raise " + this.pokerCall.ToString();
-                            textBoxPot.Text = (int.Parse(textBoxPot.Text) + this.pokerCall).ToString();
-                            buttonCall.Text = "Call";
-                            this.players[0].Chips -= int.Parse(textBoxRaise.Text);
-                            raising = true;
-                            lastBotPlayed = 0;
-                            players[0].Raise = Convert.ToInt32(this.raise);
+                            this.textBoxPot.Text = (int.Parse(this.textBoxPot.Text) + this.pokerCall).ToString();
+                            this.buttonCall.Text = "Call";
+                            this.players[0].Chips -= int.Parse(this.textBoxRaise.Text);
+                            this.raising = true;
+                            this.lastBotPlayed = 0;
+                            this.players[0].Raise = Convert.ToInt32(this.raise);
                         }
                         else
                         {
                             this.pokerCall = this.players[0].Chips;
                             this.raise = this.players[0].Chips;
-                            textBoxPot.Text = (int.Parse(textBoxPot.Text) + this.players[0].Chips).ToString();
+                            this.textBoxPot.Text = (int.Parse(this.textBoxPot.Text) + this.players[0].Chips).ToString();
                             this.players[0].Label.Text = "Raise " + this.pokerCall.ToString();
                             this.players[0].Chips = 0;
-                            raising = true;
-                            lastBotPlayed = 0;
-                            players[0].Raise = Convert.ToInt32(this.raise);
+                            this.raising = true;
+                            this.lastBotPlayed = 0;
+                            this.players[0].Raise = Convert.ToInt32(this.raise);
                         }
                     }
                 }
@@ -2907,107 +3352,119 @@
                 MessageBox.Show("This is a number only field");
                 return;
             }
-            players[0].Turn = false;
-            await Turns();
+            this.players[0].Turn = false;
+            await this.Turns();
         }
+
         private void ButtonAddChips_Click(object sender, EventArgs e)
         {
-            if (textBoxAddChips.Text == "") { }
+            if (this.textBoxAddChips.Text == "")
+            {
+            }
             else
             {
-                this.players[0].Chips += int.Parse(textBoxAddChips.Text);
-                this.players[1].Chips += int.Parse(textBoxAddChips.Text);
-                this.players[2].Chips += int.Parse(textBoxAddChips.Text);
-                this.players[3].Chips += int.Parse(textBoxAddChips.Text);
-                this.players[4].Chips += int.Parse(textBoxAddChips.Text);
-                this.players[5].Chips += int.Parse(textBoxAddChips.Text);
+                this.players[0].Chips += int.Parse(this.textBoxAddChips.Text);
+                this.players[1].Chips += int.Parse(this.textBoxAddChips.Text);
+                this.players[2].Chips += int.Parse(this.textBoxAddChips.Text);
+                this.players[3].Chips += int.Parse(this.textBoxAddChips.Text);
+                this.players[4].Chips += int.Parse(this.textBoxAddChips.Text);
+                this.players[5].Chips += int.Parse(this.textBoxAddChips.Text);
             }
-            textBoxPlayerChips.Text = "Chips : " + this.players[0].Chips.ToString();
+            this.textBoxPlayerChips.Text = "Chips : " + this.players[0].Chips.ToString();
         }
+
         private void ButtonChooseBlind_Click(object sender, EventArgs e)
         {
-            textBoxBigBlind.Text = bb.ToString();
-            textBoxSmallBlind.Text = sb.ToString();
-            if (textBoxBigBlind.Visible == false)
+            this.textBoxBigBlind.Text = this.bb.ToString();
+            this.textBoxSmallBlind.Text = this.sb.ToString();
+            if (this.textBoxBigBlind.Visible == false)
             {
-                textBoxBigBlind.Visible = true;
-                textBoxSmallBlind.Visible = true;
-                buttonBigBlind.Visible = true;
-                buttonSmallBlind.Visible = true;
+                this.textBoxBigBlind.Visible = true;
+                this.textBoxSmallBlind.Visible = true;
+                this.buttonBigBlind.Visible = true;
+                this.buttonSmallBlind.Visible = true;
             }
             else
             {
-                textBoxBigBlind.Visible = false;
-                textBoxSmallBlind.Visible = false;
-                buttonBigBlind.Visible = false;
-                buttonSmallBlind.Visible = false;
+                this.textBoxBigBlind.Visible = false;
+                this.textBoxSmallBlind.Visible = false;
+                this.buttonBigBlind.Visible = false;
+                this.buttonSmallBlind.Visible = false;
             }
         }
+
         private void ButtonSmallBlind_Click(object sender, EventArgs e)
         {
             int parsedValue;
-            if (textBoxSmallBlind.Text.Contains(",") || textBoxSmallBlind.Text.Contains("."))
+            if (this.textBoxSmallBlind.Text.Contains(",") ||
+                this.textBoxSmallBlind.Text.Contains("."))
             {
                 MessageBox.Show("The Small Blind can be only round number !");
-                textBoxSmallBlind.Text = sb.ToString();
+                this.textBoxSmallBlind.Text = this.sb.ToString();
                 return;
             }
-            if (!int.TryParse(textBoxSmallBlind.Text, out parsedValue))
+            if (!int.TryParse(this.textBoxSmallBlind.Text, out parsedValue))
             {
                 MessageBox.Show("This is a number only field");
-                textBoxSmallBlind.Text = sb.ToString();
+                this.textBoxSmallBlind.Text = this.sb.ToString();
                 return;
             }
-            if (int.Parse(textBoxSmallBlind.Text) > 100000)
+            if (int.Parse(this.textBoxSmallBlind.Text) > 100000)
             {
                 MessageBox.Show("The maximum of the Small Blind is 100 000 $");
-                textBoxSmallBlind.Text = sb.ToString();
+                this.textBoxSmallBlind.Text = this.sb.ToString();
             }
-            if (int.Parse(textBoxSmallBlind.Text) < 250)
+            if (int.Parse(this.textBoxSmallBlind.Text) < 250)
             {
                 MessageBox.Show("The minimum of the Small Blind is 250 $");
             }
-            if (int.Parse(textBoxSmallBlind.Text) >= 250 && int.Parse(textBoxSmallBlind.Text) <= 100000)
+            if (int.Parse(this.textBoxSmallBlind.Text) >= 250 &&
+                int.Parse(this.textBoxSmallBlind.Text) <= 100000)
             {
-                sb = int.Parse(textBoxSmallBlind.Text);
+                this.sb = int.Parse(this.textBoxSmallBlind.Text);
                 MessageBox.Show("The changes have been saved ! They will become available the next hand you play. ");
             }
         }
+
         private void ButtonBigBlind_Click(object sender, EventArgs e)
         {
             int parsedValue;
-            if (textBoxBigBlind.Text.Contains(",") || textBoxBigBlind.Text.Contains("."))
+            if (this.textBoxBigBlind.Text.Contains(",") ||
+                this.textBoxBigBlind.Text.Contains("."))
             {
                 MessageBox.Show("The Big Blind can be only round number !");
-                textBoxBigBlind.Text = bb.ToString();
+                this.textBoxBigBlind.Text = this.bb.ToString();
                 return;
             }
-            if (!int.TryParse(textBoxSmallBlind.Text, out parsedValue))
+            if (!int.TryParse(this.textBoxSmallBlind.Text, out parsedValue))
             {
                 MessageBox.Show("This is a number only field");
-                textBoxSmallBlind.Text = bb.ToString();
+                this.textBoxSmallBlind.Text = this.bb.ToString();
                 return;
             }
-            if (int.Parse(textBoxBigBlind.Text) > 200000)
+            if (int.Parse(this.textBoxBigBlind.Text) > 200000)
             {
                 MessageBox.Show("The maximum of the Big Blind is 200 000");
-                textBoxBigBlind.Text = bb.ToString();
+                this.textBoxBigBlind.Text = this.bb.ToString();
             }
-            if (int.Parse(textBoxBigBlind.Text) < 500)
+            if (int.Parse(this.textBoxBigBlind.Text) < 500)
             {
                 MessageBox.Show("The minimum of the Big Blind is 500 $");
             }
-            if (int.Parse(textBoxBigBlind.Text) >= 500 && int.Parse(textBoxBigBlind.Text) <= 200000)
+            if (int.Parse(this.textBoxBigBlind.Text) >= 500 &&
+                int.Parse(this.textBoxBigBlind.Text) <= 200000)
             {
-                bb = int.Parse(textBoxBigBlind.Text);
+                this.bb = int.Parse(this.textBoxBigBlind.Text);
                 MessageBox.Show("The changes have been saved ! They will become available the next hand you play. ");
             }
         }
+
         private void Layout_Change(object sender, LayoutEventArgs e)
         {
-            width = this.Width;
-            height = this.Height;
+            this.width = this.Width;
+            this.height = this.Height;
         }
+
         #endregion
     }
 }

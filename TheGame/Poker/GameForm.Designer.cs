@@ -388,9 +388,6 @@
         private System.Windows.Forms.Label labelBot2Status;
         private System.Windows.Forms.Label labelPot;
         private System.Windows.Forms.TextBox textBoxRaise;
-
-
-
     }
 }
 

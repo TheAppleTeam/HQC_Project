@@ -5,10 +5,10 @@
 
     public abstract class AbstractPlayer : IPlayer
     {
-        protected  Panel cardsPanel;
         private const int InitialChips = 10000;
+        private Panel cardsPanel;
 
-        protected AbstractPlayer( string name,Label label)
+        protected AbstractPlayer(string name, Label label)
         {
             this.CardsPanel = new Panel();
             this.GameEnded = false;
@@ -19,15 +19,18 @@
             this.PokerHandMultiplier = -1;
             this.Name = name;
             this.Label = label;
-
         }
 
         public Panel CardsPanel
         {
-            get { return this.cardsPanel; }
+            get
+            {
+                return this.cardsPanel;
+            }
+
             private set
             {
-                this.cardsPanel=value;
+                this.cardsPanel = value;
             }
         }
 
@@ -39,7 +42,7 @@
 
         public bool GameEnded { get; set; }
 
-        //съдържанието на полето се изписва в лейбъла - например raise 200
+        //// съдържанието на полето се изписва в лейбъла - например raise 200
         public string Status { get; set; }
 
         public double PokerHandMultiplier { get; set; }
@@ -53,7 +56,5 @@
         public int Raise { get; set; }
 
         public Label Label { get; set; }
-
-
     }
 }
