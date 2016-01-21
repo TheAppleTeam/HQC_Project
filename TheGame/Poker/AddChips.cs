@@ -6,8 +6,8 @@
 
     public partial class AddChips : Form
     {
-        const string message = "Are you sure?";
-        const string title = "Quit";
+       private const string Message = "Are you sure?";
+       private const string Title = "Quit";
 
         public AddChips()
         {
@@ -17,6 +17,7 @@
             this.ControlBox = false;
             this.label1.BorderStyle = BorderStyle.FixedSingle;
         }
+
         public int AddedChips { get; set; }
 
         private void Button1_Click(object sender, EventArgs e)
@@ -33,7 +34,6 @@
                 MessageBox.Show("This is a number only field");
                 return;
             }
-
             else if (int.TryParse(this.textBox1.Text, out parsedValue) &&
                      int.Parse(this.textBox1.Text) <= 100000000)
             {
@@ -44,7 +44,7 @@
 
         private void Button2_Click(object sender, EventArgs e)
         {
-            var result = MessageBox.Show(message, title, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            var result = MessageBox.Show(Message, Title, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             switch (result)
             {

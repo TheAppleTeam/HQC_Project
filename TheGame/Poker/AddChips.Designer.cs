@@ -1,6 +1,6 @@
 ﻿namespace Poker
 {
-    partial class AddChips
+    public partial class AddChips
     {
         /// <summary>
         /// Required designer variable.
@@ -25,7 +25,6 @@
 
             base.Dispose(disposing);
         }
-
 
         #region Windows Form Designer generated code
 
