@@ -124,14 +124,13 @@
             this.MinimizeBox = false;
             this.updates.Start();
 
-            this.InitializeComponent();
-
             this.gamer = new Gamer(this.labelPlayerStatus);
             this.bot1 = new Bot("Bot 1", this.labelBot1Status);
             this.bot2 = new Bot("Bot 2", this.labelBot2Status);
             this.bot3 = new Bot("Bot 3", this.labelBot3Status);
             this.bot4 = new Bot("Bot 4", this.labelBot4Status);
             this.bot5 = new Bot("Bot 5", this.labelBot5Status);
+
 
             this.players[0] = this.gamer;
             this.players[1] = this.bot1;
@@ -140,6 +139,7 @@
             this.players[4] = this.bot4;
             this.players[5] = this.bot5;
 
+            this.InitializeComponent();
             ////bools.Add(PFturn); bools.Add(B1Fturn); bools.Add(players[2].GameEnded); bools.Add(players[3].GameEnded); bools.Add(players[4].GameEnded); bools.Add(players[5].GameEnded);
 
             this.width = this.Width;
@@ -176,6 +176,7 @@
             this.buttonSmallBlind.Visible = false;
             this.textBoxRaise.Text = (this.bb * 2).ToString();
         }
+
 
         ////Stani
 
@@ -823,16 +824,12 @@
                 #endregion
 
                 #region Straight PokerHandMultiplier = 4
-
-                this.rStraight(playerFirstCard, playerSecondCard, cardsOnTable, player);
-
+                this.rStraight(cardsOnTableWithPlayerCards, player);
                 #endregion
 
-                //#region Flush PokerHandMultiplier = 5 || 5.5
-
-                //this.rFlush(firstCard, secondCard, player.PokerHandMultiplier, player.CardPower, cardsOnTable, firstCard);
-
-                //#endregion
+                #region Flush PokerHandMultiplier = 5
+                this.rFlush(playerFirstCard, playerSecondCard, cardsOnTable, player);
+                #endregion
 
                 //#region Full House PokerHandMultiplier = 6
 
@@ -1134,110 +1131,18 @@
         }
         #region Flush
 
-        private void rFlush(double PokerHandMultiplier, double power, int[] cardsOnTable, int index)
+        private void rFlush(int firstCard, int secondCard, int[] cardsOnTable, IPlayer player)
         {
-            ////if (PokerHandMultiplier >= -1)
-            ////{
-            var cardsOfClubs = cardsOnTable.Where(o => o % 4 == (int)CardSuit.clubs).ToArray();
-            var cardsOfDiamonds = cardsOnTable.Where(o => o % 4 == (int)CardSuit.diamonds).ToArray();
-            var cardsOfHearts = cardsOnTable.Where(o => o % 4 == (int)CardSuit.hearts).ToArray();
-            var cardsOfSpades = cardsOnTable.Where(o => o % 4 == (int)CardSuit.spades).ToArray();
+            int firstCardSameSuitCount = cardsOnTable.Count(card => this.GetCardSuit(firstCard) == this.GetCardSuit(card));
+            int secondCardCardSameSuitCount = cardsOnTable.Count(card => this.GetCardSuit(secondCard) == this.GetCardSuit(card));
 
-            if (cardsOfClubs.Length > 2)
+            if (firstCardSameSuitCount >= 4 || secondCardCardSameSuitCount >= 4)
             {
-                this.CheckForFlush(PokerHandMultiplier, power, index, cardsOfClubs, (int)CardSuit.clubs);
+                
             }
 
-            if (cardsOfDiamonds.Length > 2)
-            {
-                this.CheckForFlush(PokerHandMultiplier, power, index, cardsOfDiamonds, (int)CardSuit.diamonds);
-            }
-
-            if (cardsOfHearts.Length > 2)
-            {
-                this.CheckForFlush(PokerHandMultiplier, power, index, cardsOfHearts, (int)CardSuit.hearts);
-            }
-
-            if (cardsOfSpades.Length > 2)
-            {
-                this.CheckForFlush(PokerHandMultiplier, power, index, cardsOfSpades, (int)CardSuit.spades);
-            }
-            ////}
         }
 
-        private void CheckForFlush(double pokerHandMultiplier,
-                                   double Power,
-                                   int index,
-                                   int[] cardsOfSuit,
-                                   int suitNumber)
-        {
-            pokerHandMultiplier = 5;
-
-            if (this.GetCardSuit(index) == suitNumber &&
-                this.GetCardSuit(index + 1) == this.GetCardSuit(index + 1))
-            {
-                if (this.GetCardRank(index) > cardsOfSuit.Max() / 4)
-                {
-                    this.SetWinningCard(pokerHandMultiplier, index);
-                }
-                else if (this.GetCardRank(index + 1) > cardsOfSuit.Max() / 4)
-                {
-                    this.SetWinningCard(pokerHandMultiplier, index + 1);
-                }
-                else
-                {
-                    this.SetWinningCardFromSuitMax(pokerHandMultiplier, cardsOfSuit);
-                }
-            }
-
-            if (cardsOfSuit.Length == 4) //different cards in hand
-            {
-                if (this.GetCardSuit(index) == suitNumber &&
-                    this.GetCardSuit(index) != this.GetCardSuit(index + 1))
-                {
-                    if (this.GetCardRank(index) > cardsOfSuit.Max() / 4)
-                    {
-                        this.SetWinningCard(pokerHandMultiplier, index);
-                    }
-                    else
-                    {
-                        this.SetWinningCardFromSuitMax(pokerHandMultiplier, cardsOfSuit);
-                    }
-                }
-
-                if (this.GetCardSuit(index + 1) == suitNumber &&
-                    this.GetCardSuit(index + 1) != this.GetCardSuit(index))
-                {
-                    if (this.GetCardRank(index + 1) > cardsOfSuit.Max() / 4)
-                    {
-                        this.SetWinningCard(pokerHandMultiplier, index + 1);
-                    }
-                    else
-                    {
-                        this.SetWinningCardFromSuitMax(pokerHandMultiplier, cardsOfSuit);
-                    }
-                }
-            }
-
-            if (cardsOfSuit.Length == 5)
-            {
-                if (this.GetCardSuit(index) == cardsOfSuit[0] % 4 &&
-                    this.GetCardRank(index) > cardsOfSuit.Min() / 4)
-                {
-                    this.SetWinningCard(pokerHandMultiplier, index);
-                }
-                else if (this.GetCardSuit(index + 1) == cardsOfSuit[0] % 4 &&
-                         this.GetCardRank(index + 1) > cardsOfSuit.Min() / 4)
-                {
-                    this.SetWinningCard(pokerHandMultiplier, index + 1);
-                }
-                else if (this.GetCardRank(index) < cardsOfSuit.Min() / 4 &&
-                         this.GetCardRank(index + 1) < cardsOfSuit.Min())
-                {
-                    this.SetWinningCardFromSuitMax(pokerHandMultiplier, cardsOfSuit);
-                }
-            }
-        }
 
         private void SetWinningCardFromSuitMax(double pokerHandMultiplier, int[] cardsOfSuit)
         {
@@ -1252,34 +1157,62 @@
         }
         #endregion
 
-        private void rStraight(int firstCard, int secondCard, int[] cardsOnTable, IPlayer player)
+        private void rStraight(int[] cardsOnTableWithPlayerCards, IPlayer player)
         {
-            int firstCardStraightCount = cardsOnTable.Count(card => this.GetCardSuit(firstCard) == this.GetCardSuit(card));
-            int secondCardStraightCount = cardsOnTable.Count(card => this.GetCardSuit(secondCard) == this.GetCardSuit(card));
-
+            int firstCard = cardsOnTableWithPlayerCards[0];
+            int secondCard = cardsOnTableWithPlayerCards[1];
             int highestCard = this.GetHighestCardInHand(firstCard, secondCard);
+            
+            Array.Sort(cardsOnTableWithPlayerCards);
 
-            if (firstCardStraightCount == 4 ^ secondCardStraightCount == 4)
+            Dictionary<int, int> straight = new Dictionary<int, int>();
+            int countConcequtives = 0;
+            
+            for (int i = 0; i < cardsOnTableWithPlayerCards.Length; i++)
             {
-                player.PokerHandMultiplier = 4;
-                player.CardPower = this.GetCardRank(highestCard) * 4 + this.GetCardSuit(highestCard) + player.PokerHandMultiplier * 100;
+                if (this.GetCardRank(cardsOnTableWithPlayerCards[i]) + 1 == this.GetCardRank(cardsOnTableWithPlayerCards[i + 1]))
+                {
+                    if (cardsOnTableWithPlayerCards[i] == firstCard)
+                    {
+                        straight.Add(firstCard == highestCard ? 2 : 1, firstCard);
+                    }
+                    else if (cardsOnTableWithPlayerCards[i] == secondCard)
+                    {
+                        straight.Add(secondCard == highestCard ? 2 : 1, secondCard);
+                    }
+                    else
+                    {
+                        straight.Add(0, cardsOnTableWithPlayerCards[i]);
+                    }
+
+                    countConcequtives++;
+                }
+                else
+                {
+                    countConcequtives = 0;
+                }
             }
 
-            if ((firstCardStraightCount == 3 ^ secondCardStraightCount == 3) && this.GetCardSuit(firstCard) == this.GetCardSuit(secondCard))
+            if (countConcequtives < 5)
             {
-                player.PokerHandMultiplier = 4;
-                player.CardPower = this.GetCardRank(highestCard) * 4 + this.GetCardSuit(highestCard) + player.PokerHandMultiplier * 100;
+                return;
             }
-        }
 
-        private int GetHighestCardInHand(int firstCard, int secondCard)
-        {
-            int firstCardPower = this.GetCardRank(firstCard) + this.GetCardSuit(firstCard);
-            int secondCardPower = this.GetCardRank(secondCard) + this.GetCardSuit(secondCard);
+            if (straight.ContainsKey(2))
+            {
+                highestCard = straight[2];
+            }
+            else if (straight.ContainsKey(1))
+            {
+                highestCard = straight[1];
+            }
+            else
+            {
+                return;
+            }
 
-            int highestCard = firstCardPower > secondCardPower ? firstCard : secondCard;
-
-            return highestCard;
+            player.PokerHandMultiplier = 4;
+            player.CardPower = this.GetCardRank(highestCard) * 4 + this.GetCardSuit(highestCard) + player.PokerHandMultiplier * 100;
         }
 
         private void rThreeOfAKind(int firstCard, int secondCard, int[] cardsOnTable, IPlayer player)
@@ -1291,14 +1224,12 @@
 
             if (firstCardThreeOfAKindCount == 2 ^ secondCardThreeOfAKindCount == 2)
             {
-                player.PokerHandMultiplier = 3;
-                player.CardPower = this.GetCardRank(highestCard) * 4 + this.GetCardSuit(highestCard) + player.PokerHandMultiplier * 100;
+                this.SetPlayerCardPowerAndHandMultiplier(player, highestCard, 3);
             }
 
             if ((firstCardThreeOfAKindCount == 1 ^ secondCardThreeOfAKindCount == 1) && this.GetCardRank(firstCard) == this.GetCardRank(secondCard))
             {
-                player.PokerHandMultiplier = 3;
-                player.CardPower = this.GetCardRank(highestCard) * 4 + this.GetCardSuit(highestCard) + player.PokerHandMultiplier * 100;
+                this.SetPlayerCardPowerAndHandMultiplier(player, highestCard, 3);
             }
         }
 
@@ -1308,7 +1239,7 @@
             int secondCardPairCount = cardsOnTable.Count(card => this.GetCardRank(secondCard) == this.GetCardRank(card));
             int pairOnTaible = 0;
 
-            for(int i = 0; i < cardsOnTable.Length - 1; i++)
+            for (int i = 0; i < cardsOnTable.Length - 1; i++)
             {
                 int pairCount = 0;
 
@@ -1331,14 +1262,12 @@
 
             if (firstCardPairCount == 1 && secondCardPairCount == 1 && this.GetCardRank(firstCard) != this.GetCardRank(secondCard))
             {
-                player.PokerHandMultiplier = 2;
-                player.CardPower = this.GetCardRank(highestCard) * 4 + this.GetCardSuit(highestCard) + player.PokerHandMultiplier * 100;
+                this.SetPlayerCardPowerAndHandMultiplier(player, highestCard, 2);
             }
 
             if (pairOnTaible == 1 && this.GetCardRank(firstCard) == this.GetCardRank(secondCard))
             {
-                player.PokerHandMultiplier = 2;
-                player.CardPower = this.GetCardRank(highestCard) * 4 + this.GetCardSuit(highestCard) + player.PokerHandMultiplier * 100;
+                this.SetPlayerCardPowerAndHandMultiplier(player, highestCard, 2);
             }
         }
 
@@ -1355,14 +1284,12 @@
 
             if (firstCardPairCount == 1)
             {
-                player.PokerHandMultiplier = 0;
-                player.CardPower = this.GetCardRank(firstCard) * 4 + GetCardSuit(firstCard) + player.PokerHandMultiplier * 100;
+                this.SetPlayerCardPowerAndHandMultiplier(player, firstCard, 0);
             }
 
             if (secondCardPairCount == 1)
             {
-                player.PokerHandMultiplier = 0;
-                player.CardPower = this.GetCardRank(secondCard) * 4 + GetCardSuit(secondCard) + player.PokerHandMultiplier * 100;
+                this.SetPlayerCardPowerAndHandMultiplier(player, secondCard, 0);
             }
 
         }
@@ -1376,16 +1303,14 @@
 
             int highestCard = this.GetHighestCardInHand(firstCard, secondCard);
 
-            player.PokerHandMultiplier = 1;
-            player.CardPower = ((this.GetCardRank(highestCard)) * 4) + (player.PokerHandMultiplier * 100);
+            this.SetPlayerCardPowerAndHandMultiplier(player, highestCard, 1);
         }
 
         private void rHighCard(int firstCard, int secondCard, IPlayer player)
         {
             int highestCard = this.GetHighestCardInHand(firstCard, secondCard);
 
-            player.PokerHandMultiplier = -1;
-            player.CardPower = this.GetCardRank(highestCard) + this.GetCardSuit(highestCard) + player.PokerHandMultiplier * 100;
+            this.SetPlayerCardPowerAndHandMultiplier(player, highestCard, -1);
         }
 
         private int GetCardSuit(int card)
@@ -1396,6 +1321,22 @@
         private int GetCardRank(int card)
         {
             return card / 4;
+        }
+
+        private int GetHighestCardInHand(int firstCard, int secondCard)
+        {
+            int firstCardPower = this.GetCardRank(firstCard) + this.GetCardSuit(firstCard);
+            int secondCardPower = this.GetCardRank(secondCard) + this.GetCardSuit(secondCard);
+
+            int highestCard = firstCardPower > secondCardPower ? firstCard : secondCard;
+
+            return highestCard;
+        }
+
+        private void SetPlayerCardPowerAndHandMultiplier(IPlayer player, int highestCard, int handMultiplier)
+        {
+            player.PokerHandMultiplier = handMultiplier;
+            player.CardPower = this.GetCardRank(highestCard)*4 + this.GetCardSuit(highestCard) + player.PokerHandMultiplier*100;
         }
 
         private void FindWinnigCard(double PokerHandMultiplier, double power)

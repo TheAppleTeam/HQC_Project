@@ -10,7 +10,7 @@
 
         protected AbstractPlayer(string name, Label label)
         {
-            this.CardsPanel = new Panel();
+            this.CardsPanel = new System.Windows.Forms.Panel();
             this.GameEnded = false;
             this.Chips = InitialChips;
             this.Folded = false;
@@ -19,6 +19,7 @@
             this.PokerHandMultiplier = -1;
             this.Name = name;
             this.Label = label;
+            this.Label = new System.Windows.Forms.Label();
         }
 
         public Panel CardsPanel
