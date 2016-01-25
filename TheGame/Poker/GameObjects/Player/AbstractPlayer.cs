@@ -1,16 +1,19 @@
 ﻿namespace Poker.GameObjects.Player
 {
-    using System.Drawing.Text;
-    using System.Windows.Forms;
+    using UI;
 
     public abstract class AbstractPlayer : IPlayer
     {
         private const int InitialChips = 10000;
-        private Panel cardsPanel;
-
-        protected AbstractPlayer(string name, Label label)
+        private readonly int id;
+        private int chips;
+        // private Panel cardsPanel;
+        
+        protected AbstractPlayer(int id, string name, int firstCardNumeration, int secondCardNumeration)
         {
-            this.CardsPanel = new Panel();
+        // this.CardsPanel = new Panel();
+        // this.Label = label;
+            this.id = id;
             this.GameEnded = false;
             this.Chips = InitialChips;
             this.Folded = false;
@@ -18,25 +21,49 @@
             this.Raise = 0;
             this.PokerHandMultiplier = -1;
             this.Name = name;
-            this.Label = label;
+     
+            this.FirstCardPosition = firstCardNumeration;
+            this.SecondCardPosition = secondCardNumeration;
         }
 
-        public Panel CardsPanel
+     //   public Panel CardsPanel
+        //{
+        //    get
+        //    {
+        //        return this.cardsPanel;
+        //    }
+
+        //    private set
+        //    {
+        //        this.cardsPanel = value;
+        //    }
+        //}
+
+        public int Id 
+        {
+            get { return this.id; }
+        }
+        
+        public string Name { get; set; }
+
+        public int Chips
         {
             get
             {
-                return this.cardsPanel;
+                return this.chips;
             }
-
-            private set
+            set
             {
-                this.cardsPanel = value;
+                if (value <= 0)
+                {
+                    this.chips = 0;
+                }
+                else
+                {
+                    this.chips = value;    
+                }
             }
         }
-
-        public string Name { get; set; }
-
-        public int Chips { get; set; }
 
         public bool Turn { get; set; }
 
@@ -55,6 +82,10 @@
 
         public int Raise { get; set; }
 
-        public Label Label { get; set; }
+   //     public Label Label { get; set; }
+
+        public int FirstCardPosition { get; set; }
+
+        public int SecondCardPosition { get; set; }
     }
 }

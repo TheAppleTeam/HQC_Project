@@ -1,11 +1,9 @@
 ﻿namespace Poker.GameObjects.Player
 {
-    using System.Reflection.Emit;
-    using Label = System.Windows.Forms.Label;
-
     public class Bot : AbstractPlayer
     {
-        public Bot(string name, Label label) : base(name, label)
+        public Bot(int id, string name, int firstCardNumeration, int secondCardNumeration)
+            : base(id, name, firstCardNumeration, secondCardNumeration)
         {
             this.Turn = false;
         }

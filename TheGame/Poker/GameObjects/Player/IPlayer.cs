@@ -1,9 +1,9 @@
 ﻿namespace Poker.GameObjects.Player
 {
-    using System.Windows.Forms;
-
     public interface IPlayer
     {
+        int Id { get; }
+
         string Name { get; set; }
 
         int Chips { get; set; }
@@ -24,8 +24,15 @@
 
         int Raise { get; set; }
 
-        Panel CardsPanel { get;  }
+      //  Panel CardsPanel { get;  }
 
-        Label Label { get; set; }
+      //  Label Label { get; set; }
+
+        int FirstCardPosition { get; set; }
+
+        int SecondCardPosition { get; set; }
+
+
+
     }
 }

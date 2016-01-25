@@ -8,7 +8,7 @@
         private System.ComponentModel.IContainer components = null;
 
         /// <summary>
-        /// Clean up any resources being used.
+        /// Clean maximumChips any resources being used.
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
@@ -20,7 +20,7 @@
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
+       // #region Windows Form Designer generated code
 
         /// <summary>
         /// Required method for Designer support - do not modify
@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+           // #region CustomAdded Controls
             this.buttonFold = new System.Windows.Forms.Button();
             this.buttonCheck = new System.Windows.Forms.Button();
             this.buttonCall = new System.Windows.Forms.Button();
@@ -315,6 +316,8 @@
             this.textBoxRaise.Name = "textBoxRaise";
             this.textBoxRaise.Size = new System.Drawing.Size(108, 20);
             this.textBoxRaise.TabIndex = 0;
+
+            
             // 
             // GameForm
             // 
@@ -323,6 +326,7 @@
             this.BackgroundImage = global::Poker.Properties.Resources.poker_table___Copy;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1284, 729);
+
             this.Controls.Add(this.textBoxRaise);
             this.Controls.Add(this.labelPot);
             this.Controls.Add(this.labelBot2Status);
@@ -350,6 +354,7 @@
             this.Controls.Add(this.buttonCall);
             this.Controls.Add(this.buttonCheck);
             this.Controls.Add(this.buttonFold);
+
             this.DoubleBuffered = true;
             this.Name = "GameForm";
             this.Text = "GLS Texas Poker";
@@ -359,35 +364,43 @@
 
         }
 
-        #endregion
+ //       #endregion
 
-        private System.Windows.Forms.Button buttonFold;
-        private System.Windows.Forms.Button buttonCheck;
-        private System.Windows.Forms.Button buttonCall;
-        private System.Windows.Forms.Button buttonRaise;
-        private System.Windows.Forms.ProgressBar progressBarTimer;
-        private System.Windows.Forms.TextBox textBoxPlayerChips;
-        private System.Windows.Forms.Button buttonAddChips;
-        private System.Windows.Forms.TextBox textBoxAddChips;
-        private System.Windows.Forms.TextBox textBoxBot5Chips;
-        private System.Windows.Forms.TextBox textBoxBot4Chips;
-        private System.Windows.Forms.TextBox textBoxBot3Chips;
-        private System.Windows.Forms.TextBox textBoxBot2Chips;
-        private System.Windows.Forms.TextBox textBoxBot1Chips;
-        private System.Windows.Forms.TextBox textBoxPot;
-        private System.Windows.Forms.Button buttonChooseBlind;
-        private System.Windows.Forms.Button buttonBigBlind;
-        private System.Windows.Forms.TextBox textBoxSmallBlind;
-        private System.Windows.Forms.Button buttonSmallBlind;
-        private System.Windows.Forms.TextBox textBoxBigBlind;
-        private System.Windows.Forms.Label labelBot5Status;
-        private System.Windows.Forms.Label labelBot4Status;
-        private System.Windows.Forms.Label labelBot3Status;
-        private System.Windows.Forms.Label labelBot1Status;
-        private System.Windows.Forms.Label labelPlayerStatus;
-        private System.Windows.Forms.Label labelBot2Status;
-        private System.Windows.Forms.Label labelPot;
-        private System.Windows.Forms.TextBox textBoxRaise;
+        public System.Windows.Forms.Button buttonFold;
+        public System.Windows.Forms.Button buttonCheck;
+        public System.Windows.Forms.Button buttonCall;
+        public System.Windows.Forms.Button buttonRaise;
+        public System.Windows.Forms.ProgressBar progressBarTimer;
+        public System.Windows.Forms.Button buttonAddChips;
+        public System.Windows.Forms.TextBox textBoxAddChips;
+
+        public System.Windows.Forms.TextBox textBoxPlayerChips;
+        public System.Windows.Forms.TextBox textBoxBot5Chips;
+        public System.Windows.Forms.TextBox textBoxBot4Chips;
+        public System.Windows.Forms.TextBox textBoxBot3Chips;
+        public System.Windows.Forms.TextBox textBoxBot2Chips;
+        public System.Windows.Forms.TextBox textBoxBot1Chips;
+
+        public System.Windows.Forms.Label labelBot5Status;
+        public System.Windows.Forms.Label labelBot4Status;
+        public System.Windows.Forms.Label labelBot3Status;
+        public System.Windows.Forms.Label labelBot1Status;
+        public System.Windows.Forms.Label labelPlayerStatus;
+        public System.Windows.Forms.Label labelBot2Status;
+
+
+        public System.Windows.Forms.TextBox textBoxPot;
+        public System.Windows.Forms.Button buttonChooseBlind;
+        public System.Windows.Forms.Button buttonBigBlind;
+        public System.Windows.Forms.TextBox textBoxSmallBlind;
+        public System.Windows.Forms.Button buttonSmallBlind;
+        public System.Windows.Forms.TextBox textBoxBigBlind;
+
+        public System.Windows.Forms.Label labelPot;
+        public System.Windows.Forms.TextBox textBoxRaise;
+
+        //public System.Windows.Forms.Panel playerPanel;
+        //public System.Windows.Forms.Panel bot1Panel;
     }
 }
 
