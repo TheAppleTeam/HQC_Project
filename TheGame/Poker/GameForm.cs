@@ -177,9 +177,6 @@
             }
         }
 
-
-        ////Stani
-
         #region UI
 
         //wika se w GameFormDesigner -> InitializeComponent

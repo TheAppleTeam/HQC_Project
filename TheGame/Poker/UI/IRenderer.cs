@@ -12,5 +12,15 @@
         void Draw(params PepsterCard[] gameObjects);
 
         void ShowGamerTurnTimer();
+
+        void ShowOrHidePlayersButtons(Gamer player);
+
+        void EnablingFormMinimizationAndMaximization();
+
+        void HideGamerTurnTimer();
+
+        void ShowAllCards();
+
+        void SetAllLabelStatus(IPlayer[] players);
     }
 }
