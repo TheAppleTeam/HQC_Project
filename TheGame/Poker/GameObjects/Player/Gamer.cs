@@ -1,12 +1,19 @@
 ﻿namespace Poker.GameObjects.Player
 {
-    using System.Windows.Forms;
-
     public class Gamer : AbstractPlayer
     {
-        public Gamer(Label label) : base("player", label)
+        public Gamer() : base(0, "Player", 0, 1)
         {
             this.Turn = true;
         }
+
+        public bool CanCall { get; set; }
+        
+        public bool CanRaise { get; set; }
+
+        public bool CanFold { get; set; }
+
+        public bool CanCheck { get; set; }
+
     }
 }
