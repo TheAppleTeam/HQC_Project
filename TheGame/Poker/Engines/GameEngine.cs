@@ -167,7 +167,7 @@
                 {
                     Id = idCounter,
                     Suit = CardSuit.Clubs,
-                    CardFrontImageUri = "../Resources/Cards/" + idCounter + ".png"
+                    CardFrontImageUri = "../../Resources/Cards/" + idCounter + ".png"
                 };
                 idCounter++;
                 pepsterDeckIndex++;
@@ -176,7 +176,7 @@
                 {
                     Id = idCounter,
                     Suit = CardSuit.Diamonds,
-                    CardFrontImageUri = "../Resources/Cards/" + idCounter + ".png"
+                    CardFrontImageUri = "../../Resources/Cards/" + idCounter + ".png"
                 };
                 idCounter++;
                 pepsterDeckIndex++;
@@ -185,7 +185,7 @@
                 {
                     Id = idCounter,
                     Suit = CardSuit.Hearts,
-                    CardFrontImageUri = "../Resources/Cards/" + idCounter + ".png"
+                    CardFrontImageUri = "../../Resources/Cards/" + idCounter + ".png"
                 };
                 idCounter++;
                 pepsterDeckIndex++;
@@ -194,7 +194,7 @@
                 {
                     Id = idCounter,
                     Suit = CardSuit.Spades,
-                    CardFrontImageUri = "../Resources/Cards/" + idCounter + ".png"
+                    CardFrontImageUri = "../../Resources/Cards/" + idCounter + ".png"
                 };
                 idCounter++;
                 pepsterDeckIndex++;
@@ -204,10 +204,11 @@
         public void GameInit()
         {
             this.Table.PokerCall = GlobalConstants.InitialBigBlind;
-            this.renderer.Clear();
+           
             this.renderer.Draw(this.Players);
 
             this.SetupPokerTable();
+         //   this.renderer.Clear();
         }
 
         //from GameForm Methods
@@ -1385,12 +1386,9 @@
             }
             else
             {
-                if (this.turnCount >= this.maxPlayersLeftCount - 1 ||
-                    !this.changed && this.turnCount == this.maxPlayersLeftCount)
+                if (this.turnCount >= this.maxPlayersLeftCount - 1 || !this.changed && this.turnCount == this.maxPlayersLeftCount)
                 {
-                    if (currentTurn == this.raisedTurn - 1 ||
-                        !this.changed && this.turnCount == this.maxPlayersLeftCount ||
-                        this.raisedTurn == 0 && currentTurn == 5)
+                    if (currentTurn == this.raisedTurn - 1 || !this.changed && this.turnCount == this.maxPlayersLeftCount || this.raisedTurn == 0 && currentTurn == 5)
                     {
                         this.changed = false;
                         this.turnCount = 0;
@@ -1416,30 +1414,39 @@
             {
                 for (int j = 12; j <= 14; j++)
                 {
-                    if (this.cardHolder[j].Image == this.deckImages[j])
-                    {
-                        continue;
-                    }
+                    #region code to delete
+                    //if (this.cardHolder[j].Image == this.deckImages[j])
+                    //{
+                    //    continue;
+                    //}
 
-                    this.cardHolder[j].Image = this.deckImages[j];
+                    //this.cardHolder[j].Image = this.deckImages[j];
+                   
+                    ////this.Players[0].Call = 0;
+                    ////this.Players[0].Raise = 0;
 
-                    this.Players[0].Call = 0;
-                    this.Players[0].Raise = 0;
+                    ////this.Players[1].Call = 0;
+                    ////this.Players[1].Raise = 0;
 
-                    this.Players[1].Call = 0;
-                    this.Players[1].Raise = 0;
+                    ////this.Players[2].Call = 0;
+                    ////this.Players[2].Raise = 0;
 
-                    this.Players[2].Call = 0;
-                    this.Players[2].Raise = 0;
+                    ////this.Players[3].Call = 0;
+                    ////this.Players[3].Raise = 0;
 
-                    this.Players[3].Call = 0;
-                    this.Players[3].Raise = 0;
+                    ////this.Players[4].Call = 0;
+                    ////this.Players[4].Raise = 0;
 
-                    this.Players[4].Call = 0;
-                    this.Players[4].Raise = 0;
-
-                    this.Players[5].Call = 0;
-                    this.Players[5].Raise = 0;
+                    ////this.Players[5].Call = 0;
+                    ////this.Players[5].Raise = 0;
+                     #endregion
+                    this.PepsterDealtCards[j].IsVisible = true;
+                    this.renderer.Draw(this.PepsterDealtCards[j]);
+                }
+                foreach (var player in this.Players)
+                {
+                    player.Call = 0;
+                    player.Raise = 0;
                 }
             }
 
@@ -1447,30 +1454,14 @@
             {
                 for (int j = 14; j <= 15; j++)
                 {
-                    if (this.cardHolder[j].Image == this.deckImages[j])
-                    {
-                        continue;
-                    }
+                    this.PepsterDealtCards[j].IsVisible = true;
+                    this.renderer.Draw(this.PepsterDealtCards[j]);
+                }
 
-                    this.cardHolder[j].Image = this.deckImages[j];
-
-                    this.Players[0].Call = 0;
-                    this.Players[0].Raise = 0;
-
-                    this.Players[1].Call = 0;
-                    this.Players[1].Raise = 0;
-    
-                    this.Players[2].Call = 0;
-                    this.Players[2].Raise = 0;
-                    
-                    this.Players[3].Call = 0;
-                    this.Players[3].Raise = 0;
-                    
-                    this.Players[4].Call = 0;
-                    this.Players[4].Raise = 0;
-                    
-                    this.Players[5].Call = 0;
-                    this.Players[5].Raise = 0;
+                foreach (var player in this.Players)
+                {
+                    player.Call = 0;
+                    player.Raise = 0;
                 }
             }
             #endregion part1 to fix errors
@@ -1480,21 +1471,14 @@
             {
                 for (int j = 15; j <= 16; j++)
                 {
-                    //if (this.cardHolder[j].Image != this.deckImages[j])
-                    //{
-                    //    this.cardHolder[j].Image = this.deckImages[j];
-                    //TODO : veronika not sure if it right, must be debugged
-                    if (this.PepsterDealtCards[j].CardFrontImageUri != this.PepsterDeck[j].CardFrontImageUri)
-                    {
-                        this.PepsterDealtCards[j].CardFrontImageUri = this.PepsterDeck[j].CardFrontImageUri;
+                    this.PepsterDealtCards[j].IsVisible = true;
+                    this.renderer.Draw(this.PepsterDealtCards[j]);
+                }
 
-                        for (int playerIndex = 0; playerIndex < this.Players.Length; playerIndex++)
-                        {
-                            this.Players[playerIndex].Call = 0;
-                            this.Players[playerIndex].Raise = 0;
-                        }
-
-                    }
+                foreach (var player in this.Players)
+                {
+                    player.Call = 0;
+                    player.Raise = 0;
                 }
             }
 

@@ -97,6 +97,11 @@
                 };
                 this.form.Controls.Add(this.form.DealtCardHolder[card.DealtPosition]);
                 this.SetPanelsLocation(card.DealtPosition);
+
+                if (card.IsVisible)
+                {
+                    this.form.DealtCardHolder[card.DealtPosition].Image = this.form.DealtCardImages[card.DealtPosition];
+                }
             }
 
             // this.deckImages[cardIndex] = Image.FromFile(this.imageURIArray[cardIndex]);
@@ -106,6 +111,7 @@
             // this.cardHolder[cardIndex].Width = CardWidth;
             // this.cardHolder[cardIndex].Name = "pb" + cardIndex.ToString();
             // this.form.Controls.Add(this.cardHolder[cardIndex]);
+            
         }
 
         public void Draw(Table table)
@@ -251,6 +257,7 @@
             this.form.height = 0;
             this.form.width = 0;
             this.form.textBoxPot.Text = "0";
+
             foreach (var cardHolder in this.form.DealtCardHolder)
             {
                 cardHolder.Image = null;
@@ -289,7 +296,7 @@
             this.form.textBoxSmallBlind.Visible = false;
             this.form.buttonBigBlind.Visible = false;
             this.form.buttonSmallBlind.Visible = false;
-            this.form.textBoxRaise.Text = (this.bb * 2).ToString();
+            this.form.textBoxRaise.Text = (2 * GlobalConstants.InitialBigBlind).ToString();
         }
 
         public void ShowGamerTurnTimer()
@@ -320,7 +327,6 @@
 
         public void ShowAllCards()
         {
-
             for (int j = 0; j <= 16; j++)
             {
                 //await Task.Delay(5);
