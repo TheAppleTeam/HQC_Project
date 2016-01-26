@@ -1040,25 +1040,35 @@
             int firstCardStraightCount = cardsOnTable.Count(card => this.GetCardSuit(firstCard) == this.GetCardSuit(card));
             int secondCardStraightCount = cardsOnTable.Count(card => this.GetCardSuit(secondCard) == this.GetCardSuit(card));
 
-            int highestCard = this.GetHighestCardInHand(firstCard, secondCard);
+
+            int highestCardInHand = this.GetHighestCardInHand(firstCard, secondCard);
+            int highestCardInAllPlayableCards = this.GetHighestCardInAllPlayableCards(firstCard, secondCard, cardsOnTable);
 
             if (firstCardStraightCount == 4 ^ secondCardStraightCount == 4)
             {
                 player.PokerHandMultiplier = 4;
-                player.CardPower = this.GetCardRank(highestCard) * 4 + this.GetCardSuit(highestCard) + player.PokerHandMultiplier * 100;
+                player.CardPower = this.GetCardRank(highestCardInHand) * 4 + this.GetCardSuit(highestCardInHand) + player.PokerHandMultiplier * 100;
             }
 
             if ((firstCardStraightCount == 3 ^ secondCardStraightCount == 3) && this.GetCardSuit(firstCard) == this.GetCardSuit(secondCard))
             {
                 player.PokerHandMultiplier = 4;
-                player.CardPower = this.GetCardRank(highestCard) * 4 + this.GetCardSuit(highestCard) + player.PokerHandMultiplier * 100;
+                player.CardPower = this.GetCardRank(highestCardInHand) * 4 + this.GetCardSuit(highestCardInHand) + player.PokerHandMultiplier * 100;
             }
+        }
+
+        private int GetHighestCardInAllPlayableCards(int firstCard, int secondCard, int[] cardsOnTable)
+        {
+            int firstCardPower = this.GetCardRank(firstCard);
+            int secondCardPower = this.GetCardRank(secondCard);
+            int highestCardOnTable = cardsOnTable.Select(this.GetCardRank).Max();
+            int maxCard = Math.Max(highestCardOnTable, Math.Max(firstCard, secondCard));
         }
 
         private int GetHighestCardInHand(int firstCard, int secondCard)
         {
-            int firstCardPower = this.GetCardRank(firstCard) + this.GetCardSuit(firstCard);
-            int secondCardPower = this.GetCardRank(secondCard) + this.GetCardSuit(secondCard);
+            int firstCardPower = this.GetCardRank(firstCard);
+            int secondCardPower = this.GetCardRank(secondCard);
 
             int highestCard = firstCardPower > secondCardPower ? firstCard : secondCard;
 
@@ -1139,15 +1149,14 @@
             if (firstCardPairCount == 1)
             {
                 player.PokerHandMultiplier = 0;
-                player.CardPower = this.GetCardRank(firstCard) * 4 + GetCardSuit(firstCard) + player.PokerHandMultiplier * 100;
+                player.CardPower = this.GetCardRank(firstCard) * 4 + player.PokerHandMultiplier * 100;
             }
 
             if (secondCardPairCount == 1)
             {
                 player.PokerHandMultiplier = 0;
-                player.CardPower = this.GetCardRank(secondCard) * 4 + GetCardSuit(secondCard) + player.PokerHandMultiplier * 100;
+                player.CardPower = this.GetCardRank(secondCard) * 4 + player.PokerHandMultiplier * 100;
             }
-
         }
 
         private void rPairFromHand(int firstCard, int secondCard, IPlayer player)
@@ -1195,6 +1204,9 @@
         }
 
         ////Veronika
+
+        //TODO: to be redesigned
+
         private void Winner(double PokerHandMultiplier, double Power, string playerName, int chips, string lastly)
         {
             if (lastly == " ")
@@ -1516,6 +1528,7 @@
                        this.Players[0].Name,
                        this.Players[0].Chips,
                        fixedLast);
+
                 this.Winner(this.Players[1].PokerHandMultiplier,
                        this.Players[1].CardPower,
                        this.Players[1].Name,
