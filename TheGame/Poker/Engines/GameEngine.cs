@@ -7,6 +7,7 @@
     using System.Linq;
     using System.Threading.Tasks;
     using System.Windows.Forms;
+    using Exception;
     using GameObjects;
     using GameObjects.Cards;
     using GameObjects.Player;
@@ -14,26 +15,16 @@
 
     public class GameEngine
     {
-        private const int DealingCardsDelay = 200;
-
         private readonly Random random = new Random();
-        private IRenderer renderer;
-        private IInputHandlerer inputHandlerer;
-
-        // TODO: create public property;
-
-        public bool raising = false;
-        //   public int bb = GlobalConstants.InitialBigBlind;
-        public int sb = GlobalConstants.InitialSmallBlind;
-
-        public int turnCount = 0;
+        private readonly IRenderer renderer;
+        private readonly IInputHandlerer inputHandlerer;
 
         private bool restart = false;
         private bool intsadded;
         private bool changed;
         private double type;
 
-        private int raisedTurn = 1;
+     //   private int raisedTurn = 1;
         ////used in Turns method -> region Rotating : in every positive check is game ending  Table.PlayersInTheGame--;
         //// used in CheckRaise method :   if (Table.Rounds == End && Table.PlayersInTheGame == 6); and  if (turnCount >= Table.PlayersInTheGame - 1 || !changed && turnCount == Table.PlayersInTheGame);
         ////used in AllIn method : if (ints.ToArray().Length == Table.PlayersInTheGame)
@@ -41,10 +32,8 @@
         //TODO: Create public property;
         public int lastBotPlayed = 123;
 
-        private int t = 60;
-
-        private bool skipInitialPlayerCall = false;
-        private bool skipInitialBotCall = false;
+      //  private bool skipInitialPlayerCall = false;
+        //private bool skipInitialBotCall = false;
 
 
         //names for cards on the table
@@ -64,48 +53,12 @@
 
         private WinningHand winningCard;
 
-        /// <summary>
-        /// Array of all cards files names; 
-        /// [
-        /// Assets\\Cards\\1.png    
-        /// Assets\\Cards\\2.png
-        /// ]
-        /// </summary>
-        private string[] imageURIArray = Directory.GetFiles("Assets\\Cards", "*.png", SearchOption.TopDirectoryOnly);
-
+       
         /// <summary>
         /// Array of Integers -> dealed cars. Array.Lengt = 17
         /// towa sa nomerata na fajlowete, pri men sa ID-ta
         /// </summary>
         private int[] dealtCardsNumbers = new int[17];
-
-        /*string[] ImgLocation ={
-                   "Assets\\Cards\\33.png","Assets\\Cards\\22.png",
-                    "Assets\\Cards\\29.png","Assets\\Cards\\21.png",
-                    "Assets\\Cards\\36.png","Assets\\Cards\\17.png",
-                    "Assets\\Cards\\40.png","Assets\\Cards\\16.png",
-                    "Assets\\Cards\players\5.png","Assets\\Cards\\47.png",
-                    "Assets\\Cards\\37.png","Assets\\Cards\\13.png",
-                    
-                    "Assets\\Cards\\12.png",
-                    "Assets\\Cards\\8.png","Assets\\Cards\\18.png",
-                    "Assets\\Cards\\15.png","Assets\\Cards\\27.png"};
-         */
-
-
-        /// <summary>
-        /// Array of Images. All 52 Cards's Images
-        /// </summary>
-        //  private Image[] deckImages = new Image[52];
-
-        // trqbwa da e wyw formata
-        ///// <summary>
-        ///// Array of Form Controls -> PictureBox. For All cards
-        ///// </summary>
-        //private PictureBox[] cardHolder = new PictureBox[52];
-
-
-        // new filds
 
 
         public GameEngine(IRenderer renderer, IInputHandlerer inputHandlerer)
@@ -119,6 +72,8 @@
             this.PepsterDealtCards = new PepsterCard[17];
             this.SetAllPepsterDeck();
         }
+
+        public int SmallBlind { get; set; }
 
         public Table Table { get; set; }
         public const int PlayersCount = 6;
@@ -227,7 +182,7 @@
 
                 this.DrawHideBotsCards();
 
-                await Task.Delay(DealingCardsDelay);
+                await Task.Delay(GlobalConstants.DealingCardsDelay);
             }
 
             this.EnablingFormMinimizationAndMaximization();
@@ -1528,7 +1483,7 @@
                 this.lastBotPlayed = 0;
                 this.Table.PokerCall = this.Table.BigBlind;
                 this.Table.LastRaise = 0;
-                this.imageURIArray = Directory.GetFiles("Assets\\Cards", "*.png", SearchOption.TopDirectoryOnly);
+    //            this.imageURIArray = Directory.GetFiles("Assets\\Cards", "*.png", SearchOption.TopDirectoryOnly);
                 this.playersNotGameEnded.Clear();
                 this.Table.Rounds = 0;
                 this.type = 0;
@@ -1804,14 +1759,14 @@
             this.end = 4;
             this.Table.PlayersInTheGame = 6;
             this.lastBotPlayed = 123;
-           this.Table.LastRaisedPlayerId = 1;
+            this.Table.LastRaisedPlayerId = 1;
             this.playersNotGameEnded.Clear();
             this.checkWinners.Clear();
             this.playersWithoutChips.Clear();
             this.winningCards.Clear();
             this.winningCard.Current = 0;
             this.winningCard.Power = 0;
-            this.t = 60;
+           
             this.Table.TurnCount = 0;
 
             foreach (var player in this.Players)
@@ -1939,15 +1894,14 @@
             this.renderer.Draw(this.Players);
             this.renderer.Draw(this.PepsterDealtCards);
 
-            if (this.Players[0].Chips <= 0)
+            if (this.Gamer.Chips <= 0)
             {
-                var gamer = (Gamer)this.Players[0];
-                gamer.Turn = false;
-                gamer.GameEnded = true;
-                gamer.CanCall = false;
-                gamer.CanCheck = false;
-                gamer.CanRaise = false;
-                gamer.CanFold = false;
+                this.Gamer.Turn = false;
+                this.Gamer.GameEnded = true;
+                this.Gamer.CanCall = false;
+                this.Gamer.CanCheck = false;
+                this.Gamer.CanRaise = false;
+                this.Gamer.CanFold = false;
             }
 
             this.renderer.Draw(this.Players);
@@ -2009,6 +1963,7 @@
             this.renderer.Draw(this.Players);
             //this.renderer.Draw(this.PepsterDealtCards);
         }
+          
             #endregion part2 to fix errors
         //region 3 to fix errors - plamena
         #region part3 to fix errors
@@ -2801,6 +2756,35 @@
             //}
             //this.textBoxPlayerChips.Text = "Chips : " + this.Players[0].Chips.ToString();
             #endregion
+        }
+
+        public void SetSmallBlind()
+        {
+            try
+            {
+                int inputValue = this.inputHandlerer.ReadSmallBlind();
+                this.Table.SmallBlind = inputValue;
+                this.renderer.ShowMessage("The changes have been saved ! They will become available the next hand you play. ");
+            }
+            catch (InputValueException ex)
+            {
+                this.renderer.ShowMessage(ex.Message);
+            }
+        }
+
+        public void SetBigBlind()
+        {
+            try
+            {
+                int inputValue = this.inputHandlerer.ReadBigBlind();
+                this.Table.BigBlind = inputValue;
+                this.renderer.ShowMessage("The changes have been saved ! They will become available the next hand you play. ");
+            }
+            catch (InputValueException ex)
+            {
+                this.renderer.ShowMessage(ex.Message);
+            }
+            
         }
     }
 }

@@ -1,56 +1,32 @@
 ﻿namespace Poker
 {
     using System;
-    using System.Collections.Generic;
     using System.Drawing;
-    using System.Globalization;
-    using System.IO;
-    using System.Linq;
-    using System.Threading.Tasks;
     using System.Windows.Forms;
     using Engines;
     using Exception;
-    using GameObjects.Cards;
-    using GameObjects.Player;
     using UI;
 
     public partial class GameForm : Form
     {
-
-       #region Constants
-
         public readonly int CardWidth = 80;
         public readonly int CardHeight = 130;
         public readonly int CardPanelWidth = 180;
         public readonly int CardPanelHeight = 150;
-       
-
-       #endregion
-
-        // TODO: create public property;
-       
-        public Timer progresiveBarTimer = new Timer();
-        // //premesteno w GameEngin zashtoto e za gameLoopa
-        //private Timer gameLoopTimer = new Timer();
-        public int timeForPlayerTurn = 60;
-        private int maximumChips = 10000000;
+        public readonly int TimeForPlayerTurn = 60;
 
         public int height;
         public int width;
 
 
-        private Label[] playersLabelsStatus = new Label[6];
-        private TextBox[] playersTextBoxsChips = new TextBox[6];
-        private GameEngine gameEngine; 
-        private Panel[] playersPanels = new Panel[6];
-        private readonly Image CardBackImage = Image.FromFile(GlobalConstants.CardBackImageUri);
-        
-        /// <summary>
-        /// Array of Form Controls -> PictureBox. For All cards
-        /// </summary>
-        private PictureBox[] dealtCardHolder = new PictureBox[GlobalConstants.DealtCardsCount];
-        private Image[] dealtCardImages = new Image[GlobalConstants.DealtCardsCount];
-        private Timer updateControlsTimer = new Timer();
+        private readonly Label[] playersLabelsStatus = new Label[6];
+        private readonly TextBox[] playersTextBoxsChips = new TextBox[6];
+        private readonly GameEngine gameEngine;
+        private readonly Panel[] playersPanels = new Panel[6];
+        private readonly Image cardBackImage = Image.FromFile(GlobalConstants.CardBackImageUri);
+        private readonly PictureBox[] dealtCardHolder = new PictureBox[GlobalConstants.DealtCardsCount];
+        private readonly Image[] dealtCardImages = new Image[GlobalConstants.DealtCardsCount];
+        private readonly Timer updateControlsTimer = new Timer();
 
         public GameForm()
         {
@@ -58,10 +34,10 @@
             this.height = this.Height;
 
             this.InitializeComponent();
-            
-            this.progresiveBarTimer.Start();
-            this.progresiveBarTimer.Interval = 1 * 1 * 60 * 1000;
-            this.progresiveBarTimer.Tick += this.ProgresiveBarTimerTick;
+            this.ProgresiveBarTimer = new Timer();
+            this.ProgresiveBarTimer.Start();
+            this.ProgresiveBarTimer.Interval = 1 * 1 * 60 * 1000;
+            this.ProgresiveBarTimer.Tick += this.ProgresiveBarTimerTick;
 
             this.updateControlsTimer.Start();
             this.updateControlsTimer.Interval = 1 * 1 * 2000;
@@ -131,6 +107,8 @@
             #endregion
         }
 
+        public Timer ProgresiveBarTimer { get; set; }
+
         public void UpdateControlsTick(object sender, object e)
         {
             this.gameEngine.UpdateControls();
@@ -199,7 +177,7 @@
                     Name = "pictureBox" + cardsCount,
                     // Tag = card.Id, t.e. dyrvi imeto na fajla. move bi ne se polzwa i ne e neobhodimo da se setwa TAg
                     //   Image = this.GetCardImage(card),
-                    Image = CardBackImage,
+                    Image = cardBackImage,
                     Anchor = AnchorStyles.Bottom,
                     Location = this.CalculateCardControlLocation(cardsCount)
                 };
@@ -346,7 +324,7 @@
         private async void ButtonFold_Click(object sender, EventArgs e)
         {
             this.gameEngine.Players[0].Status = "Fold";
-            this.progresiveBarTimer.Stop();
+            this.ProgresiveBarTimer.Stop();
             this.gameEngine.GammerPlayesFold();
             await this.gameEngine.Turns();
         }
@@ -354,7 +332,7 @@
         private async void ButtonCheck_Click(object sender, EventArgs e)
         {
             this.gameEngine.Players[0].Status = "Check";
-            this.progresiveBarTimer.Stop();
+            this.ProgresiveBarTimer.Stop();
             this.gameEngine.GammerPlayesCheck();
             await this.gameEngine.Turns();
         }
@@ -362,7 +340,7 @@
         private async void ButtonCall_Click(object sender, EventArgs e)
         {
             this.gameEngine.Players[0].Status = "Call";
-            this.progresiveBarTimer.Stop();
+            this.ProgresiveBarTimer.Stop();
             this.gameEngine.GammerPlayesCall();
             await this.gameEngine.Turns();
         }
@@ -370,7 +348,7 @@
         private async void ButtonRaise_Click(object sender, EventArgs e)
         {
             this.gameEngine.Players[0].Status = "Raise";
-            this.progresiveBarTimer.Stop();
+            this.ProgresiveBarTimer.Stop();
             this.gameEngine.GammerPlayesRaise();
             await this.gameEngine.Turns();
         }
@@ -403,76 +381,12 @@
 
         private void ButtonSmallBlind_Click(object sender, EventArgs e)
         {
-            int parsedValue;
-            if (this.textBoxSmallBlind.Text.Contains(",") ||
-                this.textBoxSmallBlind.Text.Contains("."))
-            {
-                MessageBox.Show("The Small Blind can be only round number !");
-                this.textBoxSmallBlind.Text = this.gameEngine.sb.ToString();
-                return;
-            }
-
-            if (!int.TryParse(this.textBoxSmallBlind.Text, out parsedValue))
-            {
-                MessageBox.Show("This is a number only field");
-                this.textBoxSmallBlind.Text = this.gameEngine.sb.ToString();
-                return;
-            }
-
-            if (int.Parse(this.textBoxSmallBlind.Text) > 100000)
-            {
-                MessageBox.Show("The maximum of the Small Blind is 100 000 $");
-                this.textBoxSmallBlind.Text = this.gameEngine.sb.ToString();
-            }
-
-            if (int.Parse(this.textBoxSmallBlind.Text) < 250)
-            {
-                MessageBox.Show("The minimum of the Small Blind is 250 $");
-            }
-
-            if (int.Parse(this.textBoxSmallBlind.Text) >= 250 &&
-                int.Parse(this.textBoxSmallBlind.Text) <= 100000)
-            {
-                this.gameEngine.sb = int.Parse(this.textBoxSmallBlind.Text);
-                MessageBox.Show("The changes have been saved ! They will become available the next hand you play. ");
-            }
+            this.gameEngine.SetSmallBlind();
         }
-
+        
         private void ButtonBigBlind_Click(object sender, EventArgs e)
         {
-            int parsedValue;
-            if (this.textBoxBigBlind.Text.Contains(",") ||
-                this.textBoxBigBlind.Text.Contains("."))
-            {
-                MessageBox.Show("The Big Blind can be only round number !");
-                this.textBoxBigBlind.Text = this.gameEngine.Table.BigBlind.ToString();
-                return;
-            }
-
-            if (!int.TryParse(this.textBoxSmallBlind.Text, out parsedValue))
-            {
-                MessageBox.Show("This is a number only field");
-                this.textBoxSmallBlind.Text = this.gameEngine.Table.BigBlind.ToString();
-                return;
-            }
-
-            if (int.Parse(this.textBoxBigBlind.Text) > 200000)
-            {
-                MessageBox.Show("The maximum of the Big Blind is 200 000");
-                this.textBoxBigBlind.Text = this.gameEngine.Table.BigBlind.ToString();
-            }
-
-            if (int.Parse(this.textBoxBigBlind.Text) < 500)
-            {
-                MessageBox.Show("The minimum of the Big Blind is 500 $");
-            }
-
-            if (int.Parse(this.textBoxBigBlind.Text) >= 500 &&
-                int.Parse(this.textBoxBigBlind.Text) <= 200000)
-            {
-                this.gameEngine.Table.BigBlind = int.Parse(this.textBoxBigBlind.Text);
-                MessageBox.Show("The changes have been saved ! They will become available the next hand you play. ");
-            }
+            this.gameEngine.SetBigBlind();
         }
         
         #endregion

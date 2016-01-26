@@ -20,6 +20,7 @@
             this.LastRaise = 0;
             this.FoldedBots = 0;
             this.PlayersInTheGame = GlobalConstants.PlayersCount;
+            this.IsRaising = false;
         }
         
         public int PokerCall { get; set; }

@@ -5,5 +5,9 @@
         int ReadRaise();
 
         int ReadChipsToAdd();
+
+        int ReadSmallBlind();
+
+        int ReadBigBlind();
     }
 }

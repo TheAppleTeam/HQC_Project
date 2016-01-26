@@ -66,8 +66,6 @@
             {
                 return;
             }
-            //this.form.DealtCardHolder[player.Id + 1].Visible = false;
-            //this.form.DealtCardHolder[player.Id + 2].Visible = false;
 
             this.form.DealtCardHolder[player.Id + 2].Visible = true;
             this.form.DealtCardHolder[player.Id + 1].Visible = true;
@@ -88,15 +86,6 @@
                     this.form.DealtCardHolder[card.DealtPosition].Image = this.form.DealtCardImages[card.DealtPosition];
                 }
             }
-
-            // this.deckImages[cardIndex] = Image.FromFile(this.imageURIArray[cardIndex]);
-            // this.cardHolder[cardIndex] = new PictureBox();
-            // this.cardHolder[cardIndex].SizeMode = PictureBoxSizeMode.StretchImage;
-            // this.cardHolder[cardIndex].Height = CardHeight;
-            // this.cardHolder[cardIndex].Width = CardWidth;
-            // this.cardHolder[cardIndex].Name = "pb" + cardIndex.ToString();
-            // this.form.Controls.Add(this.cardHolder[cardIndex]);
-
         }
 
         public void Draw(Table table)
@@ -124,23 +113,6 @@
                 Application.Exit();
             }
         }
-
-
-
-       //private Image GetCardImage(PepsterCard card)
-       // {
-       //     /*кода е закоментиран за да могат всички карти да са видими. 
-       //     if (card.DealtPosition < 2)
-       //     {
-       //         return Image.FromFile(card.CardFrontImageUri);
-       //     }
-       //     else
-       //     {
-       //         return Image.FromFile(card.CardBackImageUri);
-       //     }
-       //     */
-       //     return Image.FromFile(card.CardFrontImageUri);
-       // }
 
         public void Clear()
         {
@@ -196,22 +168,18 @@
 
         public void ShowGamerTurnTimer()
         {
-            this.form.progressBarTimer.Visible = true;
-            this.form.progressBarTimer.Value = 1000;
-            ////MessageBox.Show("Player's Turn");
+           // this.form.progressBarTimer.Visible = true;
+           // this.form.progressBarTimer.Value = 1000;
+           
             // TODO: ewentualno da se mahne stwaneto ako nikyde ne se promenq
-            this.form.timeForPlayerTurn = 60;
-
-            this.form.progresiveBarTimer.Start();
-            //this.form.buttonRaise.Enabled = true;
-            //this.form.buttonCall.Enabled = true;
-            //this.form.buttonFold.Enabled = true;
+            //this.form.TimeForPlayerTurn = 60; - ima go kato konstanta wyw formata
+            this.form.ProgresiveBarTimer.Start();
         }
 
         public void HideGamerTurnTimer()
         {
             this.form.progressBarTimer.Visible = false;
-            this.form.progresiveBarTimer.Stop();
+            this.form.ProgresiveBarTimer.Stop();
         }
 
         public void EnablingFormMinimizationAndMaximization()
