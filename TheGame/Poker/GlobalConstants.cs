@@ -17,5 +17,7 @@
         public const int Up = 10000000;
         
         public const int InitialChips = 10000;
+
+        public const string CardBackImageUri = "../../Resources/Cards/Back.png";
     }
 }

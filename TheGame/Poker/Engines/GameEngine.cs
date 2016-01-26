@@ -2,15 +2,14 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Drawing;
     using System.Globalization;
     using System.IO;
+    using System.Linq;
     using System.Threading.Tasks;
     using System.Windows.Forms;
-    using GameObjects.Player;
-    using System.Linq;
     using GameObjects;
     using GameObjects.Cards;
+    using GameObjects.Player;
     using UI;
 
     public class GameEngine
@@ -20,14 +19,6 @@
         private readonly Random random = new Random();
         private IRenderer renderer;
         private IInputHandlerer inputHandlerer;
-
-        #region Variables
-        private int foldedPlayers = GlobalConstants.BotCount;
-        //// used in CheckRaise method :   if (Table.Rounds == End && maxPlayersLeftCount == 6);
-        ////used in AllIn method->  #region FiveOrLessLeft: if (abc < 6 && abc > 1 && Table.Rounds >= End) 
-        ////in Finish method is seted again on 4;
-        private int maxPlayersLeftCount = GlobalConstants.PlayersCount;
-
 
         // TODO: create public property;
 
@@ -43,9 +34,9 @@
         private double type;
 
         private int raisedTurn = 1;
-        ////used in Turns method -> region Rotating : in every positive check is game ending  maxPlayersLeftCount--;
-        //// used in CheckRaise method :   if (Table.Rounds == End && maxPlayersLeftCount == 6); and  if (turnCount >= maxPlayersLeftCount - 1 || !changed && turnCount == maxPlayersLeftCount);
-        ////used in AllIn method : if (ints.ToArray().Length == maxPlayersLeftCount)
+        ////used in Turns method -> region Rotating : in every positive check is game ending  Table.PlayersInTheGame--;
+        //// used in CheckRaise method :   if (Table.Rounds == End && Table.PlayersInTheGame == 6); and  if (turnCount >= Table.PlayersInTheGame - 1 || !changed && turnCount == Table.PlayersInTheGame);
+        ////used in AllIn method : if (ints.ToArray().Length == Table.PlayersInTheGame)
         ////in Finish method is seted again on 6;
         //TODO: Create public property;
         public int lastBotPlayed = 123;
@@ -113,7 +104,6 @@
         ///// </summary>
         //private PictureBox[] cardHolder = new PictureBox[52];
 
-        #endregion
 
         // new filds
 
@@ -265,46 +255,13 @@
             {
                 this.dealtCardsNumbers[i] = this.PepsterDealtCards[i].Id;
             }
-
-            //string removeURI = "Assets\\Cards\\";
-            //string removeFileExtension = ".png";
-
-            //this.imageURIArray[cardIndex] = this.imageURIArray[cardIndex].Replace(removeURI, string.Empty);
-            //this.imageURIArray[cardIndex] = this.imageURIArray[cardIndex].Replace(removeFileExtension, string.Empty);
-
-            // this.dealtCardsNumbers[cardIndex] = int.Parse(this.imageURIArray[cardIndex]) - 1;
         }
 
         /// <summary>
-        /// prehwyrlen w Renderer.DrowCard
-        /// Prepearing CardHolder for every card on the table
+        /// Randomise the cars and take 17 to deal. 
+        /// Set to gamer Cards.IsVisible = true; -> so Cards faces to be shown;
+        /// Call renderer to create Images for dealt cards
         /// </summary>
-        /// <param name="cardIndex">Index of the cards that are dealt</param>
-        //private void SetupCardHolder(int cardIndex)
-        //{
-        //    this.cardHolder[cardIndex] = new PictureBox();
-        //    this.cardHolder[cardIndex].SizeMode = PictureBoxSizeMode.StretchImage;
-        //    this.cardHolder[cardIndex].Height = CardHeight;
-        //    this.cardHolder[cardIndex].Width = CardWidth;
-        //    this.cardHolder[cardIndex].Name = "pb" + cardIndex.ToString();
-        //    this.form.Controls.Add(this.cardHolder[cardIndex]);
-        //}
-
-        /// <summary>
-        /// pepster
-        /// Shuffles the entire deck ImageURIArray randomly
-        /// </summary>
-        //private void ShuffleDeck()
-        //{
-        //    for (int i = this.imageURIArray.Length; i > 0; i--)
-        //    {
-        //        int randomIndex = this.random.Next(i);
-        //        var randomImageURI = this.imageURIArray[randomIndex];
-        //        this.imageURIArray[randomIndex] = this.imageURIArray[i - 1];
-        //        this.imageURIArray[i - 1] = randomImageURI;
-        //    }
-        //}
-
         private void PepsterRandomCardsToDeal()
         {
             int dealtCardIndex = 0;
@@ -321,24 +278,24 @@
                 }
             }
             while (dealtCardIndex < this.PepsterDealtCards.Length);
+            this.PepsterDealtCards[0].IsVisible = true;
+            this.PepsterDealtCards[1].IsVisible = true;
+            this.renderer.GetCardsImages(this.PepsterDealtCards);
         }
 
         /// <summary>
-        /// Check for game completion 
+        /// Check if all bots are out of the game
         /// </summary>
         private void CheckForGameEnd()
         {
-
-            int playerEndedCounter = 0;
-            foreach (var player in this.Players)
+            for (int botId = 1; botId < this.Players.Length; botId++)
             {
-                if (player.GameEnded)
+                if (this.Players[botId].GameEnded)
                 {
-                    playerEndedCounter++;
+                    this.Table.FoldedBots++;
                 }
             }
-
-            if (playerEndedCounter == 5)
+            if (this.Table.FoldedBots == 5)
             {
                 this.renderer.ShowMessage("Would You Like To Play Again ?", "You Won , Congratulations !");
             }
@@ -425,11 +382,6 @@
 
                 for (int i = 1; i < this.Players.Length; i++)
                 {
-                    /* old code: var text = this.players[i].Label.Text; 
-                     * new code: 
-                     */
-                    //var text = this.form.PlayersLabelsStatus[this.Players[i].Id].Text;
-
                     if (!this.Players[i].GameEnded)
                     {
                         if (this.Players[i].Turn)
@@ -484,7 +436,7 @@
         {
             this.playersNotGameEnded.RemoveAt(playerIndex);
             this.playersNotGameEnded.Insert(playerIndex, null);
-            this.maxPlayersLeftCount--;
+            this.Table.PlayersInTheGame--;
             this.Players[playerIndex].Folded = true;
         }
 
@@ -493,7 +445,7 @@
             this.FixCall(player, 1);
             this.renderer.ShowGamerTurnTimer();
             ////MessageBox.Show("Player's Turn");
-            this.turnCount++;
+            this.Table.TurnCount++;
             this.FixCall(player, 2);
         }
 
@@ -516,7 +468,7 @@
             MessageBox.Show("Bot  " + botNumber + @"'s Turn");
             this.AI(player);
 
-            this.turnCount++;
+            this.Table.TurnCount++;
             this.lastBotPlayed = int.Parse(botNumber);
             player.Turn = false;
 
@@ -1388,26 +1340,26 @@
             }
         }
 
-        private async Task CheckRaise(int currentTurn, int raiseTurn)
+        private async Task CheckRaise(int playerId, int raiseTurn)
         {
-            if (this.raising)
+            if (this.Table.IsRaising)
             {
-                this.turnCount = 0;
-                this.raising = false;
-                this.raisedTurn = currentTurn;
+                this.Table.TurnCount = 0;
+                this.Table.IsRaising = false;
+               this.Table.LastRaisedPlayerId = playerId;
                 this.changed = true;
             }
             else
             {
-                if (this.turnCount >= this.maxPlayersLeftCount - 1 || !this.changed && this.turnCount == this.maxPlayersLeftCount)
+                if (this.Table.TurnCount >= this.Table.PlayersInTheGame - 1 || !this.changed && this.Table.TurnCount == this.Table.PlayersInTheGame)
                 {
-                    if (currentTurn == this.raisedTurn - 1 || !this.changed && this.turnCount == this.maxPlayersLeftCount || this.raisedTurn == 0 && currentTurn == 5)
+                    if (playerId ==this.Table.LastRaisedPlayerId - 1 || !this.changed && this.Table.TurnCount == this.Table.PlayersInTheGame ||this.Table.LastRaisedPlayerId == 0 && playerId == 5)
                     {
                         this.changed = false;
-                        this.turnCount = 0;
+                        this.Table.TurnCount = 0;
                         this.Table.LastRaise = 0;
                         this.Table.PokerCall = 0;
-                        this.raisedTurn = 123;
+                       this.Table.LastRaisedPlayerId = 123;
                         this.Table.Rounds++;
 
                         foreach (var player in this.Players)
@@ -1495,7 +1447,7 @@
                     }
                 }
 
-            if (this.Table.Rounds == this.end && this.maxPlayersLeftCount == 6)
+            if (this.Table.Rounds == this.end && this.Table.PlayersInTheGame == 6)
             {
                 string fixedLast = "";
 
@@ -1626,13 +1578,13 @@
                         player.Raise = int.Parse(changeRaise);
                     }
 
-                    if (playerLableText.Contains("Call"))
+                    if (player.Status.Contains("Call"))
                     {
                         var changeCall = playerLableText.Substring(5);
                         player.Call = int.Parse(changeCall);
                     }
 
-                    if (playerLableText.Contains("Check"))
+                    if (player.Status.Contains("Check"))
                     {
                         player.Raise = 0;
                         player.Call = 0;
@@ -1711,7 +1663,7 @@
                 }
 
 
-            if (this.playersWithoutChips.ToArray().Length == this.maxPlayersLeftCount)
+            if (this.playersWithoutChips.ToArray().Length == this.Table.PlayersInTheGame)
             {
                 await this.Finish(2);
             }
@@ -1836,14 +1788,14 @@
 
             this.Table.PokerCall = this.Table.BigBlind;
             this.Table.LastRaise = 0;
-            this.foldedPlayers = 5;
+            this.Table.FoldedBots = 5;
             this.type = 0;
             this.Table.Rounds = 0;
 
             this.Table.LastRaise = 0;
 
             this.restart = false;
-            this.raising = false;
+            this.Table.IsRaising = false;
 
 
             this.Table.WinnersCount = 0;
@@ -1851,9 +1803,9 @@
             this.turn = 2;
             this.river = 3;
             this.end = 4;
-            this.maxPlayersLeftCount = 6;
+            this.Table.PlayersInTheGame = 6;
             this.lastBotPlayed = 123;
-            this.raisedTurn = 1;
+           this.Table.LastRaisedPlayerId = 1;
             this.playersNotGameEnded.Clear();
             this.checkWinners.Clear();
             this.playersWithoutChips.Clear();
@@ -1861,7 +1813,7 @@
             this.winningCard.Current = 0;
             this.winningCard.Power = 0;
             this.t = 60;
-            this.turnCount = 0;
+            this.Table.TurnCount = 0;
 
             foreach (var player in this.Players)
             {
@@ -2534,7 +2486,7 @@
                     }
                     else if (player.Chips <= this.Table.PokerCall)
                     {
-                        // old code to delete : this.raising = false;
+                        // old code to delete : this.Table.IsRaising = false;
                         this.Table.IsRaising = false;
                         player.Turn = false;
                         player.Chips = 0;
@@ -2576,7 +2528,7 @@
         // wika se ot AIHP ili AIPH  this.AIFold(ref bothTurn, ref botEndGame, sStatus);
         private void AIFold(IPlayer player)
         {
-            // old code to delete : this.raising = false;
+            // old code to delete : this.Table.IsRaising = false;
             // old code to delete : this.form.PlayersLabelsStatus[player.Id].Text = player.Status; 
             this.Table.IsRaising = false;
             player.Status = "Fold";
@@ -2603,7 +2555,7 @@
             player.Status = "Check";
             // old code to delete : this.form.PlayersLabelsStatus[player.Id].Text = player.Status; this.form.PlayersLabelsStatus[player.Id].Text = player.Status;
             player.Turn = false;
-            // old code to delete : this.form.PlayersLabelsStatus[player.Id].Text = player.Status;  this.raising = false;
+            // old code to delete : this.form.PlayersLabelsStatus[player.Id].Text = player.Status;  this.Table.IsRaising = false;
             this.Table.IsRaising = false;
             this.renderer.Draw(player);
         }
@@ -2611,7 +2563,7 @@
         //// вика се от  AIHP AIPH, AISmooth this.AICall(ref botChips, ref bothTurn, sStatus);
         private void AICall(IPlayer player)
         {
-            this.raising = false;
+            this.Table.IsRaising = false;
             player.Turn = false;
             player.Chips -= this.Table.PokerCall;
             player.Status = "Call " + this.Table.PokerCall;
@@ -2632,7 +2584,7 @@
             // old code to delete : this.form.PlayersLabelsStatus[player.Id].Text = player.Status; this.form.PlayersLabelsStatus[player.Id].Text = player.Status;
             // old code to delete : this.form.PlayersLabelsStatus[player.Id].Text = player.Status; this.form.textBoxPot.Text = (int.Parse(this.form.textBoxPot.Text) + Convert.ToInt32(this.Table.LastRaise)).ToString();
             this.Table.PokerCall = Convert.ToInt32(this.Table.LastRaise);
-            this.raising = true;
+            this.Table.IsRaising = true;
             player.Turn = false;
             this.renderer.Draw(player);
         }
@@ -2795,7 +2747,7 @@
         //            //this.textBoxPot.Text = (int.Parse(this.textBoxPot.Text) + this.Table.PokerCall).ToString();
         //            //this.buttonCall.Text = "Call";
         //            //this.Players[0].Chips -= int.Parse(this.textBoxRaise.Text);
-        //            //this.raising = true; poleto se preimenuwa na =>
+        //            //this.Table.IsRaising = true; poleto se preimenuwa na =>
         //            //this.Table.IsRaising;
         //            //this.lastBotPlayed = 0;
         //            //this.Players[0].Raise = Convert.ToInt32(this.Table.LastRaise);
@@ -2809,7 +2761,7 @@
         //            this.PlayersLabelsStatus[0].Text = this.Players[0].Status;
 
         //            this.Players[0].Chips = 0;
-        //            this.raising = true;
+        //            this.Table.IsRaising = true;
         //            this.lastBotPlayed = 0;
         //            this.Players[0].Raise = Convert.ToInt32(this.Table.LastRaise);
         //        }

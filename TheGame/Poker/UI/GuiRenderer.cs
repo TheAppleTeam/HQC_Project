@@ -83,24 +83,6 @@
         {
             foreach (var card in gameObjects)
             {
-                /*излишно е защото се създава масив на имиджи които по същество са пропърти на пикчър бокса и си се сетват там.
-                 this.form.DealtCardImages[card.DealtPosition] = Image.FromFile(card.CardFrontImageUri);
-                 */
-
-                this.form.DealtCardHolder[card.DealtPosition] = new PictureBox()
-                {
-                    SizeMode = PictureBoxSizeMode.StretchImage,
-                    Height = this.form.CardHeight,
-                    Width = this.form.CardWidth,
-                    Name = "pictureBox" + card.DealtPosition,
-                    Tag = card.Id,
-                    Image = this.GetCardImage(card),
-                    Anchor = AnchorStyles.Bottom,
-                    Location = this.CalculateCardControlLocation(card)
-                };
-                this.form.Controls.Add(this.form.DealtCardHolder[card.DealtPosition]);
-                this.SetPanelsLocation(card.DealtPosition);
-
                 if (card.IsVisible)
                 {
                     this.form.DealtCardHolder[card.DealtPosition].Image = this.form.DealtCardImages[card.DealtPosition];
@@ -143,126 +125,22 @@
             }
         }
 
-        private void SetPanelsLocation(int dealtPosition)
-        {
-            int left = this.form.DealtCardHolder[dealtPosition].Left - 10;
-            int top = this.form.DealtCardHolder[dealtPosition].Top - 10;
-            switch (dealtPosition)
-            {
-                case 0:
-                    this.form.PlayersPanels[0].Location = new Point(left, top);
-                    break;
-                case 2:
-                    this.form.PlayersPanels[1].Location = new Point(left, top);
-                    break;
-                case 4:
-                    this.form.PlayersPanels[2].Location = new Point(left, top);
-                    break;
-                case 6:
-                    this.form.PlayersPanels[3].Location = new Point(left, top);
-                    break;
-                case 8:
-                    this.form.PlayersPanels[4].Location = new Point(left, top);
-                    break;
-                case 10:
-                    this.form.PlayersPanels[5].Location = new Point(left, top);
-                    break;
-            }
-        }
 
-        private Point CalculateCardControlLocation(PepsterCard card)
-        {
-            int horisontalAnchor = this.GetCardHorisontalAnchor(card.DealtPosition);
-            int verticalAnchor = this.GetCardVerticalAnchor(card.DealtPosition);
-            if (card.DealtPosition % 2 == 1 && card.DealtPosition < 12)
-            {
-                horisontalAnchor += this.form.CardWidth;
-            }
-            var point = new Point(horisontalAnchor, verticalAnchor);
-            return point;
-        }
 
-        private int GetCardVerticalAnchor(int dealtPosition)
-        {
-            int anchor = 0;
-            switch (dealtPosition)
-            {
-                case 0:
-                case 1: anchor = 480;
-                    break;
-                case 2:
-                case 3: anchor = 420;
-                    break;
-                case 4:
-                case 5: anchor = 65;
-                    break;
-                case 6:
-                case 7: anchor = 25;
-                    break;
-                case 8:
-                case 9: anchor = 65;
-                    break;
-                case 10:
-                case 11: anchor = 420;
-                    break;
-
-                default: anchor = 265;
-                    break;
-            }
-
-            return anchor;
-        }
-
-        private int GetCardHorisontalAnchor(int dealtPosition)
-        {
-            int anchor = 0;
-            switch (dealtPosition)
-            {
-                case 0:
-                case 1:
-                    anchor = 580;
-                    break;
-                case 2:
-                case 3:
-                    anchor = 15;
-                    break;
-                case 4:
-                case 5:
-                    anchor = 75;
-                    break;
-                case 6:
-                case 7:
-                    anchor = 590;
-                    break;
-                case 8:
-                case 9:
-                    anchor = 1115;
-                    break;
-                case 10:
-                case 11:
-                    anchor = 1160;
-                    break;
-                default: anchor = 410 + ((dealtPosition % 12) * (this.form.CardWidth + 10));
-                    break;
-            }
-
-            return anchor;
-        }
-
-        private Image GetCardImage(PepsterCard card)
-        {
-            /*кода е закоментиран за да могат всички карти да са видими. 
-            if (card.DealtPosition < 2)
-            {
-                return Image.FromFile(card.CardFrontImageUri);
-            }
-            else
-            {
-                return Image.FromFile(card.CardBackImageUri);
-            }
-            */
-            return Image.FromFile(card.CardFrontImageUri);
-        }
+       //private Image GetCardImage(PepsterCard card)
+       // {
+       //     /*кода е закоментиран за да могат всички карти да са видими. 
+       //     if (card.DealtPosition < 2)
+       //     {
+       //         return Image.FromFile(card.CardFrontImageUri);
+       //     }
+       //     else
+       //     {
+       //         return Image.FromFile(card.CardBackImageUri);
+       //     }
+       //     */
+       //     return Image.FromFile(card.CardFrontImageUri);
+       // }
 
         public void Clear()
         {
@@ -412,6 +290,13 @@
             }
         }
 
+        public void GetCardsImages(PepsterCard[] pepsterDealtCards)
+        {
+            for (int i = 0; i < pepsterDealtCards.Length; i++)
+            {
+                this.form.DealtCardImages[i] = Image.FromFile(pepsterDealtCards[i].CardFrontImageUri);
+            }
+        }
     }
 }
 

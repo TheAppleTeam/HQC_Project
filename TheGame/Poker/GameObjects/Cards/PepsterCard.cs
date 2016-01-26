@@ -18,7 +18,10 @@
         public string CardFrontImageUri { get; set; }
 
         public string CardBackImageUri { get; private set; }
-
+        
+        /// <summary>
+        /// If is TRUE the face of the card must be shown
+        /// </summary>
         public bool IsVisible { get; set; }
     }
 }

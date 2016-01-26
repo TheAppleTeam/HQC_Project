@@ -39,5 +39,7 @@
         void SetPanelStatus(Panel panel, bool isVisible);
 
         void SetTextBoxPlayerChips(IPlayer player);
+        
+        void GetCardsImages(PepsterCard[] pepsterDealtCards);
     }
 }

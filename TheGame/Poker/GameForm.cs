@@ -43,6 +43,7 @@
         private TextBox[] playersTextBoxsChips = new TextBox[6];
         private GameEngine gameEngine; 
         private Panel[] playersPanels = new Panel[6];
+        private readonly Image CardBackImage = Image.FromFile(GlobalConstants.CardBackImageUri);
         
         /// <summary>
         /// Array of Form Controls -> PictureBox. For All cards
@@ -57,13 +58,13 @@
             this.height = this.Height;
 
             this.InitializeComponent();
-
+            
             this.progresiveBarTimer.Start();
-            this.progresiveBarTimer.Interval = 1 * 1 * 1000;
+            this.progresiveBarTimer.Interval = 1 * 1 * 60 * 1000;
             this.progresiveBarTimer.Tick += this.ProgresiveBarTimerTick;
 
             this.updateControlsTimer.Start();
-            this.updateControlsTimer.Interval = 1 * 1 * 100;
+            this.updateControlsTimer.Interval = 1 * 1 * 2000;
             this.updateControlsTimer.Tick += this.UpdateControlsTick;
 
             this.InitializeControlsArrays();
@@ -187,6 +188,129 @@
                 };
                 this.Controls.Add(this.playersPanels[playersCount]);
             }
+
+            for (int cardsCount = 0; cardsCount < GlobalConstants.DealtCardsCount; cardsCount++)
+            {
+                this.DealtCardHolder[cardsCount] = new PictureBox()
+                {
+                    SizeMode = PictureBoxSizeMode.StretchImage,
+                    Height = this.CardHeight,
+                    Width = this.CardWidth,
+                    Name = "pictureBox" + cardsCount,
+                    // Tag = card.Id, t.e. dyrvi imeto na fajla. move bi ne se polzwa i ne e neobhodimo da se setwa TAg
+                    //   Image = this.GetCardImage(card),
+                    Image = CardBackImage,
+                    Anchor = AnchorStyles.Bottom,
+                    Location = this.CalculateCardControlLocation(cardsCount)
+                };
+                this.Controls.Add(this.DealtCardHolder[cardsCount]);
+                this.SetPanelsLocation(cardsCount);
+            }
+        }
+        private void SetPanelsLocation(int dealtPosition)
+        {
+            int left = this.DealtCardHolder[dealtPosition].Left - 10;
+            int top = this.DealtCardHolder[dealtPosition].Top - 10;
+            switch (dealtPosition)
+            {
+                case 0:
+                    this.PlayersPanels[0].Location = new Point(left, top);
+                    break;
+                case 2:
+                    this.PlayersPanels[1].Location = new Point(left, top);
+                    break;
+                case 4:
+                    this.PlayersPanels[2].Location = new Point(left, top);
+                    break;
+                case 6:
+                    this.PlayersPanels[3].Location = new Point(left, top);
+                    break;
+                case 8:
+                    this.PlayersPanels[4].Location = new Point(left, top);
+                    break;
+                case 10:
+                    this.PlayersPanels[5].Location = new Point(left, top);
+                    break;
+            }
+        }
+        private Point CalculateCardControlLocation(int cardsCount)
+        {
+            int horisontalAnchor = this.GetCardHorisontalAnchor(cardsCount);
+            int verticalAnchor = this.GetCardVerticalAnchor(cardsCount);
+            if (cardsCount % 2 == 1 && cardsCount < 12)
+            {
+                horisontalAnchor += this.CardWidth;
+            }
+
+            var point = new Point(horisontalAnchor, verticalAnchor);
+            return point;
+        }
+
+        private int GetCardVerticalAnchor(int dealtPosition)
+        {
+            int anchor = 0;
+            switch (dealtPosition)
+            {
+                case 0:
+                case 1: anchor = 480;
+                    break;
+                case 2:
+                case 3: anchor = 420;
+                    break;
+                case 4:
+                case 5: anchor = 65;
+                    break;
+                case 6:
+                case 7: anchor = 25;
+                    break;
+                case 8:
+                case 9: anchor = 65;
+                    break;
+                case 10:
+                case 11: anchor = 420;
+                    break;
+
+                default: anchor = 265;
+                    break;
+            }
+
+            return anchor;
+        }
+
+        private int GetCardHorisontalAnchor(int dealtPosition)
+        {
+            int anchor = 0;
+            switch (dealtPosition)
+            {
+                case 0:
+                case 1:
+                    anchor = 580;
+                    break;
+                case 2:
+                case 3:
+                    anchor = 15;
+                    break;
+                case 4:
+                case 5:
+                    anchor = 75;
+                    break;
+                case 6:
+                case 7:
+                    anchor = 590;
+                    break;
+                case 8:
+                case 9:
+                    anchor = 1115;
+                    break;
+                case 10:
+                case 11:
+                    anchor = 1160;
+                    break;
+                default: anchor = 410 + ((dealtPosition % 12) * (this.CardWidth + 10));
+                    break;
+            }
+
+            return anchor;
         }
 
         #region UI
@@ -202,16 +326,16 @@
         private async void ProgresiveBarTimerTick(object sender, object e)
         {
             this.gameEngine.GammerMoveTimeExpired();
-            if (this.progressBarTimer.Value <= 0)
-            {
-               await this.gameEngine.Turns();
-            }
+            //if (this.progressBarTimer.Value <= 0)
+            //{
+            //   await this.gameEngine.Turns();
+            //}
 
-            if (this.timeForPlayerTurn > 0)
-            {
-                this.timeForPlayerTurn--;
-                this.progressBarTimer.Value = (this.timeForPlayerTurn / 6) * 100;
-            }
+            //if (this.timeForPlayerTurn > 0)
+            //{
+            //    this.timeForPlayerTurn--;
+            //    this.progressBarTimer.Value = (this.timeForPlayerTurn / 6) * 100;
+            //}
         }
 
         //private void GameLoopTimerTick(object sender, object e)
@@ -221,24 +345,28 @@
 
         private async void ButtonFold_Click(object sender, EventArgs e)
         {
+            this.progresiveBarTimer.Stop();
             this.gameEngine.GammerPlayesFold();
             await this.gameEngine.Turns();
         }
 
         private async void ButtonCheck_Click(object sender, EventArgs e)
         {
+            this.progresiveBarTimer.Stop();
             this.gameEngine.GammerPlayesCheck();
             await this.gameEngine.Turns();
         }
 
         private async void ButtonCall_Click(object sender, EventArgs e)
         {
+            this.progresiveBarTimer.Stop();
             this.gameEngine.GammerPlayesCall();
             await this.gameEngine.Turns();
         }
 
         private async void ButtonRaise_Click(object sender, EventArgs e)
         {
+            this.progresiveBarTimer.Stop();
             this.gameEngine.GammerPlayesRaise();
             await this.gameEngine.Turns();
         }

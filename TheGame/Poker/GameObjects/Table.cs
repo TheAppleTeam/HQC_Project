@@ -18,6 +18,8 @@
             this.Rounds = 0;
             this.WinnersCount = 0;
             this.LastRaise = 0;
+            this.FoldedBots = 0;
+            this.PlayersInTheGame = GlobalConstants.PlayersCount;
         }
         
         public int PokerCall { get; set; }
@@ -37,5 +39,23 @@
         public int LastRaise { get; set; }
 
         public bool IsRaising { get; set; }
+
+        /// <summary>
+        /// Shous the numner of bots that are not in the game. 
+        /// Initial Value = 0;
+        /// </summary>
+        public int FoldedBots { get; set; }
+
+        /// <summary>
+        /// Shous the number of the players still in the game;
+        /// Initial Value = 6 ( GlobalConstants.PlayersCount )
+        /// 
+        /// used in CheckRaise method :   if (Table.Rounds == End && Table.PlayersInTheGame == 6);
+        /// used in AllIn method->  #region FiveOrLessLeft: if (abc < 6 && abc > 1 && Table.Rounds >= End) 
+        /// in Finish method is seted again on 4;
+        /// </summary>
+        public int PlayersInTheGame { get; set; }
+
+        public int LastRaisedPlayerId { get; set; }
     }
 }
