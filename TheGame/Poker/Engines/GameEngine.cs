@@ -454,8 +454,7 @@
         /// </summary>
         private void CallAllBotActionsOnTheirTurn(IPlayer player)
         {
-            var botNumber = player.Name.Split(' ')[1]
-                .Trim();
+            var botNumber = player.Id;
             /////Bot 1 -> 0 ,Bot 2 ->1 etc.. 
             ///// used in this.Ai(...)
             //var botPresentedAsNumber = int.Parse(botNumber) - 1;
@@ -469,12 +468,12 @@
             this.AI(player);
 
             this.Table.TurnCount++;
-            this.lastBotPlayed = int.Parse(botNumber);
+            this.lastBotPlayed = botNumber;
             player.Turn = false;
 
             ////TODO must be implemented
 
-            var nextBotIndex = int.Parse(botNumber) + 1;
+            var nextBotIndex = botNumber + 1;
             if (nextBotIndex <= 5)
             {
                 this.Players[nextBotIndex].Turn = true;
@@ -1578,13 +1577,13 @@
                         player.Raise = int.Parse(changeRaise);
                     }
 
-                    if (player.Status.Contains("Call"))
+                    if (player.Status == "Call")
                     {
                         var changeCall = playerLableText.Substring(5);
                         player.Call = int.Parse(changeCall);
                     }
 
-                    if (player.Status.Contains("Check"))
+                    if (player.Status == "Check")
                     {
                         player.Raise = 0;
                         player.Call = 0;

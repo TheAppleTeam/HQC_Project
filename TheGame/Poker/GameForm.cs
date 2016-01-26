@@ -345,6 +345,7 @@
 
         private async void ButtonFold_Click(object sender, EventArgs e)
         {
+            this.gameEngine.Players[0].Status = "Fold";
             this.progresiveBarTimer.Stop();
             this.gameEngine.GammerPlayesFold();
             await this.gameEngine.Turns();
@@ -352,6 +353,7 @@
 
         private async void ButtonCheck_Click(object sender, EventArgs e)
         {
+            this.gameEngine.Players[0].Status = "Check";
             this.progresiveBarTimer.Stop();
             this.gameEngine.GammerPlayesCheck();
             await this.gameEngine.Turns();
@@ -359,6 +361,7 @@
 
         private async void ButtonCall_Click(object sender, EventArgs e)
         {
+            this.gameEngine.Players[0].Status = "Call";
             this.progresiveBarTimer.Stop();
             this.gameEngine.GammerPlayesCall();
             await this.gameEngine.Turns();
@@ -366,6 +369,7 @@
 
         private async void ButtonRaise_Click(object sender, EventArgs e)
         {
+            this.gameEngine.Players[0].Status = "Raise";
             this.progresiveBarTimer.Stop();
             this.gameEngine.GammerPlayesRaise();
             await this.gameEngine.Turns();
