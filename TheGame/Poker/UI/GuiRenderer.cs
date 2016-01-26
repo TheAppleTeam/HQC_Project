@@ -1,7 +1,9 @@
 ﻿namespace Poker.UI
 {
+    using System;
     using System.Drawing;
     using System.Windows.Forms;
+    using GameObjects;
     using GameObjects.Cards;
     using GameObjects.Player;
 
@@ -27,20 +29,19 @@
                 else
                 {
                     this.ShowOrHidePlayersButtons((Gamer)player);
-                    this.SetButonsValues((Gamer)player)
-                    ;
+                    this.SetButonsValues((Gamer)player);
                 }
-
             }
         }
 
         private void SetButonsValues(Gamer player)
         {
-
+            //TODO : implement;
         }
 
         public void ShowOrHidePlayersButtons(Gamer player)
         {
+            this.form.textBoxRaise.Text = player.ValueToRaise.ToString();
             this.form.buttonCall.Enabled = player.CanCall;
             this.form.buttonRaise.Enabled = player.CanRaise;
             this.form.buttonFold.Enabled = player.CanFold;
@@ -65,8 +66,11 @@
             {
                 return;
             }
-            this.form.DealtCardHolder[player.Id + 1].Visible = false;
-            this.form.DealtCardHolder[player.Id + 2].Visible = false;
+            //this.form.DealtCardHolder[player.Id + 1].Visible = false;
+            //this.form.DealtCardHolder[player.Id + 2].Visible = false;
+
+            this.form.DealtCardHolder[player.Id + 2].Visible = true;
+            this.form.DealtCardHolder[player.Id + 1].Visible = true;
         }
 
         private void HideCardsControls(IPlayer player)
@@ -96,6 +100,11 @@
                 };
                 this.form.Controls.Add(this.form.DealtCardHolder[card.DealtPosition]);
                 this.SetPanelsLocation(card.DealtPosition);
+
+                if (card.IsVisible)
+                {
+                    this.form.DealtCardHolder[card.DealtPosition].Image = this.form.DealtCardImages[card.DealtPosition];
+                }
             }
 
             // this.deckImages[cardIndex] = Image.FromFile(this.imageURIArray[cardIndex]);
@@ -105,6 +114,33 @@
             // this.cardHolder[cardIndex].Width = CardWidth;
             // this.cardHolder[cardIndex].Name = "pb" + cardIndex.ToString();
             // this.form.Controls.Add(this.cardHolder[cardIndex]);
+
+        }
+
+        public void Draw(Table table)
+        {
+            this.form.textBoxPot.Text = table.Pot.ToString();
+            this.form.textBoxRaise.Text = table.LastRaise.ToString();
+            // other properties and controls to be added;
+        }
+
+        public void ShowMessage(string message)
+        {
+            MessageBox.Show(message);
+        }
+
+        public void ShowMessage(string message, string message1)
+        {
+            var dialogResult = MessageBox.Show(message, message1, MessageBoxButtons.YesNo);
+
+            if (dialogResult == DialogResult.Yes)
+            {
+                Application.Restart();
+            }
+            else if (dialogResult == DialogResult.No)
+            {
+                Application.Exit();
+            }
         }
 
         private void SetPanelsLocation(int dealtPosition)
@@ -238,6 +274,7 @@
             this.form.height = 0;
             this.form.width = 0;
             this.form.textBoxPot.Text = "0";
+
             foreach (var cardHolder in this.form.DealtCardHolder)
             {
                 cardHolder.Image = null;
@@ -276,7 +313,7 @@
             this.form.textBoxSmallBlind.Visible = false;
             this.form.buttonBigBlind.Visible = false;
             this.form.buttonSmallBlind.Visible = false;
-            this.form.textBoxRaise.Text = (this.bb * 2).ToString();
+            this.form.textBoxRaise.Text = (2 * GlobalConstants.InitialBigBlind).ToString();
         }
 
         public void ShowGamerTurnTimer()
@@ -307,7 +344,6 @@
 
         public void ShowAllCards()
         {
-
             for (int j = 0; j <= 16; j++)
             {
                 //await Task.Delay(5);
@@ -329,6 +365,53 @@
         }
 
         //     this.FillInPlayerPanel(cardIndex, this.form.PlayersPanels[0]);
+
+        public void SetLabelStatus(IPlayer player, string labelText)
+        {
+            switch (player.Name)
+            {
+                case "Player":
+                    this.form.labelPlayerStatus.Text = labelText; break;
+                case "Bot 1":
+                    this.form.labelBot1Status.Text = labelText; break;
+                case "Bot 2":
+                    this.form.labelBot2Status.Text = labelText; break;
+                case "Bot 3":
+                    this.form.labelBot3Status.Text = labelText; break;
+                case "Bot 4":
+                    this.form.labelBot4Status.Text = labelText; break;
+                case "Bot 5":
+                    this.form.labelBot5Status.Text = labelText; break;
+                default: throw new ArgumentException("Invalid argument");
+            }
+        }
+
+        //     this.FillInPlayerPanel(cardIndex, this.form.PlayersPanels[0]);
+        public void SetPanelStatus(Panel panel, bool isVisible)
+        {
+            panel.Visible = isVisible;
+        }
+
+        public void SetTextBoxPlayerChips(IPlayer player)
+        {
+            switch (player.Name)
+            {
+                case "Player":
+                    this.form.textBoxPlayerChips.Text = player.Chips.ToString(); break;
+                case "Bot 1":
+                    this.form.textBoxBot1Chips.Text = player.Chips.ToString(); break;
+                case "Bot 2":
+                    this.form.textBoxBot2Chips.Text = player.Chips.ToString(); break;
+                case "Bot 3":
+                    this.form.textBoxBot3Chips.Text = player.Chips.ToString(); break;
+                case "Bot 4":
+                    this.form.textBoxBot4Chips.Text = player.Chips.ToString(); break;
+                case "Bot 5":
+                    this.form.textBoxBot5Chips.Text = player.Chips.ToString(); break;
+                default: throw new ArgumentException("Invalid argument");
+            }
+        }
+
     }
 }
 

@@ -9,6 +9,7 @@
     using System.Threading.Tasks;
     using System.Windows.Forms;
     using Engines;
+    using Exception;
     using GameObjects.Cards;
     using GameObjects.Player;
     using UI;
@@ -52,17 +53,11 @@
 
         public GameForm()
         {
-            this.InitializeComponent();
-            this.InitializeControlsArrays();
-           
             this.width = this.Width;
             this.height = this.Height;
 
-            IRenderer renderer = new GuiRenderer(this);
-            this.gameEngine = new GameEngine(renderer);
+            this.InitializeComponent();
 
-            this.gameEngine.GameInit();
-          
             this.progresiveBarTimer.Start();
             this.progresiveBarTimer.Interval = 1 * 1 * 1000;
             this.progresiveBarTimer.Tick += this.ProgresiveBarTimerTick;
@@ -70,6 +65,23 @@
             this.updateControlsTimer.Start();
             this.updateControlsTimer.Interval = 1 * 1 * 100;
             this.updateControlsTimer.Tick += this.UpdateControlsTick;
+
+            this.InitializeControlsArrays();
+
+            IRenderer renderer = new GuiRenderer(this);
+
+            IInputHandlerer inputHandlerer = new GuiInputHandlerer(this);
+
+            this.gameEngine = new GameEngine(renderer, inputHandlerer);
+
+            try
+            {
+                this.gameEngine.GameInit();
+            }
+            catch (InputValueException ex)
+            {
+                renderer.ShowMessage(ex.Message);
+            }
            
             #region ToBEDeleted
             //this.gameEngine.pokerCall = InitialBigBlind;
@@ -151,12 +163,12 @@
         private void InitializeControlsArrays()
         {
             this.playersLabelsStatus[0] = this.labelPlayerStatus;
-            this.playersLabelsStatus[0] = this.labelPlayerStatus;
             this.playersLabelsStatus[1] = this.labelBot1Status;
             this.playersLabelsStatus[2] = this.labelBot2Status;
             this.playersLabelsStatus[3] = this.labelBot3Status;
             this.playersLabelsStatus[4] = this.labelBot4Status;
             this.playersLabelsStatus[5] = this.labelBot5Status;
+
             this.playersTextBoxsChips[0] = this.textBoxPlayerChips;
             this.playersTextBoxsChips[1] = this.textBoxBot1Chips;
             this.playersTextBoxsChips[2] = this.textBoxBot2Chips;

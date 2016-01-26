@@ -18,5 +18,7 @@
         public string CardFrontImageUri { get; set; }
 
         public string CardBackImageUri { get; private set; }
+
+        public bool IsVisible { get; set; }
     }
 }

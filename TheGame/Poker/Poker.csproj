@@ -53,6 +53,7 @@
     <Compile Include="Engines\AI.cs" />
     <Compile Include="Engines\GameEngine.cs" />
     <Compile Include="Engines\Renderer.cs" />
+    <Compile Include="Exception\InputValueException.cs" />
     <Compile Include="GameForm.cs">
       <SubType>Form</SubType>
       <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
@@ -73,7 +74,9 @@
     <Compile Include="Program.cs" />
     <Compile Include="ProgressBars.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\GuiInputHandlerer.cs" />
     <Compile Include="UI\GuiRenderer.cs" />
+    <Compile Include="UI\IInputHandlerer.cs" />
     <Compile Include="UI\IRenderer.cs" />
     <Compile Include="WinningHand.cs" />
     <EmbeddedResource Include="AddChips.resx">
