@@ -9,6 +9,7 @@
     using System.Threading.Tasks;
     using System.Windows.Forms;
     using Engines;
+    using Exception;
     using GameObjects.Cards;
     using GameObjects.Player;
     using UI;
@@ -59,9 +60,16 @@
             this.height = this.Height;
 
             IRenderer renderer = new GuiRenderer(this);
-            this.gameEngine = new GameEngine(renderer);
-
-            this.gameEngine.GameInit();
+            IInputHandlerer inputHandlerer = new GuiInputHandlerer(this);
+            this.gameEngine = new GameEngine(renderer, inputHandlerer);
+            try
+            {
+                this.gameEngine.GameInit();
+            }
+            catch (InputValueException ex)
+            {
+                renderer.ShowMessage(ex.Message);
+            }
           
             this.progresiveBarTimer.Start();
             this.progresiveBarTimer.Interval = 1 * 1 * 1000;

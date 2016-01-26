@@ -17,5 +17,7 @@
         public bool CanCheck { get; set; }
 
         public bool IsAllIn { get; set; }
+
+        public int ValueToRaise { get; set; }
     }
 }

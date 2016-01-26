@@ -17,6 +17,7 @@
             this.TurnCount = 0;
             this.Rounds = 0;
             this.WinnersCount = 0;
+            this.LastRaise = 0;
         }
         
         public int PokerCall { get; set; }
@@ -34,5 +35,7 @@
         public int Rounds { get; set; }
 
         public int LastRaise { get; set; }
+
+        public bool IsRaising { get; set; }
     }
 }

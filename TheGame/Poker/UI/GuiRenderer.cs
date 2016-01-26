@@ -2,6 +2,7 @@
 {
     using System.Drawing;
     using System.Windows.Forms;
+    using GameObjects;
     using GameObjects.Cards;
     using GameObjects.Player;
 
@@ -27,20 +28,19 @@
                 else
                 {
                     this.ShowOrHidePlayersButtons((Gamer)player);
-                    this.SetButonsValues((Gamer)player)
-                    ;
+                    this.SetButonsValues((Gamer)player);
                 }
-
             }
         }
 
         private void SetButonsValues(Gamer player)
         {
-
+            //TODO : implement;
         }
 
         public void ShowOrHidePlayersButtons(Gamer player)
         {
+            this.form.textBoxRaise.Text = player.ValueToRaise.ToString();
             this.form.buttonCall.Enabled = player.CanCall;
             this.form.buttonRaise.Enabled = player.CanRaise;
             this.form.buttonFold.Enabled = player.CanFold;
@@ -105,6 +105,18 @@
             // this.cardHolder[cardIndex].Width = CardWidth;
             // this.cardHolder[cardIndex].Name = "pb" + cardIndex.ToString();
             // this.form.Controls.Add(this.cardHolder[cardIndex]);
+        }
+
+        public void Draw(Table table)
+        {
+            this.form.textBoxPot.Text = table.Pot.ToString();
+            this.form.textBoxRaise.Text = table.LastRaise.ToString();
+            // other properties and controls to be added;
+        }
+
+        public void ShowMessage(string message)
+        {
+            MessageBox.Show(message);
         }
 
         private void SetPanelsLocation(int dealtPosition)

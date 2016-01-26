@@ -19,6 +19,7 @@
 
         private readonly Random random = new Random();
         private IRenderer renderer;
+        private IInputHandlerer inputHandlerer;
 
         #region Variables
         private int foldedPlayers = GlobalConstants.BotCount;
@@ -117,12 +118,13 @@
         // new filds
 
 
-        public GameEngine(IRenderer renderer)
+        public GameEngine(IRenderer renderer, IInputHandlerer inputHandlerer)
         {
             this.Table = new Table();
             this.Players = new IPlayer[GlobalConstants.PlayersCount];
             this.InitializePlayers();
             this.renderer = renderer;
+            this.inputHandlerer = inputHandlerer;
             this.PepsterDeck = new PepsterCard[52];
             this.PepsterDealtCards = new PepsterCard[17];
             this.SetAllPepsterDeck();
@@ -2147,8 +2149,8 @@
         private void AI(IPlayer player)
         {
             // TODO: remove first and second numeration
-            var firstCardNumeration = player.FirstCardPosition;
-            var secondNumeration = player.SecondCardPosition;
+            //var firstCardNumeration = player.FirstCardPosition;
+            //var secondNumeration = player.SecondCardPosition;
             if (!player.GameEnded)
             {
                 switch (player.PokerHandMultiplier.ToString(CultureInfo.CreateSpecificCulture("en-GB")))
@@ -2188,11 +2190,14 @@
                 }
             }
 
-            if (player.GameEnded)
-            {
-                this.cardHolder[firstCardNumeration].Visible = false;
-                this.cardHolder[secondNumeration].Visible = false;
-            }
+            this.renderer.Draw(player);
+            #region code to delete
+            //if (player.GameEnded)
+            //{
+            //    this.cardHolder[firstCardNumeration].Visible = false;
+            //    this.cardHolder[secondNumeration].Visible = false;
+            //}
+            #endregion
         }
 
         // Wika se ot AI this.AIHighCard(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, botPower); wika HP
@@ -2500,7 +2505,7 @@
                         {
                             if (this.Table.LastRaise > 0)
                             {
-                                this.Table.LastRaise = AIRoundNumber(player.Chips, n);
+                                this.Table.LastRaise = (int)AIRoundNumber(player.Chips, n);
                                 this.AIRaised(player);
                             }
                             else
@@ -2545,7 +2550,7 @@
                         {
                             if (this.Table.LastRaise > 0)
                             {
-                                this.Table.LastRaise = AIRoundNumber(player.Chips, n - rnd);
+                                this.Table.LastRaise = (int)AIRoundNumber(player.Chips, n - rnd);
                                 this.AIRaised(player);
                             }
                             else
@@ -2559,7 +2564,7 @@
 
                 if (this.Table.PokerCall <= 0)
                 {
-                    this.Table.LastRaise = AIRoundNumber(player.Chips, r - rnd);
+                    this.Table.LastRaise = (int)AIRoundNumber(player.Chips, r - rnd);
                     this.AIRaised(player);
                 }
             }
@@ -2596,12 +2601,15 @@
                     }
                     else if (player.Chips <= this.Table.PokerCall)
                     {
-                        this.raising = false;
+                        // old code to delete : this.raising = false;
+                        this.Table.IsRaising = false;
                         player.Turn = false;
                         player.Chips = 0;
                         player.Status = "Call " + player.Chips;
-                        this.form.PlayersLabelsStatus[player.Id].Text = player.Status;
-                        this.form.textBoxPot.Text = (int.Parse(this.form.textBoxPot.Text) + player.Chips).ToString();
+                        this.Table.Pot += player.Chips;
+                        this.renderer.Draw(player);
+                        // old code to delete : this.form.PlayersLabelsStatus[player.Id].Text = player.Status;
+                        // old code to delete : this.form.textBoxPot.Text = (int.Parse(this.form.textBoxPot.Text) + player.Chips).ToString();
                     }
                 }
                 else
@@ -2635,12 +2643,14 @@
         // wika se ot AIHP ili AIPH  this.AIFold(ref bothTurn, ref botEndGame, sStatus);
         private void AIFold(IPlayer player)
         {
-            this.raising = false;
+            // old code to delete : this.raising = false;
+            // old code to delete : this.form.PlayersLabelsStatus[player.Id].Text = player.Status; 
+            this.Table.IsRaising = false;
             player.Status = "Fold";
-            this.form.PlayersLabelsStatus[player.Id].Text = player.Status;
             player.Turn = false;
             player.Folded = true;
             player.GameEnded = true;
+            this.renderer.Draw(player);
         }
 
         //// вика се от AIHP, AIPH, AISmooth  this.AICheck(ref bothTurn, sStatus);
@@ -2658,9 +2668,11 @@
         private void AICheck(IPlayer player)
         {
             player.Status = "Check";
-            this.form.PlayersLabelsStatus[player.Id].Text = player.Status;
+            // old code to delete : this.form.PlayersLabelsStatus[player.Id].Text = player.Status; this.form.PlayersLabelsStatus[player.Id].Text = player.Status;
             player.Turn = false;
-            this.raising = false;
+            // old code to delete : this.form.PlayersLabelsStatus[player.Id].Text = player.Status;  this.raising = false;
+            this.Table.IsRaising = false;
+            this.renderer.Draw(player);
         }
 
         //// вика се от  AIHP AIPH, AISmooth this.AICall(ref botChips, ref bothTurn, sStatus);
@@ -2670,8 +2682,11 @@
             player.Turn = false;
             player.Chips -= this.Table.PokerCall;
             player.Status = "Call " + this.Table.PokerCall;
-            this.form.PlayersLabelsStatus[player.Id].Text = player.Status;
-            this.form.textBoxPot.Text = (int.Parse(this.form.textBoxPot.Text) + this.Table.PokerCall).ToString();
+            this.Table.Pot += this.Table.PokerCall;
+            this.renderer.Draw(player);
+            this.renderer.Draw(this.Table);
+            // old code to delete : this.form.PlayersLabelsStatus[player.Id].Text = player.Status; this.form.PlayersLabelsStatus[player.Id].Text = player.Status;
+            // old code to delete : this.form.PlayersLabelsStatus[player.Id].Text = player.Status; this.form.textBoxPot.Text = (int.Parse(this.form.textBoxPot.Text) + this.Table.PokerCall).ToString();
         }
 
         //// вика се от  AIHP AIPH, AISmooth this.AIRaised(ref botChips, ref bothTurn, sStatus);
@@ -2679,11 +2694,14 @@
         {
             player.Chips -= Convert.ToInt32(this.Table.LastRaise);
             player.Status = "Raise " + this.Table.LastRaise;
-            this.form.PlayersLabelsStatus[player.Id].Text = player.Status;
-            this.form.textBoxPot.Text = (int.Parse(this.form.textBoxPot.Text) + Convert.ToInt32(this.Table.LastRaise)).ToString();
+            this.Table.Pot += this.Table.LastRaise;
+
+            // old code to delete : this.form.PlayersLabelsStatus[player.Id].Text = player.Status; this.form.PlayersLabelsStatus[player.Id].Text = player.Status;
+            // old code to delete : this.form.PlayersLabelsStatus[player.Id].Text = player.Status; this.form.textBoxPot.Text = (int.Parse(this.form.textBoxPot.Text) + Convert.ToInt32(this.Table.LastRaise)).ToString();
             this.Table.PokerCall = Convert.ToInt32(this.Table.LastRaise);
             this.raising = true;
             player.Turn = false;
+            this.renderer.Draw(player);
         }
 
         ////вика се от  AIHP AIPH, AISmooth  this.Table.PokerCall <= AIRoundNumber(botChips, n) числото е различно има и математика
@@ -2700,139 +2718,205 @@
         public void GammerPlayesFold()
         {
             this.Players[0].Status = "Fold";
-            this.PlayersLabelsStatus[0].Text = this.Players[0].Status;
             this.Players[0].Turn = false;
             this.Players[0].GameEnded = true;
+            this.renderer.Draw(this.Players[0]);
         }
 
         public void GammerPlayesCheck()
         {
+            Gamer gamer = (Gamer)this.Players[0];
+
             if (this.Table.PokerCall <= 0)
             {
-                this.Players[0].Turn = false;
-                this.Players[0].Status = "Check";
-                this.PlayersLabelsStatus[0].Text = this.Players[0].Status;
+                gamer.Turn = false;
+                gamer.Status = "Check";
+                this.renderer.Draw(gamer);
             }
             else
             {
-                this.buttonCheck.Enabled = false;
+                gamer.CanCheck = false;
+                this.renderer.Draw(gamer);
             }
         }
 
         public void GammerMoveTimeExpired()
         {
             this.Players[0].GameEnded = true;
+            this.renderer.Draw(this.Players[0]);
         }
 
         public void GammerPlayesCall()
         {
-            this.Rules(this.Players[0]);
+            Gamer gamer = (Gamer)this.Players[0];
+            this.Rules(gamer);
 
-            if (this.Players[0].Chips >= this.Table.PokerCall)
+            if (gamer.Chips >= this.Table.PokerCall)
             {
-                this.Players[0].Chips -= this.Table.PokerCall;
-                this.textBoxPlayerChips.Text = "Chips : " + this.Players[0].Chips.ToString();
+                gamer.Chips -= this.Table.PokerCall;
+                this.Table.Pot += this.Table.PokerCall;
 
-                if (this.textBoxPot.Text != "")
-                {
-                    this.textBoxPot.Text = (int.Parse(this.textBoxPot.Text) + this.Table.PokerCall).ToString();
-                }
-                else
-                {
-                    this.textBoxPot.Text = this.Table.PokerCall.ToString();
-                }
+                #region old code to delete
+                //this.textBoxPlayerChips.Text = "Chips : " + this.Players[0].Chips.ToString();
+                //if (this.textBoxPot.Text != "")
+                //{
+                //    this.textBoxPot.Text = (int.Parse(this.textBoxPot.Text) + this.Table.PokerCall).ToString();
+                //}
+                //else
+                //{
+                //    this.textBoxPot.Text = this.Table.PokerCall.ToString();
+                //}
+                //  this.PlayersLabelsStatus[0].Text = this.Players[0].Status;
+                #endregion to delete
 
-                this.Players[0].Turn = false;
-                this.Players[0].Status = "Call " + this.Table.PokerCall;
-                this.PlayersLabelsStatus[0].Text = this.Players[0].Status;
-                this.Players[0].Call = this.Table.PokerCall;
+                gamer.Turn = false;
+                gamer.Status = "Call " + this.Table.PokerCall;
+                gamer.Call = this.Table.PokerCall;
             }
-            else if (this.Players[0].Chips <= this.Table.PokerCall &&
-                     this.Table.PokerCall > 0)
+            else if (gamer.Chips <= this.Table.PokerCall && this.Table.PokerCall > 0)
             {
-                this.textBoxPot.Text = (int.Parse(this.textBoxPot.Text) + this.Players[0].Chips).ToString();
-                this.Players[0].Status = "All in " + this.Players[0].Chips;
-                this.PlayersLabelsStatus[0].Text = this.Players[0].Status;
-                this.Players[0].Chips = 0;
-                this.textBoxPlayerChips.Text = "Chips : " + this.Players[0].Chips.ToString();
-                this.Players[0].Turn = false;
-                this.buttonFold.Enabled = false;
-                this.Players[0].Call = this.Players[0].Chips;
+                this.Table.Pot += gamer.Chips;
+                gamer.Status = "All in " + gamer.Chips;
+                gamer.Chips = 0;
+                gamer.Turn = false;
+                gamer.Call = gamer.Chips;
+                gamer.CanFold = false;
+                #region old code to to delete
+                // this.textBoxPot.Text = (int.Parse(this.textBoxPot.Text) + this.Players[0].Chips).ToString();
+                // this.PlayersLabelsStatus[0].Text = this.Players[0].Status;
+                // this.textBoxPlayerChips.Text = "Chips : " + this.Players[0].Chips.ToString();
+                // this.buttonFold.Enabled = false;
+                #endregion
             }
+
+            this.renderer.Draw(gamer);
+            this.renderer.Draw(this.Table);
         }
 
         public void GammerPlayesRaise()
         {
-            this.Rules(this.Players[0]);
-            int parsedValue;
+            Gamer gamer = (Gamer)this.Players[0];
 
-            if (this.textBoxRaise.Text != "" &&
-                int.TryParse(this.textBoxRaise.Text, out parsedValue))
+            this.Rules(gamer);
+
+            int valueToRaise = this.inputHandlerer.ReadRaise();
+            gamer.ValueToRaise = valueToRaise;
+
+            if (gamer.Chips > this.Table.PokerCall)
             {
-                if (this.Players[0].Chips > this.Table.PokerCall)
+                if (this.Table.LastRaise * 2 > gamer.ValueToRaise)
                 {
-                    if (this.Table.LastRaise * 2 > int.Parse(this.textBoxRaise.Text))
-                    {
-                        this.textBoxRaise.Text = (this.Table.LastRaise * 2).ToString();
-                        MessageBox.Show("You must raise atleast twice as the PokerHandMultiplier raise !");
-                        return;
-                    }
-                    else
-                    {
-                        if (this.Players[0].Chips >= int.Parse(this.textBoxRaise.Text))
-                        {
-                            this.Table.PokerCall = int.Parse(this.textBoxRaise.Text);
-                            this.Table.LastRaise = int.Parse(this.textBoxRaise.Text);
-                            this.Players[0].Status = "Raise " + this.Table.PokerCall.ToString();
-                            this.PlayersLabelsStatus[0].Text = this.Players[0].Status;
-                            this.textBoxPot.Text = (int.Parse(this.textBoxPot.Text) + this.Table.PokerCall).ToString();
-                            this.buttonCall.Text = "Call";
-                            this.Players[0].Chips -= int.Parse(this.textBoxRaise.Text);
-                            this.raising = true;
-                            this.lastBotPlayed = 0;
-                            this.Players[0].Raise = Convert.ToInt32(this.Table.LastRaise);
-                        }
-                        else
-                        {
-                            this.Table.PokerCall = this.Players[0].Chips;
-                            this.Table.LastRaise = this.Players[0].Chips;
-                            this.textBoxPot.Text = (int.Parse(this.textBoxPot.Text) + this.Players[0].Chips).ToString();
-                            this.Players[0].Status = "Raise " + this.Table.PokerCall.ToString();
-                            this.PlayersLabelsStatus[0].Text = this.Players[0].Status;
-
-                            this.Players[0].Chips = 0;
-                            this.raising = true;
-                            this.lastBotPlayed = 0;
-                            this.Players[0].Raise = Convert.ToInt32(this.Table.LastRaise);
-                        }
-                    }
+                    this.renderer.ShowMessage("You must raise atleast twice as the current raise !");
+                    gamer.ValueToRaise = this.Table.LastRaise * 2;
+                }
+                else if (gamer.Chips >= gamer.ValueToRaise)
+                {
+                    this.Table.PokerCall = gamer.ValueToRaise;
+                    this.Table.LastRaise = gamer.ValueToRaise;
+                    this.Table.Pot += this.Table.PokerCall;
+                    gamer.Raise = gamer.ValueToRaise;
+                    gamer.Status = "Raise" + gamer.Raise;
+                    gamer.Chips -= gamer.ValueToRaise;
+                    this.Table.IsRaising = true;
+                    this.lastBotPlayed = 0;
+                }
+                else
+                {
+                    this.Table.PokerCall = gamer.Chips;
+                    this.Table.LastRaise = gamer.Chips;
+                    this.Table.Pot += gamer.Chips;
+                    gamer.Raise = gamer.Chips;
+                    gamer.Status = "Raise" + this.Table.PokerCall;
+                    gamer.Chips = 0;
+                    this.Table.IsRaising = true;
+                    this.lastBotPlayed = 0;
                 }
             }
-            else
-            {
-                MessageBox.Show("This is a number only field");
-                return;
-            }
 
-            this.Players[0].Turn = false;
+            gamer.Turn = false;
+            this.renderer.Draw(gamer);
+            this.renderer.Draw(this.Table);
         }
+
+        # region old code to delete
+        //int parsedValue;
+
+        //if (this.textBoxRaise.Text != "" && int.TryParse(this.textBoxRaise.Text, out parsedValue))
+        //{
+        //if (this.Players[0].Chips > this.Table.PokerCall)
+        //{
+        //if (this.Table.LastRaise * 2 > int.Parse(this.textBoxRaise.Text))
+        //{
+        //    this.textBoxRaise.Text = (this.Table.LastRaise * 2).ToString();
+        //    MessageBox.Show("You must raise atleast twice as the current raise !");
+        //    return;
+        //}
+        //    else
+        //    {
+        //        if (this.Players[0].Chips >= int.Parse(this.textBoxRaise.Text))
+        //        {
+        //            //this.Table.PokerCall = int.Parse(this.textBoxRaise.Text);
+        //            //this.Table.LastRaise = int.Parse(this.textBoxRaise.Text);
+        //            //this.Players[0].Status = "Raise " + this.Table.PokerCall.ToString();
+        //            //this.PlayersLabelsStatus[0].Text = this.Players[0].Status;
+        //            //this.textBoxPot.Text = (int.Parse(this.textBoxPot.Text) + this.Table.PokerCall).ToString();
+        //            //this.buttonCall.Text = "Call";
+        //            //this.Players[0].Chips -= int.Parse(this.textBoxRaise.Text);
+        //            //this.raising = true; poleto se preimenuwa na =>
+        //            //this.Table.IsRaising;
+        //            //this.lastBotPlayed = 0;
+        //            //this.Players[0].Raise = Convert.ToInt32(this.Table.LastRaise);
+        //        }
+        //        else
+        //        {
+        //            this.Table.PokerCall = this.Players[0].Chips;
+        //            this.Table.LastRaise = this.Players[0].Chips;
+        //            this.textBoxPot.Text = (int.Parse(this.textBoxPot.Text) + this.Players[0].Chips).ToString();
+        //            this.Players[0].Status = "Raise " + this.Table.PokerCall.ToString();
+        //            this.PlayersLabelsStatus[0].Text = this.Players[0].Status;
+
+        //            this.Players[0].Chips = 0;
+        //            this.raising = true;
+        //            this.lastBotPlayed = 0;
+        //            this.Players[0].Raise = Convert.ToInt32(this.Table.LastRaise);
+        //        }
+        //    }
+        //}
+        //}
+
+        //    else
+        //{
+        //    MessageBox.Show("This is a number only field");
+        //    return;
+        //}
+
+        //this.Players[0].Turn = false;
+        //}
+        #endregion old code to delete
 
         public void GammerAddsChips()
         {
-            if (this.textBoxAddChips.Text == "")
+            int valueToAdd = this.inputHandlerer.ReadChipsToAdd();
+            foreach (var player in this.Players)
             {
+                player.Chips += valueToAdd;
             }
-            else
-            {
-                this.Players[0].Chips += int.Parse(this.textBoxAddChips.Text);
-                this.Players[1].Chips += int.Parse(this.textBoxAddChips.Text);
-                this.Players[2].Chips += int.Parse(this.textBoxAddChips.Text);
-                this.Players[3].Chips += int.Parse(this.textBoxAddChips.Text);
-                this.Players[4].Chips += int.Parse(this.textBoxAddChips.Text);
-                this.Players[5].Chips += int.Parse(this.textBoxAddChips.Text);
-            }
-
-            this.textBoxPlayerChips.Text = "Chips : " + this.Players[0].Chips.ToString();
+            this.renderer.Draw(this.Players);
+            #region old code to delete
+            //if (this.textBoxAddChips.Text == "")
+            //{
+            //}
+            //else
+            //{
+            //    this.Players[0].Chips += int.Parse(this.textBoxAddChips.Text);
+            //    this.Players[1].Chips += int.Parse(this.textBoxAddChips.Text);
+            //    this.Players[2].Chips += int.Parse(this.textBoxAddChips.Text);
+            //    this.Players[3].Chips += int.Parse(this.textBoxAddChips.Text);
+            //    this.Players[4].Chips += int.Parse(this.textBoxAddChips.Text);
+            //    this.Players[5].Chips += int.Parse(this.textBoxAddChips.Text);
+            //}
+            //this.textBoxPlayerChips.Text = "Chips : " + this.Players[0].Chips.ToString();
+            #endregion
         }
     }
 }
