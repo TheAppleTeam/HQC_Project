@@ -1473,86 +1473,62 @@
                     this.Players[5].Raise = 0;
                 }
             }
-        #endregion part1 to fix errors
+            #endregion part1 to fix errors
             // region 2 to fix error - veronika
             #region part2 to fix errors
             if (this.Table.Rounds == this.river)
             {
                 for (int j = 15; j <= 16; j++)
                 {
-                    if (this.cardHolder[j].Image != this.deckImages[j])
+                    //if (this.cardHolder[j].Image != this.deckImages[j])
+                    //{
+                    //    this.cardHolder[j].Image = this.deckImages[j];
+                    //TODO : veronika not sure if it right, must be debugged
+                    if (this.PepsterDealtCards[j].CardFrontImageUri != this.PepsterDeck[j].CardFrontImageUri)
                     {
-                        this.cardHolder[j].Image = this.deckImages[j];
-                        this.Players[0].Call = 0;
-                        this.Players[0].Raise = 0;
-                        this.Players[1].Call = 0;
-                        this.Players[1].Raise = 0;
-                        this.Players[2].Call = 0;
-                        this.Players[2].Raise = 0;
-                        this.Players[3].Call = 0;
-                        this.Players[3].Raise = 0;
-                        this.Players[4].Call = 0;
-                        this.Players[4].Raise = 0;
-                        this.Players[5].Call = 0;
-                        this.Players[5].Raise = 0;
+                        this.PepsterDealtCards[j].CardFrontImageUri = this.PepsterDeck[j].CardFrontImageUri;
+
+                        for (int playerIndex = 0; playerIndex < this.Players.Length; playerIndex++)
+                        {
+                            this.Players[playerIndex].Call = 0;
+                            this.Players[playerIndex].Raise = 0;
+                        }
+
                     }
                 }
             }
 
             if (this.Table.Rounds == this.end && this.maxPlayersLeftCount == 6)
             {
-                string fixedLast = "qwerty";
+                string fixedLast = "";
 
                 // TODO: change to new logic
                 foreach (var player in this.Players)
                 {
-                    if (player.Status != "Fold")
+                    if (!player.Folded)
                     {
                         fixedLast = player.Name;
                         this.Rules(player);
                     }
                 }
 
-                this.Winner(this.Players[0].PokerHandMultiplier,
-                       this.Players[0].CardPower,
-                       this.Players[0].Name,
-                       this.Players[0].Chips,
-                       fixedLast);
-                this.Winner(this.Players[1].PokerHandMultiplier,
-                       this.Players[1].CardPower,
-                       this.Players[1].Name,
-                       this.Players[1].Chips,
-                       fixedLast);
-                this.Winner(this.Players[2].PokerHandMultiplier,
-                       this.Players[2].CardPower,
-                       this.Players[2].Name,
-                       this.Players[2].Chips,
-                       fixedLast);
-                this.Winner(this.Players[3].PokerHandMultiplier,
-                       this.Players[3].CardPower,
-                       this.Players[3].Name,
-                       this.Players[3].Chips,
-                       fixedLast);
-                this.Winner(this.Players[4].PokerHandMultiplier,
-                       this.Players[4].CardPower,
-                       this.Players[4].Name,
-                       this.Players[4].Chips,
-                       fixedLast);
-                this.Winner(this.Players[5].PokerHandMultiplier,
-                       this.Players[5].CardPower,
-                       this.Players[5].Name,
-                       this.Players[5].Chips,
-                       fixedLast);
+                foreach (IPlayer player in this.Players)
+                {
+                    this.Winner(player.PokerHandMultiplier,
+                        player.CardPower,
+                        player.Name,
+                        player.Chips,
+                        fixedLast);
+                }
 
                 this.restart = true;
+
                 this.Players[0].Turn = true;
 
-                this.Players[0].GameEnded = false;
-                this.Players[1].GameEnded = false;
-                this.Players[2].GameEnded = false;
-                this.Players[3].GameEnded = false;
-                this.Players[4].GameEnded = false;
-                this.Players[5].GameEnded = false;
+                for (int playerIndex = 0; playerIndex < this.Players.Length; playerIndex++)
+                {
+                    this.Players[playerIndex].GameEnded = false;
+                }
 
                 if (this.Players[0].Chips <= 0)
                 {
@@ -1568,10 +1544,13 @@
                         this.Players[5].Chips += f2.AddedChips;
                         this.Players[0].GameEnded = false;
                         this.Players[0].Turn = true;
-                        this.form.buttonRaise.Enabled = true;
-                        this.form.buttonFold.Enabled = true;
-                        this.form.buttonCheck.Enabled = true;
-                        this.form.buttonRaise.Text = "Raise";
+
+                        this.Gamer.CanRaise = true;
+                        this.Gamer.CanFold = true;
+                        this.Gamer.CanCheck = true;
+
+                        this.renderer.Draw(this.Players);
+                        //this.renderer.buttonRaise.Text = "Raise";
                     }
                 }
 
@@ -1583,25 +1562,20 @@
                   this.players[4].CardsPanel.Visible = false;
                   this.players[5].CardsPanel.Visible = false;
                   */
+                //TODO: veronika check panel setup
+                //foreach (var panel in this.form.PlayersPanels)
+                //{
+                //    panel.Visible = false;
+                //}
 
-                foreach (var panel in this.form.PlayersPanels)
+                for (int playerIndex = 0; playerIndex < this.Players.Length; playerIndex++)
                 {
-                    panel.Visible = false;
+                    this.Players[playerIndex].Call = 0;
+                    this.Players[playerIndex].Raise = 0;
+                    this.Players[playerIndex].CardPower = 0;
+                    this.Players[playerIndex].PokerHandMultiplier = -1;
+                    this.Players[playerIndex].Call = 0;
                 }
-
-                this.Players[0].Call = 0;
-                this.Players[1].Call = 0;
-                this.Players[2].Call = 0;
-                this.Players[3].Call = 0;
-                this.Players[4].Call = 0;
-                this.Players[5].Call = 0;
-
-                this.Players[0].Raise = 0;
-                this.Players[2].Raise = 0;
-                this.Players[1].Raise = 0;
-                this.Players[3].Raise = 0;
-                this.Players[4].Raise = 0;
-                this.Players[5].Raise = 0;
 
                 this.lastBotPlayed = 0;
                 this.Table.PokerCall = this.Table.BigBlind;
@@ -1609,21 +1583,8 @@
                 this.imageURIArray = Directory.GetFiles("Assets\\Cards", "*.png", SearchOption.TopDirectoryOnly);
                 this.playersNotGameEnded.Clear();
                 this.Table.Rounds = 0;
-                this.Players[0].CardPower = 0;
-                this.Players[0].PokerHandMultiplier = -1;
                 this.type = 0;
 
-                this.Players[1].CardPower = 0;
-                this.Players[2].CardPower = 0;
-                this.Players[3].CardPower = 0;
-                this.Players[4].CardPower = 0;
-                this.Players[5].CardPower = 0;
-
-                this.Players[1].PokerHandMultiplier = -1;
-                this.Players[2].PokerHandMultiplier = -1;
-                this.Players[3].PokerHandMultiplier = -1;
-                this.Players[4].PokerHandMultiplier = -1;
-                this.Players[5].PokerHandMultiplier = -1;
 
                 this.playersWithoutChips.Clear();
                 this.checkWinners.Clear();
@@ -1634,23 +1595,28 @@
 
                 for (int os = 0; os < 17; os++)
                 {
-                    this.cardHolder[os].Image = null;
-                    this.cardHolder[os].Invalidate();
-                    this.cardHolder[os].Visible = false;
+                    this.PepsterDealtCards[os].CardFrontImageUri = null;
+                    //TODO: veronika not sure what Invalidate()
+                    //this.PepsterDealtCards[os].Invalidate();
+                    this.PepsterDealtCards[os].IsVisible = false;
                 }
 
-                this.form.textBoxPot.Text = "0";
+                //this.form.textBoxPot.Text = "0";
+                this.Table.Pot = 0;
                 this.Players[0].Status = string.Empty;
-                this.form.PlayersLabelsStatus[0].Text = this.Players[0].Status;
-
+                // set label status 
+                //this.form.PlayersLabelsStatus[0].Text = this.Players[0].Status;
+                this.renderer.SetAllLabelStatus((IPlayer[])this.Players.Where(p => p.Name == "Player"));
                 await this.SetupPokerTable();
+                this.renderer.Draw(this.Players);
+                this.renderer.Draw(this.PepsterDealtCards);
                 await this.Turns();
             }
         }
 
         private void FixCall(IPlayer player, int options)
         {
-            string playerLableText = this.form.PlayersLabelsStatus[player.Id].Text;
+            string playerLableText = player.Status;
 
             if (this.Table.Rounds != 4)
             {
@@ -1694,8 +1660,11 @@
                         this.Table.LastRaise > 0)
                     {
                         this.Table.PokerCall = 0;
-                        this.form.buttonCall.Enabled = false;
-                        this.form.buttonCall.Text = "Callisfuckedup";
+                        this.Gamer.CanCall = false;
+                        //this.form.buttonCall.Enabled = false;
+                        this.renderer.Draw(this.Players);
+                        //TODO: veronika sets some text value ?!?
+                        //this.form.buttonCall.Text = "Callisfuckedup";
                     }
                 }
             }
@@ -1730,62 +1699,20 @@
             }
 
             this.intsadded = false;
-
-            if (this.Players[1].Chips <= 0 && !this.Players[1].GameEnded)
+            for (int playerIndex = 1; playerIndex < this.Players.Length; playerIndex++)
             {
-                if (!this.intsadded)
+                if (this.Players[playerIndex].Chips <= 0 && !this.Players[playerIndex].GameEnded)
                 {
-                    this.playersWithoutChips.Add(this.Players[1].Chips);
-                    this.intsadded = true;
-                }
+                    if (!this.intsadded)
+                    {
+                        this.playersWithoutChips.Add(this.Players[playerIndex].Chips);
+                        this.intsadded = true;
+                    }
 
-                this.intsadded = false;
-            }
-
-            if (this.Players[2].Chips <= 0 && !this.Players[2].GameEnded)
-            {
-                if (!this.intsadded)
-                {
-                    this.playersWithoutChips.Add(this.Players[2].Chips);
-                    this.intsadded = true;
-                }
-
-                this.intsadded = false;
-            }
-
-            if (this.Players[3].Chips <= 0 &&
-                !this.Players[3].GameEnded)
-            {
-                if (!this.intsadded)
-                {
-                    this.playersWithoutChips.Add(this.Players[3].Chips);
-                    this.intsadded = true;
-                }
-
-                this.intsadded = false;
-            }
-
-            if (this.Players[4].Chips <= 0 &&
-                !this.Players[4].GameEnded)
-            {
-                if (!this.intsadded)
-                {
-                    this.playersWithoutChips.Add(this.Players[4].Chips);
-                    this.intsadded = true;
-                }
-
-                this.intsadded = false;
-            }
-
-            if (this.Players[5].Chips <= 0 &&
-                !this.Players[5].GameEnded)
-            {
-                if (!this.intsadded)
-                {
-                    this.playersWithoutChips.Add(this.Players[5].Chips);
-                    this.intsadded = true;
+                    this.intsadded = false;
                 }
             }
+
 
             if (this.playersWithoutChips.ToArray().Length == this.maxPlayersLeftCount)
             {
@@ -1806,55 +1733,67 @@
 
                 if (index == 0)
                 {
-                    this.Players[0].Chips += int.Parse(this.form.textBoxPot.Text);
-                    this.form.textBoxPlayerChips.Text = this.Players[0].Chips.ToString();
-                    this.form.PlayersPanels[0].Visible = true;
+                    //this.Players[0].Chips += int.Parse(this.form.textBoxPot.Text);
+                    this.Players[0].Chips += this.Table.Pot;
+                    this.renderer.SetTextBoxPlayerChips(Players[0]);
+                    //TODO : panels ..
+                    //this.form.PlayersPanels[0].Visible = true;
                     MessageBox.Show("Player Wins");
                 }
 
                 if (index == 1)
                 {
-                    this.Players[1].Chips += int.Parse(this.form.textBoxPot.Text);
-                    this.form.textBoxBot1Chips.Text = this.Players[1].Chips.ToString();
-                    this.form.PlayersPanels[1].Visible = true;
+                    //this.Players[1].Chips += int.Parse(this.form.textBoxPot.Text);
+                    this.Players[1].Chips += this.Table.Pot;
+                    this.renderer.SetTextBoxPlayerChips(Players[1]);
+                    //TODO : panels ..
+                    //this.form.PlayersPanels[1].Visible = true;
                     MessageBox.Show("Bot 1 Wins");
                 }
 
                 if (index == 2)
                 {
-                    this.Players[2].Chips += int.Parse(this.form.textBoxPot.Text);
-                    this.form.textBoxBot2Chips.Text = this.Players[2].Chips.ToString();
-                    this.form.PlayersPanels[2].Visible = true;
+                    //this.Players[2].Chips += int.Parse(this.form.textBoxPot.Text);
+                    this.Players[2].Chips += this.Table.Pot;
+                    this.renderer.SetTextBoxPlayerChips(Players[2]);
+                    //TODO : panels ..
+                    //this.form.PlayersPanels[2].Visible = true;
                     MessageBox.Show("Bot 2 Wins");
                 }
 
                 if (index == 3)
                 {
-                    this.Players[3].Chips += int.Parse(this.form.textBoxPot.Text);
-                    this.form.textBoxBot3Chips.Text = this.Players[3].Chips.ToString();
-                    this.form.PlayersPanels[3].Visible = true;
+                    //this.Players[3].Chips += int.Parse(this.form.textBoxPot.Text);
+                    this.Players[3].Chips += this.Table.Pot;
+                    this.renderer.SetTextBoxPlayerChips(Players[3]);
+                    //TODO : panels ..
+                    //this.form.PlayersPanels[3].Visible = true;
                     MessageBox.Show("Bot 3 Wins");
                 }
 
                 if (index == 4)
                 {
-                    this.Players[4].Chips += int.Parse(this.form.textBoxPot.Text);
-                    this.form.textBoxBot4Chips.Text = this.Players[4].Chips.ToString();
-                    this.form.PlayersPanels[4].Visible = true;
+                    //this.Players[4].Chips += int.Parse(this.form.textBoxPot.Text);
+                    this.Players[4].Chips += this.Table.Pot;
+                    this.renderer.SetTextBoxPlayerChips(Players[4]);
+                    //TODO : panels ..
+                    //this.form.PlayersPanels[4].Visible = true;
                     MessageBox.Show("Bot 4 Wins");
                 }
 
                 if (index == 5)
                 {
-                    this.Players[5].Chips += int.Parse(this.form.textBoxPot.Text);
-                    this.form.textBoxBot5Chips.Text = this.Players[5].Chips.ToString();
-                    this.form.PlayersPanels[5].Visible = true;
+                    //this.Players[5].Chips += int.Parse(this.form.textBoxPot.Text);
+                    this.Players[5].Chips += this.Table.Pot;
+                    this.renderer.SetTextBoxPlayerChips(Players[5]);
+                    //TODO : panels ..
+                    //this.form.PlayersPanels[5].Visible = true;
                     MessageBox.Show("Bot 5 Wins");
                 }
 
                 for (int j = 0; j <= 16; j++)
                 {
-                    this.cardHolder[j].Visible = false;
+                    this.PepsterDealtCards[j].IsVisible = false;
                 }
 
                 await this.Finish(1);
@@ -1961,10 +1900,15 @@
                     this.Players[5].Chips += addChipsForm.AddedChips;
                     this.Players[0].GameEnded = false;
                     this.Players[0].Turn = true;
-                    this.form.buttonRaise.Enabled = true;
-                    this.form.buttonFold.Enabled = true;
-                    this.form.buttonCheck.Enabled = true;
-                    this.form.buttonRaise.Text = "Raise";
+                    this.Gamer.CanRaise = true;
+                    this.Gamer.CanFold = true;
+                    this.Gamer.CanCheck = true;
+                    //this.form.buttonRaise.Enabled = true;
+                    //this.form.buttonFold.Enabled = true;
+                    //this.form.buttonCheck.Enabled = true;
+                    this.renderer.Draw(this.Players);
+                    //TODO :  raise value setup
+                    //this.form.buttonRaise.Text = "Raise";
                 }
             }
 
@@ -1981,7 +1925,7 @@
             this.winningCards.Clear();
             this.winningCard.Current = 0;
             this.winningCard.Power = 0;
-            string fixedLast = "qwerty";
+            string fixedLast = "";
 
             //TODO: change to new logic - > DONE -> see region " code to be deleted" new code is the foreach
             #region old code to be deleted
@@ -2032,36 +1976,14 @@
                 }
             }
 
-            this.Winner(this.Players[0].PokerHandMultiplier,
-                   this.Players[0].CardPower,
-                   "Player",
-                   this.Players[0].Chips,
-                   fixedLast);
-            this.Winner(this.Players[1].PokerHandMultiplier,
-                   this.Players[1].CardPower,
-                   "Bot 1",
-                   this.Players[1].Chips,
-                   fixedLast);
-            this.Winner(this.Players[2].PokerHandMultiplier,
-                   this.Players[2].CardPower,
-                   "Bot 2",
-                   this.Players[2].Chips,
-                   fixedLast);
-            this.Winner(this.Players[3].PokerHandMultiplier,
-                   this.Players[3].CardPower,
-                   "Bot 3",
-                   this.Players[3].Chips,
-                   fixedLast);
-            this.Winner(this.Players[4].PokerHandMultiplier,
-                   this.Players[4].CardPower,
-                   "Bot 4",
-                   this.Players[4].Chips,
-                   fixedLast);
-            this.Winner(this.Players[5].PokerHandMultiplier,
-                   this.Players[5].CardPower,
-                   "Bot 5",
-                   this.Players[5].Chips,
-                   fixedLast);
+            foreach (IPlayer player in this.Players)
+            {
+                this.Winner(player.PokerHandMultiplier,
+                    player.CardPower,
+                    player.Name,
+                    player.Chips,
+                    fixedLast);
+            }
         }
 
         public void UpdateControls()
@@ -2084,48 +2006,62 @@
 
             if (this.Players[0].Chips >= this.Table.PokerCall)
             {
-                this.form.buttonCall.Text = "Call " + this.Table.PokerCall.ToString();
+                //this.form.buttonCall.Text = "Call " + this.Table.PokerCall.ToString();
             }
             else
             {
-                this.form.buttonCall.Text = "All in";
-                this.form.buttonRaise.Enabled = false;
+                //this.form.buttonCall.Text = "All in";
+                this.Gamer.CanRaise = false;
+                this.renderer.Draw(this.Players);
+                //this.form.buttonRaise.Enabled = false;
             }
 
             if (this.Table.PokerCall > 0)
             {
-                this.form.buttonCheck.Enabled = false;
+                //this.form.buttonCheck.Enabled = false;
+                this.Gamer.CanCheck = false;
+                this.renderer.Draw(this.Players);
             }
 
             if (this.Table.PokerCall <= 0)
             {
-                this.form.buttonCheck.Enabled = true;
-                this.form.buttonCall.Text = "Call";
-                this.form.buttonCall.Enabled = false;
+                //this.form.buttonCheck.Enabled = true;
+
+                //this.form.buttonCall.Text = "Call";
+
+                //this.form.buttonCall.Enabled = false;
+                this.Gamer.CanCheck = true;
+                this.Gamer.CanCall = true;
             }
-
-
 
             int parsedValue;
 
-            if (this.form.textBoxRaise.Text != "" && int.TryParse(this.form.textBoxRaise.Text, out parsedValue))
+            //if (this.form.textBoxRaise.Text != "" && int.TryParse(this.form.textBoxRaise.Text, out parsedValue))
+            //{
+            if (this.Gamer.CanRaise)
             {
-                if (this.Players[0].Chips <= int.Parse(this.form.textBoxRaise.Text))
+                if (this.Players[0].Chips <= this.Table.LastRaise)
                 {
-                    this.form.buttonRaise.Text = "All in";
+                    this.Gamer.IsAllIn = true;
+
+                    //this.form.buttonRaise.Text = "All in";
                 }
                 else
                 {
-                    this.form.buttonRaise.Text = "Raise";
+                    this.Gamer.CanRaise = true;
+                    //this.form.buttonRaise.Text = "Raise";
                 }
             }
 
             if (this.Players[0].Chips < this.Table.PokerCall)
             {
-                this.form.buttonRaise.Enabled = false;
+                //this.form.buttonRaise.Enabled = false;
+                this.Gamer.CanRaise = false;
             }
+            this.renderer.Draw(this.Players);
+            //this.renderer.Draw(this.PepsterDealtCards);
         }
-            #endregion part2 to fix errors
+        #endregion part2 to fix errors
         //region 3 to fix errors - plamena
         #region part3 to fix errors
 

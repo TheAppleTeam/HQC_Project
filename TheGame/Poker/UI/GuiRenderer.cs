@@ -1,5 +1,6 @@
 ﻿namespace Poker.UI
 {
+    using System;
     using System.Drawing;
     using System.Windows.Forms;
     using GameObjects;
@@ -341,6 +342,53 @@
         }
 
         //     this.FillInPlayerPanel(cardIndex, this.form.PlayersPanels[0]);
+
+        public void SetLabelStatus(IPlayer player, string labelText)
+        {
+            switch (player.Name)
+            {
+                case "Player":
+                    this.form.labelPlayerStatus.Text = labelText; break;
+                case "Bot 1":
+                    this.form.labelBot1Status.Text = labelText; break;
+                case "Bot 2":
+                    this.form.labelBot2Status.Text = labelText; break;
+                case "Bot 3":
+                    this.form.labelBot3Status.Text = labelText; break;
+                case "Bot 4":
+                    this.form.labelBot4Status.Text = labelText; break;
+                case "Bot 5":
+                    this.form.labelBot5Status.Text = labelText; break;
+                default: throw new ArgumentException("Invalid argument");
+            }
+        }
+
+        //     this.FillInPlayerPanel(cardIndex, this.form.PlayersPanels[0]);
+        public void SetPanelStatus(Panel panel, bool isVisible)
+        {
+            panel.Visible = isVisible;
+        }
+
+        public void SetTextBoxPlayerChips(IPlayer player)
+        {
+            switch (player.Name)
+            {
+                case "Player":
+                    this.form.textBoxPlayerChips.Text = player.Chips.ToString(); break;
+                case "Bot 1":
+                    this.form.textBoxBot1Chips.Text = player.Chips.ToString(); break;
+                case "Bot 2":
+                    this.form.textBoxBot2Chips.Text = player.Chips.ToString(); break;
+                case "Bot 3":
+                    this.form.textBoxBot3Chips.Text = player.Chips.ToString(); break;
+                case "Bot 4":
+                    this.form.textBoxBot4Chips.Text = player.Chips.ToString(); break;
+                case "Bot 5":
+                    this.form.textBoxBot5Chips.Text = player.Chips.ToString(); break;
+                default: throw new ArgumentException("Invalid argument");
+            }
+        }
+
     }
 }
 
