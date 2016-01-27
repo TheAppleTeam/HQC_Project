@@ -43,6 +43,7 @@
                 {
                     this.form.DealtCardHolder[card.DealtPosition].Image = this.form.DealtCardImages[card.DealtPosition];
                 }
+                //this.form.DealtCardHolder[card.DealtPosition].Image = this.form.DealtCardImages[card.DealtPosition];
             }
         }
 

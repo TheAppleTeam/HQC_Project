@@ -523,11 +523,11 @@ l                */
 
                 //#endregion
 
-                //#region Four of a Kind PokerHandMultiplier = 7
+                #region Four of a Kind PokerHandMultiplier = 7
 
-                //this.rFourOfAKind(firstCard, secondCard, player.PokerHandMultiplier, player.CardPower, cardsOnTableWithPlayerCards);
+                this.rFourOfAKind(playerFirstCard, playerSecondCard, cardsOnTable, player);
 
-                //#endregion
+                #endregion
 
                 //#region Straight Flush PokerHandMultiplier = 8 || 9
 
@@ -698,46 +698,25 @@ l                */
             }
         }
 
-        private void rFourOfAKind(double PokerHandMultiplier, double Power, int[] Straight)
+        private void rFourOfAKind(PepsterCard playerFirstCard, PepsterCard playerSecondCard, PepsterCard[] cardsOnTable, IPlayer player)
         {
-            if (PokerHandMultiplier >= -1)
-            {
-                for (int j = 0; j <= 3; j++)
-                {
-                    if (Straight[j] / 4 == Straight[j + 1] / 4 &&
-                        Straight[j] / 4 == Straight[j + 2] / 4 &&
-                        Straight[j] / 4 == Straight[j + 3] / 4)
-                    {
-                        PokerHandMultiplier = 7;
-                        Power = (Straight[j] / 4) * 4 + PokerHandMultiplier * 100;
-                        this.winningCards.Add(new WinningHand()
-                        {
-                            Power = Power,
-                            Current = 7
-                        });
-                        this.winningCard =
-                            this.winningCards.OrderByDescending(op1 => op1.Current)
-                                .ThenByDescending(op1 => op1.Power)
-                                .First();
-                    }
+            var allcards = new PepsterCard[cardsOnTable.Length + 2];
+            allcards[0] = playerFirstCard;
+            allcards[1] = playerSecondCard;
 
-                    if (Straight[j] / 4 == 0 &&
-                        Straight[j + 1] / 4 == 0 &&
-                        Straight[j + 2] / 4 == 0 &&
-                        Straight[j + 3] / 4 == 0)
-                    {
-                        PokerHandMultiplier = 7;
-                        Power = 13 * 4 + PokerHandMultiplier * 100;
-                        this.winningCards.Add(new WinningHand()
-                        {
-                            Power = Power,
-                            Current = 7
-                        });
-                        this.winningCard =
-                            this.winningCards.OrderByDescending(op1 => op1.Current)
-                                .ThenByDescending(op1 => op1.Power)
-                                .First();
-                    }
+            for (int i = 2, counter = 0; i < allcards.Length; i++, counter++)
+            {
+                allcards[i] = cardsOnTable[counter];
+            }
+
+            for (int i = 2; i < 15; i++)
+            {
+                var cardsGroupedByRank = allcards.Where(c => c.Rank == i);
+                if (cardsGroupedByRank.Count() == 4)
+                {
+                    var firstCard = cardsGroupedByRank.First();
+                    player.PokerHandMultiplier = 7;
+                    player.CardPower = firstCard.Rank*4 + player.PokerHandMultiplier*100;
                 }
             }
         }
@@ -2241,8 +2220,8 @@ l                */
             Random random = new Random();
             int fkCall = random.Next(1, 4);
             int fkRaise = random.Next(2, 5);
-            if (player.CardPower <= 752 &&
-                player.CardPower >= 704)
+            if (player.CardPower <= 756 &&
+                player.CardPower >= 702)
             {
                 this.AISmooth(player, fkCall, fkRaise);
             }
