@@ -25,16 +25,16 @@
         private readonly IRenderer renderer;
         private readonly IInputHandlerer inputHandlerer;
 
-        
+
         private bool intsadded;
         private bool changed;
         private double type;
-      
+
         private List<WinningHand> winningCards = new List<WinningHand>();
         private List<bool?> playersNotGameEnded = new List<bool?>();
         private List<string> checkWinners = new List<string>();
         private List<int> playersWithoutChips = new List<int>();
-             
+
         private WinningHand winningCard;
 
         /// <summary>
@@ -56,7 +56,7 @@
             this.SetAllPepsterDeck();
             this.GameEnd = false;
         }
-        
+
         public Table Table { get; set; }
 
         public Gamer Gamer { get; set; }
@@ -66,7 +66,7 @@
         public PepsterCard[] PepsterDeck { get; private set; }
 
         public PepsterCard[] PepsterDealtCards { get; set; }
-        
+
         private bool GameEnd { get; set; }
 
         public void GameInit()
@@ -137,18 +137,20 @@
             this.renderer.Draw(this.PepsterDealtCards);
             this.renderer.Draw(this.Table);
         }
-          
+
         private void SetAllPepsterDeck()
         {
             int pepsterDeckIndex = 0;
-            int idCounter = 1;
-            for (int i = 0; i < 13; i++)
+            int idCounter = 5;
+
+            for (int baseCardRank = 0; baseCardRank < 13; baseCardRank++)
             {
                 this.PepsterDeck[pepsterDeckIndex] = new PepsterCard()
                 {
                     Id = idCounter,
                     Suit = CardSuit.Clubs,
-                    CardFrontImageUri = "../../Resources/Cards/" + idCounter + ".png"
+                    CardFrontImageUri = "../../Resources/Cards/" + idCounter + ".png",
+                    Rank = baseCardRank + 2
                 };
                 idCounter++;
                 pepsterDeckIndex++;
@@ -157,7 +159,8 @@
                 {
                     Id = idCounter,
                     Suit = CardSuit.Diamonds,
-                    CardFrontImageUri = "../../Resources/Cards/" + idCounter + ".png"
+                    CardFrontImageUri = "../../Resources/Cards/" + idCounter + ".png",
+                    Rank = baseCardRank + 2
                 };
                 idCounter++;
                 pepsterDeckIndex++;
@@ -166,7 +169,8 @@
                 {
                     Id = idCounter,
                     Suit = CardSuit.Hearts,
-                    CardFrontImageUri = "../../Resources/Cards/" + idCounter + ".png"
+                    CardFrontImageUri = "../../Resources/Cards/" + idCounter + ".png",
+                    Rank = baseCardRank + 2
                 };
                 idCounter++;
                 pepsterDeckIndex++;
@@ -175,7 +179,8 @@
                 {
                     Id = idCounter,
                     Suit = CardSuit.Spades,
-                    CardFrontImageUri = "../../Resources/Cards/" + idCounter + ".png"
+                    CardFrontImageUri = "../../Resources/Cards/" + idCounter + ".png",
+                    Rank = baseCardRank + 2
                 };
                 idCounter++;
                 pepsterDeckIndex++;
@@ -210,7 +215,7 @@
             }
 
             this.EnablingFormMinimizationAndMaximization();
-           
+
             this.CheckForGameEnd();
 
             this.Gamer.CanRaise = true;
@@ -315,7 +320,7 @@
         /// <param name="cardIndex">Index of the cards that are dealt</param>
 
 
-            #endregion
+        #endregion
 
         public async Task Turns()
         {
@@ -339,7 +344,7 @@
                 }
 
                 await this.CheckRaise(0);
-                
+
                 this.Gamer.CanRaise = true;
                 this.Gamer.CanCall = true;
                 this.Gamer.CanCheck = true;
@@ -390,7 +395,7 @@
             #endregion
 
                 await this.AllIn();
-                
+
                 // game loop => while the game end is not true call turns again
                 if (this.GameEnd == false)
                 {
@@ -415,31 +420,31 @@
             //The playerlabelText is commented out because its value is replaced with player.Folded
             //string playerlabelText = this.form.PlayersLabelsStatus[player.Id].Text;
 
-            if (!player.Folded ||  (player.FirstCardPosition == 0 && player.SecondCardPosition == 1))
+            if (!player.Folded || (player.FirstCardPosition == 0 && player.SecondCardPosition == 1))
             {
                 #region Variables
-                bool done = false;
-                bool vf = false;
-                int[] cardsOnTable = new int[5];
-                int[] cardsOnTableWithPlayerCards = new int[7];
-                cardsOnTableWithPlayerCards[0] = this.dealtCardsNumbers[player.FirstCardPosition];
-                cardsOnTableWithPlayerCards[1] = this.dealtCardsNumbers[player.SecondCardPosition];
 
-                cardsOnTable[0] = cardsOnTableWithPlayerCards[2] = this.dealtCardsNumbers[12];
-                cardsOnTable[1] = cardsOnTableWithPlayerCards[3] = this.dealtCardsNumbers[13];
-                cardsOnTable[2] = cardsOnTableWithPlayerCards[4] = this.dealtCardsNumbers[14];
-                cardsOnTable[3] = cardsOnTableWithPlayerCards[5] = this.dealtCardsNumbers[15];
-                cardsOnTable[4] = cardsOnTableWithPlayerCards[6] = this.dealtCardsNumbers[16];
+                PepsterCard[] cardsOnTable = new PepsterCard[5];
+                PepsterCard[] cardsOnTableWithPlayerCards = new PepsterCard[7];
 
-                var clubs = cardsOnTableWithPlayerCards.Where(o => o % 4 == 0).ToArray();
-                var diamonds = cardsOnTableWithPlayerCards.Where(o => o % 4 == 1).ToArray();
-                var hearts = cardsOnTableWithPlayerCards.Where(o => o % 4 == 2).ToArray();
-                var spades = cardsOnTableWithPlayerCards.Where(o => o % 4 == 3).ToArray();
+                cardsOnTableWithPlayerCards[0] = this.PepsterDealtCards[player.FirstCardPosition];
+                cardsOnTableWithPlayerCards[1] = this.PepsterDealtCards[player.SecondCardPosition];
 
-                var cardsOfClubs = clubs.Select(o => o / 4).Distinct().ToArray();
-                var cardsOfDiamonds = diamonds.Select(o => o / 4).Distinct().ToArray();
-                var cardsOfHearts = hearts.Select(o => o / 4).Distinct().ToArray();
-                var cardsOfSpades = spades.Select(o => o / 4).Distinct().ToArray();
+                cardsOnTable[0] = cardsOnTableWithPlayerCards[2] = this.PepsterDealtCards[12];
+                cardsOnTable[1] = cardsOnTableWithPlayerCards[3] = this.PepsterDealtCards[13];
+                cardsOnTable[2] = cardsOnTableWithPlayerCards[4] = this.PepsterDealtCards[14];
+                cardsOnTable[3] = cardsOnTableWithPlayerCards[5] = this.PepsterDealtCards[15];
+                cardsOnTable[4] = cardsOnTableWithPlayerCards[6] = this.PepsterDealtCards[16];
+
+                var clubs = cardsOnTableWithPlayerCards.Where(o => o.Suit == CardSuit.Clubs).ToArray();
+                var diamonds = cardsOnTableWithPlayerCards.Where(o => o.Suit == CardSuit.Diamonds).ToArray();
+                var hearts = cardsOnTableWithPlayerCards.Where(o => o.Suit == CardSuit.Hearts).ToArray();
+                var spades = cardsOnTableWithPlayerCards.Where(o => o.Suit == CardSuit.Spades).ToArray();
+
+                var cardsOfClubs = clubs.Select(o => o.Rank).Distinct().ToArray();
+                var cardsOfDiamonds = diamonds.Select(o => o.Rank).Distinct().ToArray();
+                var cardsOfHearts = hearts.Select(o => o.Rank).Distinct().ToArray();
+                var cardsOfSpades = spades.Select(o => o.Rank).Distinct().ToArray();
 
                 Array.Sort(cardsOnTableWithPlayerCards);
                 Array.Sort(cardsOfClubs);
@@ -447,8 +452,8 @@
                 Array.Sort(cardsOfHearts);
                 Array.Sort(cardsOfSpades);
 
-                int playerFirstCard = this.dealtCardsNumbers[player.FirstCardPosition];
-                int playerSecondCard = this.dealtCardsNumbers[player.SecondCardPosition];
+                PepsterCard playerFirstCard = this.PepsterDealtCards[player.FirstCardPosition];
+                PepsterCard playerSecondCard = this.PepsterDealtCards[player.SecondCardPosition];
 
                 #endregion
 
@@ -786,7 +791,7 @@
                 }
             }
         }
-     
+
 
         private void rFlush(double PokerHandMultiplier, double power, int[] cardsOnTable, int index)
         {
@@ -904,7 +909,7 @@
             double power = this.dealtCardsNumbers[index] + pokerHandMultiplier * 100;
             this.FindWinnigCard(pokerHandMultiplier, power);
         }
- 
+
 
         private void rStraight(int firstCard, int secondCard, int[] cardsOnTable, IPlayer player)
         {
@@ -939,13 +944,9 @@
             return maxCard;
         }
 
-        private int GetHighestCardInHand(int firstCard, int secondCard)
+        private PepsterCard GetHighestCardInHand(PepsterCard firstCard, PepsterCard secondCard)
         {
-            int firstCardPower = this.GetCardRank(firstCard);
-            int secondCardPower = this.GetCardRank(secondCard);
-
-            int highestCard = firstCardPower > secondCardPower ? firstCard : secondCard;
-
+            PepsterCard highestCard = firstCard.Rank > secondCard.Rank ? firstCard : secondCard;
             return highestCard;
         }
 
@@ -1046,12 +1047,12 @@
             player.CardPower = ((this.GetCardRank(highestCard)) * 4) + (player.PokerHandMultiplier * 100);
         }
 
-        private void rHighCard(int firstCard, int secondCard, IPlayer player)
+        private void rHighCard(PepsterCard firstCard,PepsterCard secondCard, IPlayer player)
         {
-            int highestCard = this.GetHighestCardInHand(firstCard, secondCard);
+            PepsterCard highestCard = this.GetHighestCardInHand(firstCard, secondCard);
 
             player.PokerHandMultiplier = -1;
-            player.CardPower = this.GetCardRank(highestCard) + this.GetCardSuit(highestCard) + player.PokerHandMultiplier * 100;
+            player.CardPower = highestCard.Rank;
         }
 
         private int GetCardSuit(int card)
@@ -1121,7 +1122,7 @@
                         this.renderer.ShowMessage(playerName + " Straight ");
                     }
 
-                    if (PokerHandMultiplier == 5 ||  PokerHandMultiplier == 5.5)
+                    if (PokerHandMultiplier == 5 || PokerHandMultiplier == 5.5)
                     {
                         this.renderer.ShowMessage(playerName + " Flush ");
                     }
@@ -1143,7 +1144,7 @@
 
                     if (PokerHandMultiplier == 9)
                     {
-                       this.renderer.ShowMessage(playerName + " Royal Flush ! ");
+                        this.renderer.ShowMessage(playerName + " Royal Flush ! ");
                     }
                 }
             }
@@ -1261,20 +1262,20 @@
             {
                 this.Table.TurnCount = 0;
                 this.Table.IsRaising = false;
-               this.Table.LastRaisedPlayerId = playerId;
+                this.Table.LastRaisedPlayerId = playerId;
                 this.changed = true;
             }
             else
             {
                 if (this.Table.TurnCount >= this.Table.PlayersInTheGame - 1 || !this.changed && this.Table.TurnCount == this.Table.PlayersInTheGame)
                 {
-                    if (playerId ==this.Table.LastRaisedPlayerId - 1 || !this.changed && this.Table.TurnCount == this.Table.PlayersInTheGame ||this.Table.LastRaisedPlayerId == 0 && playerId == 5)
+                    if (playerId == this.Table.LastRaisedPlayerId - 1 || !this.changed && this.Table.TurnCount == this.Table.PlayersInTheGame || this.Table.LastRaisedPlayerId == 0 && playerId == 5)
                     {
                         this.changed = false;
                         this.Table.TurnCount = 0;
                         this.Table.LastRaise = 0;
                         this.Table.PokerCall = 0;
-                       this.Table.LastRaisedPlayerId = 123;
+                        this.Table.LastRaisedPlayerId = 123;
                         this.Table.Rounds++;
 
                         foreach (var player in this.Players)
@@ -1319,7 +1320,7 @@
 
                     ////this.Players[5].Call = 0;
                     ////this.Players[5].Raise = 0;
-                     #endregion
+                    #endregion
                     this.PepsterDealtCards[j].IsVisible = true;
                     this.renderer.Draw(this.PepsterDealtCards[j]);
                 }
@@ -1327,7 +1328,7 @@
                 {
                     player.Call = 0;
                     player.Raise = 0;
-            }
+                }
             }
 
             if (this.Table.Rounds == this.cardTurn)
@@ -1336,7 +1337,7 @@
                 {
                     this.PepsterDealtCards[j].IsVisible = true;
                     this.renderer.Draw(this.PepsterDealtCards[j]);
-                    }
+                }
 
                 foreach (var player in this.Players)
                 {
@@ -1344,7 +1345,7 @@
                     player.Raise = 0;
                 }
             }
-      
+
             if (this.Table.Rounds == this.cardRiver)
             {
                 for (int j = 15; j <= 16; j++)
@@ -1354,11 +1355,11 @@
                 }
 
                 foreach (var player in this.Players)
-                    {
+                {
                     player.Call = 0;
                     player.Raise = 0;
-                    }
                 }
+            }
 
             if (this.Table.Rounds == this.cardEnd && this.Table.PlayersInTheGame == 6)
             {
@@ -1442,7 +1443,7 @@
                 this.Table.LastBotPlayed = 0;
                 this.Table.PokerCall = this.Table.BigBlind;
                 this.Table.LastRaise = 0;
-    //            this.imageURIArray = Directory.GetFiles("Assets\\Cards", "*.png", SearchOption.TopDirectoryOnly);
+                //            this.imageURIArray = Directory.GetFiles("Assets\\Cards", "*.png", SearchOption.TopDirectoryOnly);
                 this.playersNotGameEnded.Clear();
                 this.Table.Rounds = 0;
                 this.type = 0;
@@ -1565,15 +1566,15 @@
             {
                 if (this.Players[playerIndex].Chips <= 0 && !this.Players[playerIndex].GameEnded)
                 {
-                if (!this.intsadded)
-                {
+                    if (!this.intsadded)
+                    {
                         this.playersWithoutChips.Add(this.Players[playerIndex].Chips);
-                    this.intsadded = true;
-                }
+                        this.intsadded = true;
+                    }
 
-                this.intsadded = false;
-            }
+                    this.intsadded = false;
                 }
+            }
 
 
             if (this.playersWithoutChips.ToArray().Length == this.Table.PlayersInTheGame)
@@ -1721,7 +1722,7 @@
             this.winningCards.Clear();
             this.winningCard.Current = 0;
             this.winningCard.Power = 0;
-           
+
             this.Table.TurnCount = 0;
 
             foreach (var player in this.Players)
@@ -1841,7 +1842,7 @@
                     player.Name,
                     player.Chips,
                    fixedLast);
-        }
+            }
         }
 
         #region AI logic
@@ -2425,7 +2426,7 @@
         }
         #endregion
 
-#region push buttons logic
+        #region push buttons logic
         public void GammerPlayesFold()
         {
             this.Gamer.Status = "Fold";
@@ -2483,9 +2484,9 @@
                 gamer.Turn = false;
                 gamer.Status = "Call " + this.Table.PokerCall;
                 gamer.Call = this.Table.PokerCall;
-                }
+            }
             else if (gamer.Chips <= this.Table.PokerCall && this.Table.PokerCall > 0)
-                {
+            {
                 this.Table.Pot += gamer.Chips;
                 gamer.Status = "All in " + gamer.Chips;
                 gamer.Chips = 0;
@@ -2498,7 +2499,7 @@
                 // this.textBoxPlayerChips.Text = "Chips : " + this.Gamer.Chips.ToString();
                 // this.buttonFold.Enabled = false;
                 #endregion
-                }
+            }
 
             this.renderer.Draw(gamer);
             this.renderer.Draw(this.Table);
@@ -2533,7 +2534,7 @@
                     gamer.Turn = false;
                 }
                 else
-                { 
+                {
                     // player playes All In
                     this.Table.PokerCall = gamer.Chips;
                     this.Table.LastRaise = gamer.Chips;
@@ -2601,9 +2602,9 @@
             {
                 this.renderer.ShowMessage(ex.Message);
             }
-            
+
         }
-#endregion
+        #endregion
 
 
 
