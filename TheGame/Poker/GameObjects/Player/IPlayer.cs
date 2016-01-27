@@ -24,10 +24,6 @@
 
         int Raise { get; set; }
 
-        //  Panel CardsPanel { get;  }
-
-        //  Label Label { get; set; }
-
         int FirstCardPosition { get; set; }
 
         int SecondCardPosition { get; set; }

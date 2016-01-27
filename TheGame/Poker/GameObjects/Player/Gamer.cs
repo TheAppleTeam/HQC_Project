@@ -18,6 +18,9 @@
 
         public bool IsAllIn { get; set; }
 
+        /// <summary>
+        /// Contains the value of Raise textBox
+        /// </summary>
         public int ValueToRaise { get; set; }
     }
 }

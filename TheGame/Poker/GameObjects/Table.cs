@@ -6,14 +6,12 @@
 
         private bool intsadded;
         private bool changed;
-        public bool raising = false;
-
-
+   
         public Table()
         {
             this.BigBlind = GlobalConstants.InitialBigBlind;
             this.SmallBlind = GlobalConstants.InitialSmallBlind;
-            this.PokerCall = GlobalConstants.InitialSmallBlind;
+            this.PokerCall = GlobalConstants.InitialBigBlind;
             this.TurnCount = 0;
             this.Rounds = 0;
             this.WinnersCount = 0;
@@ -21,6 +19,7 @@
             this.FoldedBots = 0;
             this.PlayersInTheGame = GlobalConstants.PlayersCount;
             this.IsRaising = false;
+            this.LastBotPlayed = 123;
         }
         
         public int PokerCall { get; set; }
@@ -57,6 +56,24 @@
         /// </summary>
         public int PlayersInTheGame { get; set; }
 
+        /// <summary>
+        /// Gives the Id of the last player that has Raised
+        /// </summary>
         public int LastRaisedPlayerId { get; set; }
+
+        /// <summary>
+        /// Ili dawa posledniq igral bot ili dawa posledniq igral igrach
+        /// </summary>
+        public int LastBotPlayed { get; set; }
+        
+        /// <summary>
+        /// conteins the value of the Call button
+        /// </summary>
+        public string PosibleCall { get; set; }
+
+        /// <summary>
+        /// conteins the value of the Call button
+        /// </summary>
+        public string PosibleRaise { get; set; }
     }
 }

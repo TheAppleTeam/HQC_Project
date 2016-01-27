@@ -7,12 +7,9 @@
         private const int InitialChips = 10000;
         private readonly int id;
         private int chips;
-        // private Panel cardsPanel;
-        
+
         protected AbstractPlayer(int id, string name, int firstCardNumeration, int secondCardNumeration)
         {
-        // this.CardsPanel = new Panel();
-        // this.Label = label;
             this.id = id;
             this.GameEnded = false;
             this.Chips = InitialChips;
@@ -21,23 +18,10 @@
             this.Raise = 0;
             this.PokerHandMultiplier = -1;
             this.Name = name;
-     
+                      
             this.FirstCardPosition = firstCardNumeration;
             this.SecondCardPosition = secondCardNumeration;
         }
-
-     //   public Panel CardsPanel
-        //{
-        //    get
-        //    {
-        //        return this.cardsPanel;
-        //    }
-
-        //    private set
-        //    {
-        //        this.cardsPanel = value;
-        //    }
-        //}
 
         public int Id 
         {
@@ -52,6 +36,7 @@
             {
                 return this.chips;
             }
+
             set
             {
                 if (value <= 0)
@@ -65,24 +50,36 @@
             }
         }
 
+        /// <summary>
+        /// Shows if is Players Turn
+        /// </summary>
         public bool Turn { get; set; }
 
         public bool GameEnded { get; set; }
 
-        //// съдържанието на полето се изписва в лейбъла - например raise 200
+        /// <summary>
+        /// Is uset to set value of Player's Lable 
+        /// </summary>
         public string Status { get; set; }
 
         public double PokerHandMultiplier { get; set; }
 
         public double CardPower { get; set; }
 
+        /// <summary>
+        /// Shows if Playr is Folded
+        /// </summary>
         public bool Folded { get; set; }
-
+        
+        /// <summary>
+        /// Shows the value of Player's Call
+        /// </summary>
         public int Call { get; set; }
-
+        
+        /// <summary>
+        /// Shows the value of Player'sRase
+        /// </summary>
         public int Raise { get; set; }
-
-   //     public Label Label { get; set; }
 
         public int FirstCardPosition { get; set; }
 

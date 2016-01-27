@@ -29,53 +29,11 @@
                 else
                 {
                     this.ShowOrHidePlayersButtons((Gamer)player);
-                    this.SetButonsValues((Gamer)player);
+                   // this.SetButonsValues((Gamer)player);
                 }
             }
         }
 
-        private void SetButonsValues(Gamer player)
-        {
-            //TODO : implement;
-        }
-
-        public void ShowOrHidePlayersButtons(Gamer player)
-        {
-            this.form.textBoxRaise.Text = player.ValueToRaise.ToString();
-            this.form.buttonCall.Enabled = player.CanCall;
-            this.form.buttonRaise.Enabled = player.CanRaise;
-            this.form.buttonFold.Enabled = player.CanFold;
-            this.form.buttonCheck.Enabled = player.CanCheck;
-        }
-
-        private void ShowOrHideCardsControls(IPlayer player)
-        {
-            if (player.GameEnded)
-            {
-                this.HideCardsControls(player);
-            }
-            else
-            {
-                this.ShowCardsControls(player);
-            }
-        }
-
-        private void ShowCardsControls(IPlayer player)
-        {
-            if (this.form.DealtCardHolder[player.Id + 2] == null)
-            {
-                return;
-            }
-
-            this.form.DealtCardHolder[player.Id + 2].Visible = true;
-            this.form.DealtCardHolder[player.Id + 1].Visible = true;
-        }
-
-        private void HideCardsControls(IPlayer player)
-        {
-            this.form.DealtCardHolder[player.Id + 1].Visible = false;
-            this.form.DealtCardHolder[player.Id + 2].Visible = false;
-        }
 
         public void Draw(params PepsterCard[] gameObjects)
         {
@@ -92,6 +50,8 @@
         {
             this.form.textBoxPot.Text = table.Pot.ToString();
             this.form.textBoxRaise.Text = table.LastRaise.ToString();
+            this.form.buttonCall.Text = table.PosibleCall;
+            this.form.buttonRaise.Text = table.PosibleRaise;
             // other properties and controls to be added;
         }
 
@@ -168,9 +128,9 @@
 
         public void ShowGamerTurnTimer()
         {
-           // this.form.progressBarTimer.Visible = true;
-           // this.form.progressBarTimer.Value = 1000;
-           
+            // this.form.progressBarTimer.Visible = true;
+            // this.form.progressBarTimer.Value = 1000;
+
             // TODO: ewentualno da se mahne stwaneto ako nikyde ne se promenq
             //this.form.TimeForPlayerTurn = 60; - ima go kato konstanta wyw formata
             this.form.ProgresiveBarTimer.Start();
@@ -186,6 +146,16 @@
         {
             this.form.MaximizeBox = true;
             this.form.MinimizeBox = true;
+        }
+
+
+        public void ShowOrHidePlayersButtons(Gamer player)
+        {
+            this.form.textBoxRaise.Text = player.ValueToRaise.ToString();
+            this.form.buttonCall.Enabled = player.CanCall;
+            this.form.buttonRaise.Enabled = player.CanRaise;
+            this.form.buttonFold.Enabled = player.CanFold;
+            this.form.buttonCheck.Enabled = player.CanCheck;
         }
 
         public void ShowAllCards()
@@ -264,6 +234,41 @@
             {
                 this.form.DealtCardImages[i] = Image.FromFile(pepsterDealtCards[i].CardFrontImageUri);
             }
+        }
+
+
+        private void SetButonsValues(Gamer player)
+        {
+            //TODO : implement;
+        }
+
+        private void ShowOrHideCardsControls(IPlayer player)
+        {
+            if (player.GameEnded)
+            {
+                this.HideCardsControls(player);
+            }
+            else
+            {
+                this.ShowCardsControls(player);
+            }
+        }
+
+        private void ShowCardsControls(IPlayer player)
+        {
+            if (this.form.DealtCardHolder[player.Id + 2] == null)
+            {
+                return;
+            }
+
+            this.form.DealtCardHolder[player.Id + 2].Visible = true;
+            this.form.DealtCardHolder[player.Id + 1].Visible = true;
+        }
+
+        private void HideCardsControls(IPlayer player)
+        {
+            this.form.DealtCardHolder[player.Id + 1].Visible = false;
+            this.form.DealtCardHolder[player.Id + 2].Visible = false;
         }
     }
 }
