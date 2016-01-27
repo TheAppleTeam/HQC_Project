@@ -277,6 +277,7 @@
                     this.Table.FoldedBots++;
                 }
             }
+
             if (this.Table.FoldedBots == 5)
             {
                 this.renderer.ShowMessage("Would You Like To Play Again ?", "You Won , Congratulations !");
@@ -465,9 +466,40 @@
                 ////if (this.dealtCardsNumbers[i] == parse && this.dealtCardsNumbers[i + 1] == parse1)
                 ////{
 
+                /*                    
+                 * case "-1": CardPower 2 - 14
+                        this.AIHighCard(player);
+                 * 
+                    case "0": CardPower 2 - 14
+                        this.AIPairTable(player);
+                    case "1":
+                        this.AIPairHand(player);
+                    case "2":
+                        this.AITwoPair(player);
+                    case "3":
+                        this.AIThreeOfAKind(player);
+                    case "4":
+                        this.AIStraight(player);
+                    case "5":
+                    case "5.5":
+                        this.AIFlush(player);
+                    case "6":
+                        this.AIFullHouse(player);
+                    case "7":
+                        this.AIFourOfAKind(player);
+                    case "8":
+                    case "9":
+                        this.AIStraightFlush(player);
+l                */
+
+
                 #region High Card PokerHandMultiplier = -1
                 this.rHighCard(playerFirstCard, playerSecondCard, player);
                 #endregion
+
+                //#region High Card PokerHandMultiplier = 0
+                //this.rPairTable(playerFirstCard, playerSecondCard, player);
+                //#endregion
 
                 #region Pair from Table PokerHandMultiplier = 0
                 this.rPair(playerFirstCard, playerSecondCard, cardsOnTable, player);
@@ -486,9 +518,7 @@
                 #endregion
 
                 #region Straight PokerHandMultiplier = 4
-
                 this.rStraight(playerFirstCard, playerSecondCard, cardsOnTable, player);
-
                 #endregion
 
                 //#region Flush PokerHandMultiplier = 5 || 5.5
