@@ -953,12 +953,11 @@ l                */
                     if (countConsecutives >= 5)
                     {
                         highestCardRankInStreight = allCards[startCard + 1];
+                        player.PokerHandMultiplier = 4;
+                        player.CardPower = highestCardRankInStreight * 4 + player.PokerHandMultiplier * 100;
                     }
                 }
             }
-
-            player.PokerHandMultiplier = 4;
-            player.CardPower = highestCardRankInStreight * 4 + player.PokerHandMultiplier * 100;
 
         }
 
@@ -2082,6 +2081,7 @@ l                */
         //// wika se ot AI this.AIPairHand(ref botChips, ref botTurn, ref botGameEnded, labelBotStatus, botPower); wika AIPH
         private void AIPairHand(IPlayer player)
         {
+            //108 - 156
             Random rPair = new Random();
 
             int rCall = rPair.Next(10, 16);
@@ -2089,19 +2089,19 @@ l                */
             int rRaise = rPair.Next(10, 13);
 
             if (player.CardPower <= 199 &&
-                player.CardPower >= 140)
+                player.CardPower > 140)
             {
                 this.AIPH(player, rCall, 6, rRaise);
             }
 
-            if (player.CardPower <= 139 &&
-                player.CardPower >= 128)
+            if (player.CardPower <= 140 &&
+                player.CardPower >= 124)
             {
                 this.AIPH(player, rCall, 7, rRaise);
             }
 
-            if (player.CardPower < 128 &&
-                player.CardPower >= 101)
+            if (player.CardPower < 124 &&
+                player.CardPower >= 108)
             {
                 this.AIPH(player, rCall, 9, rRaise);
             }
@@ -2179,7 +2179,7 @@ l                */
             }
 
             if (player.CardPower < 407 &&
-                player.CardPower >= 404)
+                player.CardPower >= 400)
             {
                 this.AISmooth(player, sCall, sRaise);
             }
@@ -2550,6 +2550,7 @@ l                */
             player.Chips -= this.Table.PokerCall;
             player.Status = "Call " + this.Table.PokerCall;
             this.Table.Pot += this.Table.PokerCall;
+            this.renderer.SetAllLabelStatus(this.Players);
             this.renderer.Draw(player);
             this.renderer.Draw(this.Table);
             // old code to delete : this.form.PlayersLabelsStatus[player.Id].Text = player.Status; this.form.PlayersLabelsStatus[player.Id].Text = player.Status;
