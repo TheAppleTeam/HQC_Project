@@ -183,6 +183,8 @@
         /// <returns></returns>
         private async Task SetupPokerTable()
         {
+            this.CheckForGameEnd();
+
             this.RandomCardsToDeal();
 
             this.renderer.Draw(this.GameDealtCards);
@@ -206,8 +208,6 @@
             this.renderer.DisplayCardsOnTable();
 
             this.EnablingFormControls();
-
-            this.CheckForGameEnd();
 
             this.renderer.StartGamerTurnTimer();
         }
@@ -288,44 +288,128 @@
             GameCard playerSecondCard = this.GameDealtCards[player.SecondCardPosition];
             #endregion
 
-            #region High Card PokerHandMultiplier = -1
-            this.rHighCard(playerFirstCard, playerSecondCard, player);
+            double maxCardPower = 0;
+
+            #region Straight Flush PokerHandMultiplier = 8 || 9
+            this.rStraightFlush(playerFirstCard, playerSecondCard, cardsOnTable, player);
             #endregion
 
-            #region Pair from Table PokerHandMultiplier = 0
-            this.rPair(playerFirstCard, playerSecondCard, cardsOnTable, player);
-            #endregion
-
-            #region Pair from hand PokerHandMultiplier = 1
-            this.rPairFromHand(playerFirstCard, playerSecondCard, cardsOnTable, player);
-            #endregion
-
-            #region Two Pair PokerHandMultiplier = 2
-            this.rTwoPair(playerFirstCard, playerSecondCard, cardsOnTable, player);
-            #endregion
-
-            #region Three of a kind PokerHandMultiplier = 3
-            this.rThreeOfAKind(playerFirstCard, playerSecondCard, cardsOnTable, player);
-            #endregion
-
-            #region Straight PokerHandMultiplier = 4
-            this.rStraight(playerFirstCard, playerSecondCard, cardsOnTable, player);
-            #endregion
-
-            #region Flush PokerHandMultiplier = 5 || 5.5
-            this.rFlush(playerFirstCard, playerSecondCard, cardsOnTable, player);
-            #endregion
-
-            #region Full House PokerHandMultiplier = 6
-            this.rFullHouse(playerFirstCard, playerSecondCard, cardsOnTable, player);
-            #endregion
+            if (maxCardPower > player.CardPower)
+            {
+                return;
+            }
+            else
+            {
+                maxCardPower = player.CardPower;
+            }
 
             #region Four of a Kind PokerHandMultiplier = 7
             this.rFourOfAKind(playerFirstCard, playerSecondCard, cardsOnTable, player);
             #endregion
 
-            #region Straight Flush PokerHandMultiplier = 8 || 9
-            this.rStraightFlush(playerFirstCard, playerSecondCard, cardsOnTable, player);
+            if (maxCardPower > player.CardPower)
+            {
+                return;
+            }
+            else
+            {
+                maxCardPower = player.CardPower;
+            }
+
+            #region Full House PokerHandMultiplier = 6
+            this.rFullHouse(playerFirstCard, playerSecondCard, cardsOnTable, player);
+            #endregion
+
+            if (maxCardPower > player.CardPower)
+            {
+                return;
+            }
+            else
+            {
+                maxCardPower = player.CardPower;
+            }
+
+            #region Flush PokerHandMultiplier = 5 || 5.5
+            this.rFlush(playerFirstCard, playerSecondCard, cardsOnTable, player);
+            #endregion
+
+            if (maxCardPower > player.CardPower)
+            {
+                return;
+            }
+            else
+            {
+                maxCardPower = player.CardPower;
+            }
+
+            #region Straight PokerHandMultiplier = 4
+            this.rStraight(playerFirstCard, playerSecondCard, cardsOnTable, player);
+            #endregion
+
+            if (maxCardPower > player.CardPower)
+            {
+                return;
+            }
+            else
+            {
+                maxCardPower = player.CardPower;
+            }
+
+
+            #region Three of a kind PokerHandMultiplier = 3
+            this.rThreeOfAKind(playerFirstCard, playerSecondCard, cardsOnTable, player);
+            #endregion
+
+            if (maxCardPower > player.CardPower)
+            {
+                return;
+            }
+            else
+            {
+                maxCardPower = player.CardPower;
+            }
+
+            #region Two Pair PokerHandMultiplier = 2
+            this.rTwoPair(playerFirstCard, playerSecondCard, cardsOnTable, player);
+            #endregion
+
+            if (maxCardPower > player.CardPower)
+            {
+                return;
+            }
+            else
+            {
+                maxCardPower = player.CardPower;
+            }
+
+            #region Pair from hand PokerHandMultiplier = 1
+            this.rPairFromHand(playerFirstCard, playerSecondCard, cardsOnTable, player);
+            #endregion
+
+            if (maxCardPower > player.CardPower)
+            {
+                return;
+            }
+            else
+            {
+                maxCardPower = player.CardPower;
+            }
+
+            #region Pair from Table PokerHandMultiplier = 0
+            this.rPair(playerFirstCard, playerSecondCard, cardsOnTable, player);
+            #endregion
+
+            if (maxCardPower > player.CardPower)
+            {
+                return;
+            }
+            else
+            {
+                maxCardPower = player.CardPower;
+            }
+
+            #region High Card PokerHandMultiplier = -1
+            this.rHighCard(playerFirstCard, playerSecondCard, player);
             #endregion
         }
 
@@ -917,7 +1001,7 @@
                 this.renderer.ManageGamersEntities(this.Gamer);
 
                 this.Players[1].Turn = true;
-                
+
                 for (int botIndex = 1; botIndex < this.Players.Length; botIndex++)
                 {
                     if (!this.Players[botIndex].GameEnded && !this.Players[botIndex].Folded)
@@ -964,7 +1048,7 @@
             }
         }
 
-        private void SetWinners(string lastly, IPlayer player)
+        private void CalculateWinners(string lastly, IPlayer player)
         {
             if (lastly == " ")
             {
@@ -1205,7 +1289,7 @@
 
                 foreach (IPlayer player in this.Players)
                 {
-                    this.SetWinners(fixedLast, player);
+                    this.CalculateWinners(fixedLast, player);
                 }
 
                 this.GameEnd = true;
@@ -1323,28 +1407,58 @@
         private async Task CheckForDealingFinish()
         {
             #region All in
-            if (this.Gamer.Chips <= 0 && !this.intsadded)
+            await this.CheckForAllInPlayers();
+            #endregion
+
+            int playersNotGameEndedCount = this.playersNotGameEnded.Count(x => x == false);
+
+            #region LastManStanding
+            if (playersNotGameEndedCount == 1)
             {
-                if (this.Gamer.Status.Contains("Raise"))
+                int index = this.playersNotGameEnded.IndexOf(false);
+
+                for (int playerIndex = 0; playerIndex < this.Players.Length; playerIndex++)
+                {
+                    if (index != playerIndex)
+                    {
+                        continue;
+                    }
+
+                    this.Players[playerIndex].Chips += this.Table.Pot;
+                    this.renderer.SetTextBoxPlayerChips(this.Players[playerIndex]);
+                    this.renderer.ShowMessage(this.Players[playerIndex].Name + " Wins");
+                }
+                
+                await this.Finish(1);
+            }
+            #endregion
+
+            #region FiveOrLessLeft
+            if (playersNotGameEndedCount > 1 &&
+                this.Table.Rounds >= PokerEndRound)
+            {
+                await this.Finish(playersNotGameEndedCount);
+            }
+            #endregion
+        }
+
+        private async Task CheckForAllInPlayers()
+        {
+            if (this.Gamer.Chips <= 0)
+            {
+                if (this.Gamer.IsAllIn)
                 {
                     this.playersWithoutChips.Add(this.Gamer.Chips);
-                    this.intsadded = true;
                 }
             }
 
-            this.intsadded = false;
-
             for (int playerIndex = 1; playerIndex < this.Players.Length; playerIndex++)
             {
-                if (this.Players[playerIndex].Chips <= 0 && !this.Players[playerIndex].GameEnded)
+                if (this.Players[playerIndex].Chips <= 0 &&
+                    !this.Players[playerIndex].GameEnded &&
+                    !this.Players[playerIndex].Folded)
                 {
-                    if (!this.intsadded)
-                    {
-                        this.playersWithoutChips.Add(this.Players[playerIndex].Chips);
-                        this.intsadded = true;
-                    }
-
-                    this.intsadded = false;
+                    this.playersWithoutChips.Add(this.Players[playerIndex].Chips);
                 }
             }
 
@@ -1356,74 +1470,11 @@
             {
                 this.playersWithoutChips.Clear();
             }
-            #endregion
-
-            int playersNotGameEndedCount = this.playersNotGameEnded.Count(x => x == false);
-
-            #region LastManStanding
-            if (playersNotGameEndedCount == 1)
-            {
-                int index = this.playersNotGameEnded.IndexOf(false);
-
-                if (index == 0)
-                {
-                    this.Gamer.Chips += this.Table.Pot;
-                    this.renderer.SetTextBoxPlayerChips(Players[0]);
-                    this.renderer.ShowMessage("Player Wins");
-                }
-
-                if (index == 1)
-                {
-                    this.Players[1].Chips += this.Table.Pot;
-                    this.renderer.SetTextBoxPlayerChips(Players[1]);
-                    this.renderer.ShowMessage("Bot 1 Wins");
-                }
-
-                if (index == 2)
-                {
-                    this.Players[2].Chips += this.Table.Pot;
-                    this.renderer.SetTextBoxPlayerChips(Players[2]);
-                    this.renderer.ShowMessage("Bot 2 Wins");
-                }
-
-                if (index == 3)
-                {
-                    this.Players[3].Chips += this.Table.Pot;
-                    this.renderer.SetTextBoxPlayerChips(Players[3]);
-                    this.renderer.ShowMessage("Bot 3 Wins");
-                }
-
-                if (index == 4)
-                {
-                    this.Players[4].Chips += this.Table.Pot;
-                    this.renderer.SetTextBoxPlayerChips(Players[4]);
-                    this.renderer.ShowMessage("Bot 4 Wins");
-                }
-
-                if (index == 5)
-                {
-                    this.Players[5].Chips += this.Table.Pot;
-                    this.renderer.SetTextBoxPlayerChips(Players[5]);
-                    this.renderer.ShowMessage("Bot 5 Wins");
-                }
-
-                await this.Finish(1);
-            }
-            this.intsadded = false;
-            #endregion
-
-            #region FiveOrLessLeft
-            if (playersNotGameEndedCount > 1 &&
-                this.Table.Rounds >= PokerEndRound)
-            {
-                await this.Finish(2);
-            }
-            #endregion
         }
 
-        private async Task Finish(int n)
+        private async Task Finish(int numberOfWinners)
         {
-            if (n == 2)
+            if (numberOfWinners > 1)
             {
                 this.SetWinners();
             }
@@ -1433,7 +1484,6 @@
             this.Table.FoldedBots = 5;
             this.type = 0;
             this.Table.Rounds = 0;
-
             this.Table.LastRaise = 0;
 
             this.GameEnd = false;
@@ -1511,7 +1561,7 @@
 
             foreach (IPlayer player in this.Players)
             {
-                this.SetWinners(setLast, player);
+                this.CalculateWinners(setLast, player);
             }
         }
 
