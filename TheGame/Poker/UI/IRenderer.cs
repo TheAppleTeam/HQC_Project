@@ -9,9 +9,11 @@
     {
         void Clear();
 
-        void Draw(params IPlayer[] gameObjects);
+        void Draw(IPlayer[] players);
 
-        void Draw(params PepsterCard[] gameObjects);
+        void Draw(IPlayer player);
+
+        void Draw(params GameCard[] cards);
         
         void Draw(Table table);
 
@@ -21,7 +23,7 @@
         void StartGamerTurnTimer();
         
         // да се провери необходимо ли е 
-        void ShowOrHidePlayersButtons(Gamer player);
+        void ManageGamersEntities(Gamer player);
 
         void EnablingFormMinimizationAndMaximization();
         
@@ -40,6 +42,8 @@
 
         void SetTextBoxPlayerChips(IPlayer player);
         
-        void GetCardsImages(PepsterCard[] pepsterDealtCards);
+        void GetCardsImages(GameCard[] gameDealtCards);
+
+        void DisplayCardsOnTable();
     }
 }

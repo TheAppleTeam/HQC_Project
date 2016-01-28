@@ -2,9 +2,9 @@
 {
     using UI;
 
-    public class PepsterCard
+    public class GameCard
     {
-        public PepsterCard()
+        public GameCard()
         {
             this.CardBackImageUri = "../Resources/Cards/Back.png";
         }
@@ -25,5 +25,7 @@
         /// If is TRUE the face of the card must be shown
         /// </summary>
         public bool IsVisible { get; set; }
+
+        public bool IsPresentOnTable { get; set; }
     }
 }

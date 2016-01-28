@@ -21,7 +21,7 @@
         private readonly Panel[] playersPanels = new Panel[6];
         private readonly Image cardBackImage = Image.FromFile(GlobalConstants.CardBackImageUri);
         private readonly PictureBox[] dealtCardHolder = new PictureBox[GlobalConstants.DealtCardsCount];
-        private readonly Image[] dealtCardImages = new Image[GlobalConstants.DealtCardsCount];
+        private readonly Image[] _dealtCardsFrontImage = new Image[GlobalConstants.DealtCardsCount];
         private readonly Timer updateControlsTimer = new Timer();
 
         public GameForm()
@@ -32,7 +32,6 @@
             this.InitializeComponent();
 
             this.ProgresiveBarTimer = new Timer();
-            this.ProgresiveBarTimer.Start();
             this.ProgresiveBarTimer.Interval = TimeForPlayerTurn * 1000;
             this.ProgresiveBarTimer.Tick += this.ProgresiveBarTimerTick;
 
@@ -74,14 +73,14 @@
             get { return this.playersTextBoxsChips; }
         }
 
-        public Panel[] PlayersPanels 
+        public Panel[] PlayersPanels
         {
             get { return this.playersPanels; }
         }
 
-        public Image[] DealtCardImages 
+        public Image[] DealtCardsFrontImage
         {
-            get { return this.dealtCardImages; }
+            get { return this._dealtCardsFrontImage; }
         }
 
         public PictureBox[] DealtCardHolder
@@ -123,21 +122,22 @@
                 this.Controls.Add(this.playersPanels[playersCount]);
             }
 
-            for (int cardsCount = 0; cardsCount < GlobalConstants.DealtCardsCount; cardsCount++)
+            for (int cardIndex = 0; cardIndex < GlobalConstants.DealtCardsCount; cardIndex++)
             {
-                this.DealtCardHolder[cardsCount] = new PictureBox()
+                this.DealtCardHolder[cardIndex] = new PictureBox()
                 {
                     SizeMode = PictureBoxSizeMode.StretchImage,
                     Height = CardHeight,
                     Width = CardWidth,
-                    Name = "pictureBox" + cardsCount,
+                    Name = "pictureBox" + cardIndex,
                     Image = cardBackImage,
                     Anchor = AnchorStyles.Bottom,
-                    Location = this.CalculateCardControlLocation(cardsCount)
+                    Location = this.CalculateCardControlLocation(cardIndex),
+                    Visible = false
                 };
 
-                this.Controls.Add(this.DealtCardHolder[cardsCount]);
-                this.SetPanelsLocation(cardsCount);
+                this.Controls.Add(this.DealtCardHolder[cardIndex]);
+                this.SetPanelsLocation(cardIndex);
             }
         }
 
@@ -168,6 +168,7 @@
                     break;
             }
         }
+
         private Point CalculateCardControlLocation(int cardsCount)
         {
             int horisontalAnchor = this.GetCardHorisontalAnchor(cardsCount);
@@ -263,7 +264,7 @@
         {
             this.gameEngine.Players[0].Status = "Fold";
             this.ProgresiveBarTimer.Stop();
-            this.gameEngine.GammerPlayesFold();
+            this.gameEngine.GammerFolds();
             await this.gameEngine.Turns();
         }
 
@@ -271,7 +272,7 @@
         {
             this.gameEngine.Players[0].Status = "Check";
             this.ProgresiveBarTimer.Stop();
-            this.gameEngine.GammerPlayesCheck();
+            this.gameEngine.GammerChecks();
             await this.gameEngine.Turns();
         }
 
@@ -279,7 +280,7 @@
         {
             this.gameEngine.Players[0].Status = "Call";
             this.ProgresiveBarTimer.Stop();
-            this.gameEngine.GammerPlayesCall();
+            this.gameEngine.GammerCalls();
             await this.gameEngine.Turns();
         }
 
@@ -287,7 +288,7 @@
         {
             this.gameEngine.Players[0].Status = "Raise";
             this.ProgresiveBarTimer.Stop();
-            this.gameEngine.GammerPlayesRaise();
+            this.gameEngine.GammerRaises();
             await this.gameEngine.Turns();
         }
 
@@ -321,12 +322,11 @@
         {
             this.gameEngine.SetSmallBlind();
         }
-        
+
         private void ButtonBigBlind_Click(object sender, EventArgs e)
         {
             this.gameEngine.SetBigBlind();
         }
-        
         #endregion
     }
 }

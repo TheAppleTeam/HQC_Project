@@ -50,7 +50,6 @@
     <Compile Include="AddChips.Designer.cs">
       <DependentUpon>AddChips.cs</DependentUpon>
     </Compile>
-    <Compile Include="Engines\AI.cs" />
     <Compile Include="Engines\GameEngine.cs" />
     <Compile Include="Engines\Renderer.cs" />
     <Compile Include="Exception\InputValueException.cs" />
@@ -61,10 +60,8 @@
     <Compile Include="GameForm.Designer.cs">
       <DependentUpon>GameForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="GameObjects\Cards\Card.cs" />
     <Compile Include="GameObjects\Cards\CardSuit.cs" />
-    <Compile Include="GameObjects\Cards\CardType.cs" />
-    <Compile Include="GameObjects\Cards\PepsterCard.cs" />
+    <Compile Include="GameObjects\Cards\GameCard.cs" />
     <Compile Include="GameObjects\Table.cs" />
     <Compile Include="GameObjects\Player\AbstractPlayer.cs" />
     <Compile Include="GameObjects\Player\Bot.cs" />

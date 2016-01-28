@@ -16,33 +16,47 @@
             this.form = form;
         }
 
-        public void Draw(params IPlayer[] gameObjects)
+        public void Draw(IPlayer[] players)
         {
-            foreach (var player in gameObjects)
+            foreach (var player in players)
             {
                 this.form.PlayersLabelsStatus[player.Id].Text = player.Status;
                 this.form.PlayersTextBoxsChips[player.Id].Text = player.Chips.ToString();
+
                 if (player is Bot)
                 {
-                    this.ShowOrHideCardsControls(player);
+                    this.ManageBotEntities(player);
                 }
                 else
                 {
-                    this.ShowOrHidePlayersButtons((Gamer)player);
-                    // this.SetButonsValues((Gamer)player);
+                    this.ManageGamersEntities((Gamer)player);
                 }
             }
         }
 
-        public void Draw(params PepsterCard[] gameObjects)
+        public void Draw(IPlayer player)
         {
-            foreach (var card in gameObjects)
+            this.form.PlayersLabelsStatus[player.Id].Text = player.Status;
+            this.form.PlayersTextBoxsChips[player.Id].Text = player.Chips.ToString();
+
+            if (player is Bot)
+            {
+                this.ManageBotEntities(player);
+            }
+            else
+            {
+                this.ManageGamersEntities((Gamer)player);
+            }
+        }
+
+        public void Draw(params GameCard[] cards)
+        {
+            foreach (var card in cards)
             {
                 if (card.IsVisible)
                 {
-                    this.form.DealtCardHolder[card.DealtPosition].Image = this.form.DealtCardImages[card.DealtPosition];
+                    this.form.DealtCardHolder[card.DealtPosition].Image = this.form.DealtCardsFrontImage[card.DealtPosition];
                 }
-                //this.form.DealtCardHolder[card.DealtPosition].Image = this.form.DealtCardImages[card.DealtPosition];
             }
         }
 
@@ -133,6 +147,7 @@
             // TODO: ewentualno da se mahne stwaneto ako nikyde ne se promenq
             //this.form.TimeForPlayerTurn = 60; - ima go kato konstanta wyw formata
             this.form.ProgresiveBarTimer.Start();
+            this.form.progressBarTimer.Visible = true;
         }
 
         public void StopGamerTurnTimer()
@@ -147,13 +162,22 @@
             this.form.MinimizeBox = true;
         }
 
-        public void ShowOrHidePlayersButtons(Gamer player)
+        public void ManageGamersEntities(Gamer player)
         {
             this.form.textBoxRaise.Text = player.ValueToRaise.ToString();
             this.form.buttonCall.Enabled = player.CanCall;
             this.form.buttonRaise.Enabled = player.CanRaise;
             this.form.buttonFold.Enabled = player.CanFold;
             this.form.buttonCheck.Enabled = player.CanCheck;
+
+            if (player.Folded || player.GameEnded)
+            {
+                this.HideCardsControls(player);
+            }
+            else
+            {
+                this.ShowCardsControls(player);
+            }
         }
 
         public void ShowAllCards()
@@ -162,7 +186,7 @@
             {
                 if (this.form.DealtCardHolder[j].Visible)
                 {
-                    this.form.DealtCardHolder[j].Image = this.form.DealtCardImages[j];
+                    this.form.DealtCardHolder[j].Image = this.form.DealtCardsFrontImage[j];
                 }
             }
         }
@@ -185,7 +209,7 @@
                     this.form.labelPlayerStatus.Text = labelText;
                     break;
                 case "Bot 1":
-                    this.form.labelBot1Status.Text = labelText; 
+                    this.form.labelBot1Status.Text = labelText;
                     break;
                 case "Bot 2":
                     this.form.labelBot2Status.Text = labelText;
@@ -194,10 +218,10 @@
                     this.form.labelBot3Status.Text = labelText;
                     break;
                 case "Bot 4":
-                    this.form.labelBot4Status.Text = labelText; 
+                    this.form.labelBot4Status.Text = labelText;
                     break;
                 case "Bot 5":
-                    this.form.labelBot5Status.Text = labelText; 
+                    this.form.labelBot5Status.Text = labelText;
                     break;
                 default: throw new ArgumentException("Invalid player name");
             }
@@ -216,13 +240,13 @@
                     this.form.textBoxPlayerChips.Text = player.Chips.ToString();
                     break;
                 case "Bot 1":
-                    this.form.textBoxBot1Chips.Text = player.Chips.ToString(); 
+                    this.form.textBoxBot1Chips.Text = player.Chips.ToString();
                     break;
                 case "Bot 2":
-                    this.form.textBoxBot2Chips.Text = player.Chips.ToString(); 
+                    this.form.textBoxBot2Chips.Text = player.Chips.ToString();
                     break;
                 case "Bot 3":
-                    this.form.textBoxBot3Chips.Text = player.Chips.ToString(); 
+                    this.form.textBoxBot3Chips.Text = player.Chips.ToString();
                     break;
                 case "Bot 4":
                     this.form.textBoxBot4Chips.Text = player.Chips.ToString();
@@ -234,11 +258,11 @@
             }
         }
 
-        public void GetCardsImages(PepsterCard[] pepsterDealtCards)
+        public void GetCardsImages(GameCard[] gameDealtCards)
         {
-            for (int i = 0; i < pepsterDealtCards.Length; i++)
+            for (int i = 0; i < gameDealtCards.Length; i++)
             {
-                this.form.DealtCardImages[i] = Image.FromFile(pepsterDealtCards[i].CardFrontImageUri);
+                this.form.DealtCardsFrontImage[i] = Image.FromFile(gameDealtCards[i].CardFrontImageUri);
             }
         }
 
@@ -247,9 +271,9 @@
             //TODO : implement;
         }
 
-        private void ShowOrHideCardsControls(IPlayer player)
+        private void ManageBotEntities(IPlayer player)
         {
-            if (player.GameEnded)
+            if (player.GameEnded || player.Folded)
             {
                 this.HideCardsControls(player);
             }
@@ -261,19 +285,23 @@
 
         private void ShowCardsControls(IPlayer player)
         {
-            if (this.form.DealtCardHolder[player.Id + 2] == null)
-            {
-                return;
-            }
-
-            this.form.DealtCardHolder[player.Id + 2].Visible = true;
-            this.form.DealtCardHolder[player.Id + 1].Visible = true;
+            this.form.DealtCardHolder[player.FirstCardPosition].Visible = true;
+            this.form.DealtCardHolder[player.SecondCardPosition].Visible = true;
         }
 
         private void HideCardsControls(IPlayer player)
         {
-            this.form.DealtCardHolder[player.Id + 1].Visible = false;
-            this.form.DealtCardHolder[player.Id + 2].Visible = false;
+            this.form.DealtCardHolder[player.FirstCardPosition].Visible = false;
+            this.form.DealtCardHolder[player.SecondCardPosition].Visible = false;
+        }
+
+        public void DisplayCardsOnTable()
+        {
+            for (int cardOnTableIndex = 12; cardOnTableIndex < GlobalConstants.DealtCardsCount; cardOnTableIndex++)
+            {
+                this.form.DealtCardHolder[cardOnTableIndex].Visible = true;
+                this.form.DealtCardHolder[cardOnTableIndex].Visible = true;
+            }
         }
     }
 }
