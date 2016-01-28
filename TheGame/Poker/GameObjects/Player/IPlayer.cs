@@ -14,7 +14,7 @@
 
         string Status { get; set; }
 
-        double PokerHandMultiplier { get; set; }
+        int PokerHandMultiplier { get; set; }
 
         double CardPower { get; set; }
 

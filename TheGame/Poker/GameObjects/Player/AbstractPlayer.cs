@@ -39,14 +39,7 @@
 
             set
             {
-                if (value <= 0)
-                {
-                    this.chips = 0;
-                }
-                else
-                {
-                    this.chips = value;    
-                }
+                this.chips = value <= 0 ? 0 : value;
             }
         }
 
@@ -62,7 +55,7 @@
         /// </summary>
         public string Status { get; set; }
 
-        public double PokerHandMultiplier { get; set; }
+        public int PokerHandMultiplier { get; set; }
 
         public double CardPower { get; set; }
 

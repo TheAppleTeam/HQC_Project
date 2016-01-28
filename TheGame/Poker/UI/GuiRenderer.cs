@@ -29,11 +29,10 @@
                 else
                 {
                     this.ShowOrHidePlayersButtons((Gamer)player);
-                   // this.SetButonsValues((Gamer)player);
+                    // this.SetButonsValues((Gamer)player);
                 }
             }
         }
-
 
         public void Draw(params PepsterCard[] gameObjects)
         {
@@ -82,8 +81,9 @@
             {
                 panel.Visible = false;
             }
-            this.form.height = 0;
-            this.form.width = 0;
+
+            this.form.FormHeight = 0;
+            this.form.FormWidth = 0;
             this.form.textBoxPot.Text = "0";
 
             foreach (var cardHolder in this.form.DealtCardHolder)
@@ -93,16 +93,13 @@
                 cardHolder.Visible = false;
             }
 
-            //idwat ot gameEngina - InIt method;
             this.form.MaximizeBox = false;
             this.form.MinimizeBox = false;
-
 
             this.form.buttonCall.Enabled = false;
             this.form.buttonRaise.Enabled = false;
             this.form.buttonFold.Enabled = false;
             this.form.buttonCheck.Enabled = false;
-
 
             this.form.textBoxPot.Enabled = false;
             this.form.textBoxPlayerChips.Enabled = false;
@@ -124,10 +121,11 @@
             this.form.textBoxSmallBlind.Visible = false;
             this.form.buttonBigBlind.Visible = false;
             this.form.buttonSmallBlind.Visible = false;
+
             this.form.textBoxRaise.Text = (2 * GlobalConstants.InitialBigBlind).ToString();
         }
 
-        public void ShowGamerTurnTimer()
+        public void StartGamerTurnTimer()
         {
             // this.form.progressBarTimer.Visible = true;
             // this.form.progressBarTimer.Value = 1000;
@@ -137,7 +135,7 @@
             this.form.ProgresiveBarTimer.Start();
         }
 
-        public void HideGamerTurnTimer()
+        public void StopGamerTurnTimer()
         {
             this.form.progressBarTimer.Visible = false;
             this.form.ProgresiveBarTimer.Stop();
@@ -148,7 +146,6 @@
             this.form.MaximizeBox = true;
             this.form.MinimizeBox = true;
         }
-
 
         public void ShowOrHidePlayersButtons(Gamer player)
         {
@@ -163,7 +160,6 @@
         {
             for (int j = 0; j <= 16; j++)
             {
-                //await Task.Delay(5);
                 if (this.form.DealtCardHolder[j].Visible)
                 {
                     this.form.DealtCardHolder[j].Image = this.form.DealtCardImages[j];
@@ -181,29 +177,32 @@
             this.form.labelBot5Status.Text = players[5].Status;
         }
 
-        //     this.FillInPlayerPanel(cardIndex, this.form.PlayersPanels[0]);
-
         public void SetLabelStatus(IPlayer player, string labelText)
         {
             switch (player.Name)
             {
                 case "Player":
-                    this.form.labelPlayerStatus.Text = labelText; break;
+                    this.form.labelPlayerStatus.Text = labelText;
+                    break;
                 case "Bot 1":
-                    this.form.labelBot1Status.Text = labelText; break;
+                    this.form.labelBot1Status.Text = labelText; 
+                    break;
                 case "Bot 2":
-                    this.form.labelBot2Status.Text = labelText; break;
+                    this.form.labelBot2Status.Text = labelText;
+                    break;
                 case "Bot 3":
-                    this.form.labelBot3Status.Text = labelText; break;
+                    this.form.labelBot3Status.Text = labelText;
+                    break;
                 case "Bot 4":
-                    this.form.labelBot4Status.Text = labelText; break;
+                    this.form.labelBot4Status.Text = labelText; 
+                    break;
                 case "Bot 5":
-                    this.form.labelBot5Status.Text = labelText; break;
-                default: throw new ArgumentException("Invalid argument");
+                    this.form.labelBot5Status.Text = labelText; 
+                    break;
+                default: throw new ArgumentException("Invalid player name");
             }
         }
 
-        //     this.FillInPlayerPanel(cardIndex, this.form.PlayersPanels[0]);
         public void SetPanelStatus(Panel panel, bool isVisible)
         {
             panel.Visible = isVisible;
@@ -214,18 +213,24 @@
             switch (player.Name)
             {
                 case "Player":
-                    this.form.textBoxPlayerChips.Text = player.Chips.ToString(); break;
+                    this.form.textBoxPlayerChips.Text = player.Chips.ToString();
+                    break;
                 case "Bot 1":
-                    this.form.textBoxBot1Chips.Text = player.Chips.ToString(); break;
+                    this.form.textBoxBot1Chips.Text = player.Chips.ToString(); 
+                    break;
                 case "Bot 2":
-                    this.form.textBoxBot2Chips.Text = player.Chips.ToString(); break;
+                    this.form.textBoxBot2Chips.Text = player.Chips.ToString(); 
+                    break;
                 case "Bot 3":
-                    this.form.textBoxBot3Chips.Text = player.Chips.ToString(); break;
+                    this.form.textBoxBot3Chips.Text = player.Chips.ToString(); 
+                    break;
                 case "Bot 4":
-                    this.form.textBoxBot4Chips.Text = player.Chips.ToString(); break;
+                    this.form.textBoxBot4Chips.Text = player.Chips.ToString();
+                    break;
                 case "Bot 5":
-                    this.form.textBoxBot5Chips.Text = player.Chips.ToString(); break;
-                default: throw new ArgumentException("Invalid argument");
+                    this.form.textBoxBot5Chips.Text = player.Chips.ToString();
+                    break;
+                default: throw new ArgumentException("Invalid player chips");
             }
         }
 
@@ -236,7 +241,6 @@
                 this.form.DealtCardImages[i] = Image.FromFile(pepsterDealtCards[i].CardFrontImageUri);
             }
         }
-
 
         private void SetButonsValues(Gamer player)
         {
@@ -273,5 +277,3 @@
         }
     }
 }
-
-

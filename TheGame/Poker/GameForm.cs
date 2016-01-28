@@ -9,15 +9,11 @@
 
     public partial class GameForm : Form
     {
-        public readonly int CardWidth = 80;
-        public readonly int CardHeight = 130;
-        public readonly int CardPanelWidth = 180;
-        public readonly int CardPanelHeight = 150;
-        public readonly int TimeForPlayerTurn = 60;
-
-        public int height;
-        public int width;
-
+        private const int CardWidth = 80;
+        private const int CardHeight = 130;
+        private const int CardPanelWidth = 180;
+        private const int CardPanelHeight = 150;
+        private const int TimeForPlayerTurn = 60;
 
         private readonly Label[] playersLabelsStatus = new Label[6];
         private readonly TextBox[] playersTextBoxsChips = new TextBox[6];
@@ -30,17 +26,18 @@
 
         public GameForm()
         {
-            this.width = this.Width;
-            this.height = this.Height;
+            this.FormWidth = this.Width;
+            this.FormHeight = this.Height;
 
             this.InitializeComponent();
+
             this.ProgresiveBarTimer = new Timer();
             this.ProgresiveBarTimer.Start();
-            this.ProgresiveBarTimer.Interval = 1 * 1 * 60 * 1000;
+            this.ProgresiveBarTimer.Interval = TimeForPlayerTurn * 1000;
             this.ProgresiveBarTimer.Tick += this.ProgresiveBarTimerTick;
 
             this.updateControlsTimer.Start();
-            this.updateControlsTimer.Interval = 1 * 1 * 2000;
+            this.updateControlsTimer.Interval = 2000;
             this.updateControlsTimer.Tick += this.UpdateControlsTick;
 
             this.InitializeControlsArrays();
@@ -59,60 +56,13 @@
             {
                 renderer.ShowMessage(ex.Message);
             }
-           
-            #region ToBEDeleted
-            //this.gameEngine.pokerCall = InitialBigBlind;
-            //this.MaximizeBox = false;
-            //this.MinimizeBox = false;
-            //this.updates.Start();
-
-
-            //this.width = this.Width;
-            //this.height = this.Height;
-            //this.SetupPokerTable();
-            //this.textBoxPot.Enabled = false;
-            //this.textBoxPlayerChips.Enabled = false;
-            //this.textBoxBot1Chips.Enabled = false;
-            //this.textBoxBot2Chips.Enabled = false;
-            //this.textBoxBot3Chips.Enabled = false;
-            //this.textBoxBot4Chips.Enabled = false;
-            //this.textBoxBot5Chips.Enabled = false;
-
-        //    this.gameEngine.SetAllTextBoxChips();
-            
-            //this.textBoxPlayerChips.Text = "Chips : " + this.players[0].Chips.ToString();
-            //this.textBoxBot1Chips.Text = "Chips : " + this.players[1].Chips.ToString();
-            //this.textBoxBot2Chips.Text = "Chips : " + this.players[2].Chips.ToString();
-            //this.textBoxBot3Chips.Text = "Chips : " + this.players[3].Chips.ToString();
-            //this.textBoxBot4Chips.Text = "Chips : " + this.players[4].Chips.ToString();
-            //this.textBoxBot5Chips.Text = "Chips : " + this.players[5].Chips.ToString();
-
-            //this.timer.Interval = 1 * 1 * 1000;
-            //this.timer.Tick += this.timer_Tick;
-            //this.updates.Interval = 1 * 1 * 100;
-            //this.updates.Tick += this.Update_Tick;
-            //this.textBoxBigBlind.Visible = true;
-            //this.textBoxSmallBlind.Visible = true;
-            //this.buttonBigBlind.Visible = true;
-            //this.buttonSmallBlind.Visible = true;
-            //this.textBoxBigBlind.Visible = true;
-            //this.textBoxSmallBlind.Visible = true;
-            //this.buttonBigBlind.Visible = true;
-            //this.buttonSmallBlind.Visible = true;
-            //this.textBoxBigBlind.Visible = false;
-            //this.textBoxSmallBlind.Visible = false;
-            //this.buttonBigBlind.Visible = false;
-            //this.buttonSmallBlind.Visible = false;
-            //this.textBoxRaise.Text = (this.gameEngine.bb * 2).ToString();
-            #endregion
         }
 
         public Timer ProgresiveBarTimer { get; set; }
 
-        public void UpdateControlsTick(object sender, object e)
-        {
-            this.gameEngine.UpdateControls();
-        }
+        public int FormHeight { get; set; }
+
+        public int FormWidth { get; set; }
 
         public Label[] PlayersLabelsStatus
         {
@@ -139,6 +89,12 @@
             get { return this.dealtCardHolder; }
         }
 
+        private void Layout_Change(object sender, LayoutEventArgs e)
+        {
+            this.FormWidth = this.Width;
+            this.FormHeight = this.Height;
+        }
+
         private void InitializeControlsArrays()
         {
             this.playersLabelsStatus[0] = this.labelPlayerStatus;
@@ -160,8 +116,8 @@
                 this.playersPanels[playersCount] = new Panel()
                 {
                     BackColor = Color.DarkBlue,
-                    Height = this.CardPanelHeight,
-                    Width = this.CardPanelWidth,
+                    Height = CardPanelHeight,
+                    Width = CardPanelWidth,
                     Visible = false
                 };
                 this.Controls.Add(this.playersPanels[playersCount]);
@@ -172,23 +128,24 @@
                 this.DealtCardHolder[cardsCount] = new PictureBox()
                 {
                     SizeMode = PictureBoxSizeMode.StretchImage,
-                    Height = this.CardHeight,
-                    Width = this.CardWidth,
+                    Height = CardHeight,
+                    Width = CardWidth,
                     Name = "pictureBox" + cardsCount,
-                    // Tag = card.Id, t.e. dyrvi imeto na fajla. move bi ne se polzwa i ne e neobhodimo da se setwa TAg
-                    //   Image = this.GetCardImage(card),
                     Image = cardBackImage,
                     Anchor = AnchorStyles.Bottom,
                     Location = this.CalculateCardControlLocation(cardsCount)
                 };
+
                 this.Controls.Add(this.DealtCardHolder[cardsCount]);
                 this.SetPanelsLocation(cardsCount);
             }
         }
+
         private void SetPanelsLocation(int dealtPosition)
         {
             int left = this.DealtCardHolder[dealtPosition].Left - 10;
             int top = this.DealtCardHolder[dealtPosition].Top - 10;
+
             switch (dealtPosition)
             {
                 case 0:
@@ -217,7 +174,7 @@
             int verticalAnchor = this.GetCardVerticalAnchor(cardsCount);
             if (cardsCount % 2 == 1 && cardsCount < 12)
             {
-                horisontalAnchor += this.CardWidth;
+                horisontalAnchor += CardWidth;
             }
 
             var point = new Point(horisontalAnchor, verticalAnchor);
@@ -284,42 +241,23 @@
                 case 11:
                     anchor = 1160;
                     break;
-                default: anchor = 410 + ((dealtPosition % 12) * (this.CardWidth + 10));
+                default: anchor = 410 + ((dealtPosition % 12) * (CardWidth + 10));
                     break;
             }
 
             return anchor;
         }
 
-        #region UI
-
-        //wika se w GameFormDesigner -> InitializeComponent
-        public void Layout_Change(object sender, LayoutEventArgs e)
+        private void UpdateControlsTick(object sender, object e)
         {
-            this.width = this.Width;
-            this.height = this.Height;
+            this.gameEngine.UpdateControls();
         }
 
-
+        #region UI
         private async void ProgresiveBarTimerTick(object sender, object e)
         {
             this.gameEngine.GammerMoveTimeExpired();
-            //if (this.progressBarTimer.Value <= 0)
-            //{
-            //   await this.gameEngine.Turns();
-            //}
-
-            //if (this.timeForPlayerTurn > 0)
-            //{
-            //    this.timeForPlayerTurn--;
-            //    this.progressBarTimer.Value = (this.timeForPlayerTurn / 6) * 100;
-            //}
         }
-
-        //private void GameLoopTimerTick(object sender, object e)
-        //{
-        //    this.gameEngine.UpdateOnTick();
-        //}
 
         private async void ButtonFold_Click(object sender, EventArgs e)
         {

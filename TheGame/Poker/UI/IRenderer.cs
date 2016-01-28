@@ -18,7 +18,7 @@
         void ShowMessage(string msg);
         void ShowMessage(string msg, string msg1);
 
-        void ShowGamerTurnTimer();
+        void StartGamerTurnTimer();
         
         // да се провери необходимо ли е 
         void ShowOrHidePlayersButtons(Gamer player);
@@ -26,7 +26,7 @@
         void EnablingFormMinimizationAndMaximization();
         
         // да се провери необходимо ли е 
-        void HideGamerTurnTimer();
+        void StopGamerTurnTimer();
 
         // да се провери необходимо ли е 
         void ShowAllCards();
