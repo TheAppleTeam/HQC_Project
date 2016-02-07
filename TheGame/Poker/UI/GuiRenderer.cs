@@ -53,10 +53,11 @@
         {
             foreach (var card in cards)
             {
-                if (card.IsVisible)
-                {
+                //if (card.IsVisible)
+                //{
+                //    this.form.DealtCardHolder[card.DealtPosition].Image = this.form.DealtCardsFrontImage[card.DealtPosition];
+                //}
                     this.form.DealtCardHolder[card.DealtPosition].Image = this.form.DealtCardsFrontImage[card.DealtPosition];
-                }
             }
         }
 

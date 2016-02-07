@@ -265,7 +265,7 @@
             this.gameEngine.Players[0].Status = "Fold";
             this.ProgresiveBarTimer.Stop();
             this.gameEngine.GammerFolds();
-            await this.gameEngine.Turns();
+            await this.gameEngine.ClaculateTurns();
         }
 
         private async void ButtonCheck_Click(object sender, EventArgs e)
@@ -273,7 +273,7 @@
             this.gameEngine.Players[0].Status = "Check";
             this.ProgresiveBarTimer.Stop();
             this.gameEngine.GammerChecks();
-            await this.gameEngine.Turns();
+            await this.gameEngine.ClaculateTurns();
         }
 
         private async void ButtonCall_Click(object sender, EventArgs e)
@@ -281,7 +281,7 @@
             this.gameEngine.Players[0].Status = "Call";
             this.ProgresiveBarTimer.Stop();
             this.gameEngine.GammerCalls();
-            await this.gameEngine.Turns();
+            await this.gameEngine.ClaculateTurns();
         }
 
         private async void ButtonRaise_Click(object sender, EventArgs e)
@@ -289,7 +289,7 @@
             this.gameEngine.Players[0].Status = "Raise";
             this.ProgresiveBarTimer.Stop();
             this.gameEngine.GammerRaises();
-            await this.gameEngine.Turns();
+            await this.gameEngine.ClaculateTurns();
         }
 
         private void ButtonAddChips_Click(object sender, EventArgs e)

@@ -20,6 +20,6 @@
 
         public const string CardBackImageUri = "../../Resources/Cards/Back.png";
 
-        public const int DealingCardsDelay = 200;
+        public const int DealingCardsDelay = 600;
     }
 }
